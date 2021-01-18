@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yidian.registration.dao.SysRoleDao">
+  <resultMap id="BaseResultMap" type="com.yidian.registration.entity.SysRoleEntity">
+    <result column="id" jdbcType="BIGINT" property="id" />
+    <result column="role_name" jdbcType="VARCHAR" property="roleName" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+
+  <insert id="insert" parameterType="com.yidian.registration.entity.SysRoleEntity">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into sys_role (role_name, remark, update_time, 
+      create_time)
+    values (#{roleName,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, role_name, remark, update_time, create_time
+    from sys_role
+  </select>
+
+  <update id="updateByPrimaryKey" parameterType="com.yidian.registration.entity.SysRoleEntity" >
+    update sys_role
+    set role_name = #{roleName,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id}
+  </update>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select id, role_name, remark, update_time, create_time
+    from sys_role
+    where id = #{id}
+  </select>
+
+  <!-- 根据条件查询用户列表 -->
+  <select id="getRoleList" resultMap="BaseResultMap">
+    select id, role_name, remark, update_time, create_time
+    from sys_role
+    where 1=1
+    <if test="roleName !=null and roleName !=''">
+      AND role_name = #{roleName}
+    </if>
+    ORDER BY create_time DESC
+    LIMIT #{pageNum},#{pageSize}
+  </select>
+
+  <!-- 根据条件查询用户列表 -->
+  <select id="getRoleListCount" resultType="java.lang.Integer">
+    select count(1)
+    from sys_role
+    where 1=1
+    <if test="roleName !=null and roleName !=''">
+      AND role_name = #{roleName}
+    </if>
+
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from sys_role
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+</mapper>

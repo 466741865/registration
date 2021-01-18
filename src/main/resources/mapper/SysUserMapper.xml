@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yidian.registration.dao.SysUserDao" >
+  <resultMap id="BaseResultMap" type="com.yidian.registration.entity.SysUserEntity" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="username" property="username" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="salt" property="salt" jdbcType="VARCHAR" />
+    <result column="real_name" property="realName" jdbcType="VARCHAR" />
+    <result column="mobile" property="mobile" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="state" property="state" jdbcType="TINYINT" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from sys_user
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.yidian.registration.entity.SysUserEntity" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into sys_user (username, `password`, salt, 
+      real_name, mobile, email, 
+      `state`, update_time, create_time
+      )
+    values (#{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{salt,jdbcType=VARCHAR}, 
+      #{realName,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
+      #{state,jdbcType=TINYINT}, #{updateTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.yidian.registration.entity.SysUserEntity" >
+    update sys_user
+    set username = #{username,jdbcType=VARCHAR},
+      `password` = #{password,jdbcType=VARCHAR},
+      salt = #{salt,jdbcType=VARCHAR},
+      real_name = #{realName,jdbcType=VARCHAR},
+      mobile = #{mobile,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      `state` = #{state,jdbcType=TINYINT},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select id, username, `password`, salt, real_name, mobile, email, `state`, update_time, 
+    create_time
+    from sys_user
+    where id = #{id}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, username, `password`, salt, real_name, mobile, email, `state`, update_time, 
+    create_time
+    from sys_user
+  </select>
+
+
+  <select id="selectByUserNameAndPwd" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select id, username, `password`, salt, real_name, mobile, email, `state`, update_time,
+    create_time
+    from sys_user
+    where username = #{username} and password = #{password}
+  </select>
+
+  <!-- 根据条件查询用户列表 -->
+  <select id="getUserList" resultMap="BaseResultMap">
+    select id, username, `password`, salt, real_name, mobile, email, `state`, update_time,
+    create_time
+    from sys_user
+    where 1=1
+    <if test="userName !=null and userName !=''">
+      AND username = #{userName}
+    </if>
+    <if test="realName !=null and realName !=''">
+      AND real_name = #{realName}
+    </if>
+    <if test="state !=null and state >=0">
+      AND state = #{state}
+    </if>
+    ORDER BY create_time DESC
+    LIMIT #{pageNum},#{pageSize}
+  </select>
+  <!-- 根据条件查询用户列表 -->
+  <select id="getUserListCount" resultType="java.lang.Integer">
+    select count(1)
+    from sys_user
+    where 1=1
+    <if test="userName !=null and userName !=''">
+      AND username = #{userName}
+    </if>
+    <if test="realName !=null and realName !=''">
+      AND real_name = #{realName}
+    </if>
+    <if test="state !=null and state >=0">
+      AND state = #{state}
+    </if>
+
+  </select>
+
+</mapper>
