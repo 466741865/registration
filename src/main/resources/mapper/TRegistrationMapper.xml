@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yidian.registration.dao.TRegistrationDao">
+
+    <resultMap id="BaseResultMap" type="com.yidian.registration.entity.TRegistration">
+        <result column="id" jdbcType="BIGINT" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <result column="config_id" jdbcType="BIGINT" property="configId"/>
+        <result column="therapy_date" jdbcType="BIGINT" property="therapyDate"/>
+        <result column="state" jdbcType="INTEGER" property="state"/>
+        <result column="creator" jdbcType="VARCHAR" property="creator"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.yidian.registration.entity.TRegistration">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into t_registration (`name`, phone, config_id, therapy_date,
+        `state`, creator, create_time, update_time)
+        values (#{name,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{configId,jdbcType=BIGINT},
+        #{therapyDate,jdbcType=BIGINT}, #{state,jdbcType=INTEGER}, #{creator,jdbcType=VARCHAR}, now(), now())
+    </insert>
+
+    <select id="getRegistrationList" resultType="com.yidian.registration.entity.TRegistration">
+        select *
+        from t_registration
+        <where>
+            <if test="name != null and name != ''">
+                and `name` like concat('%', #{name}, '%')
+            </if>
+            <if test="mobile != null and mobile != ''">
+                and phone like concat('%', #{name}, '%')
+            </if>
+            <if test="day > 0">
+                and therapy_date = day
+            </if>
+        </where>
+        limit index, pageSize
+    </select>
+
+    <select id="getRegistrationListTotal" resultType="java.lang.Integer">
+        select count(*)
+        from t_registration
+        <where>
+            <if test="name != null and name != ''">
+                and `name` like concat('%', #{name}, '%')
+            </if>
+            <if test="mobile != null and mobile != ''">
+                and phone like concat('%', #{name}, '%')
+            </if>
+            <if test="day > 0">
+                and therapy_date = day
+            </if>
+        </where>
+    </select>
+
+    <select id="getRegistrationById" resultType="com.yidian.registration.entity.TRegistration">
+        select *
+        from t_registration
+        where id = #{id}
+    </select>
+
+    <update id="updateRegistrationStateById">
+        update t_registration
+        set `state` = #{state}
+        where id = #{id}
+    </update>
+
+</mapper>
