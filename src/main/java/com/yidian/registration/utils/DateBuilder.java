@@ -63,6 +63,12 @@ public class DateBuilder {
 	 * 格式化 年月
 	 */
 	public static final String FORMAT_YM="yyyyMM";
+
+	/**
+	 * 格式化 年月日
+	 */
+	public static final String FORMAT_YMD="yyyyMMdd";
+
     /**
      * 格式化字符串-小时分钟
      */
