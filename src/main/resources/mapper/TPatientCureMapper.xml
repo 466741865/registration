@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yidian.registration.dao.TPatientCureDao">
+    <resultMap id="BaseResultMap" type="com.yidian.registration.entity.TPatientCureEntity">
+        <result column="id" jdbcType="BIGINT" property="id"/>
+        <result column="pid" jdbcType="BIGINT" property="pid"/>
+        <result column="cure_date" jdbcType="BIGINT" property="cureDate"/>
+        <result column="cure_time" jdbcType="VARCHAR" property="cureTime"/>
+        <result column="items" jdbcType="VARCHAR" property="items"/>
+        <result column="use_num" jdbcType="INTEGER" property="useNum"/>
+        <result column="remain_num" jdbcType="INTEGER" property="remainNum"/>
+        <result column="status" jdbcType="TINYINT" property="status"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+    <insert id="insert" parameterType="com.yidian.registration.entity.TPatientCureEntity">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into t_patient_cure (pid, cure_date, cure_time,
+        items, use_num, remain_num,
+        `status`, create_time, update_time
+        )
+        values (#{pid,jdbcType=BIGINT}, #{cureDate,jdbcType=BIGINT}, #{cureTime,jdbcType=VARCHAR},
+        #{items,jdbcType=VARCHAR}, #{useNum,jdbcType=INTEGER}, #{remainNum,jdbcType=INTEGER},
+        #{status,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+        )
+    </insert>
+    <select id="selectAll" resultMap="BaseResultMap">
+    select id, pid, cure_date, cure_time, items, use_num, remain_num, `status`, create_time, 
+    update_time
+    from t_patient_cure
+  </select>
+
+    <select id="getCureById" resultMap="BaseResultMap">
+    select *
+    from t_patient_cure
+    where id = #{id}
+  </select>
+
+    <update id="update" parameterType="com.yidian.registration.entity.TPatientCureEntity">
+        update t_patient_cure
+        <set>
+            <if test="useNum != null">
+                use_num = #{useNum},
+            </if>
+            <if test="remainNum != null">
+                remain_num = #{remainNum},
+            </if>
+            <if test="status != null">
+                `status` = #{status},
+            </if>
+            <if test="items != null and items != ''">
+                items = #{items},
+            </if>
+            update_time = now()
+        </set>
+        where id = #{id}
+    </update>
+
+    <update id="updateCureStatusById">
+        update t_patient_cure
+        <set>
+            <if test="status != null">
+                `status` = #{status},
+            </if>
+            <if test="items != null and items != ''">
+                items = #{items},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <select id="getCureList" resultMap="BaseResultMap">
+        select *
+        from t_patient_cure
+        <where>
+            <if test="cureDate != null and cureDate > 0">
+                and cure_date = cureDate
+            </if>
+            <if test="pids != null">
+                and pid in
+                <foreach collection="pids" item="pid" open="(" close=")" separator=",">
+                    #{pid}
+                </foreach>
+            </if>
+        </where>
+        order by cure_date desc
+        limit #{index}, #{pageSize}
+    </select>
+
+    <select id="getCureListTotal" resultType="java.lang.Integer">
+        select count(*)
+        from t_patient_cure
+        <where>
+            <if test="cureDate != null and cureDate > 0">
+                and cure_date = cureDate
+            </if>
+            <if test="pids != null">
+                and pid in
+                <foreach collection="pids" item="pid" open="(" close=")" separator=",">
+                    #{pid}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+</mapper>

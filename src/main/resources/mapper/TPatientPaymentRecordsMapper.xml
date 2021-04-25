@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yidian.registration.dao.TPatientPaymentRecordsDao">
+  <resultMap id="BaseResultMap" type="com.yidian.registration.entity.TPatientPaymentRecordsEntity">
+    <result column="id" jdbcType="BIGINT" property="id" />
+    <result column="pid" jdbcType="BIGINT" property="pid" />
+    <result column="buy_num" jdbcType="INTEGER" property="buyNum" />
+    <result column="pay_money" jdbcType="DECIMAL" property="payMoney" />
+    <result column="pay_date" jdbcType="TIMESTAMP" property="payDate" />
+    <result column="remain_num" jdbcType="INTEGER" property="remainNum" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <insert id="insert" parameterType="com.yidian.registration.entity.TPatientPaymentRecordsEntity">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into t_patient_payment_records (pid, buy_num, pay_money, 
+      pay_date, remain_num, create_time, update_time
+      )
+    values (#{pid,jdbcType=BIGINT}, #{buyNum,jdbcType=INTEGER}, #{payMoney,jdbcType=DECIMAL},
+      #{payDate,jdbcType=TIMESTAMP}, #{remainNum,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, pid, buy_num, pay_money, pay_date, remain_num, create_time, update_time
+    from t_patient_payment_records
+  </select>
+
+  <select id="getPatientPayMentList" resultMap="BaseResultMap">
+    select *
+    from t_patient_payment_records
+    where pid = #{pid}
+    order by pay_date desc
+    limit #{index},#{pageSize}
+  </select>
+
+  <select id="getPatientPayMentListTotal" resultType="java.lang.Integer">
+    select count(*)
+    from t_patient_payment_records
+    where pid = #{pid}
+  </select>
+</mapper>

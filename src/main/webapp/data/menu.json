@@ -273,5 +273,45 @@
 	 
   	]
    
-  }
+  },
+	{
+		"id":5,
+		"title": "预约管理",
+		"icon": "layui-icon layui-icon-set-sm",
+		"spread": true,
+		"type":0,
+		"href": "http://www.baidu.com",
+		"children": [
+			{
+				"id":12341234,
+				"title": "预约记录",
+				"icon": "layui-icon layui-icon-username",
+				"type":1,
+				"href": "views/system/user/user.html",
+				"spread": true
+			}
+
+		]
+
+	},
+	{
+		"id":4,
+		"title": "病号管理",
+		"icon": "layui-icon layui-icon-set-sm",
+		"spread": true,
+		"type":0,
+		"href": "http://www.baidu.com",
+		"children": [
+			{
+				"id":12212437515,
+				"title": "病号信息",
+				"icon": "layui-icon layui-icon-username",
+				"type":1,
+				"href": "views/system/user/user.html",
+				"spread": true
+			}
+
+		]
+
+	}
 ]

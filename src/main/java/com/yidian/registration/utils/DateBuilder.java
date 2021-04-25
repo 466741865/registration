@@ -8,6 +8,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * 通用日期处理类
@@ -513,5 +514,35 @@ public class DateBuilder {
 	 */
 	public static String toStrHourMin(Date date) {
 		return new SimpleDateFormat(FORMAT_MDHM).format(date);
+	}
+
+	/**
+	 * 转换成long  20210303
+	 * @param date
+	 * @return
+	 */
+	public static Long toLongDate(String date){
+		if(Objects.isNull(date)){
+			return 0L;
+		}
+		Date toDate = convertStringToDate(date);
+		String format = new SimpleDateFormat(FORMAT_YMD).format(toDate);
+		if(StringUtils.isBlank(format)){
+			return 0L;
+		}
+		return Long.parseLong(format);
+	}
+
+	/**
+	 * 转换成long  20210303
+	 * @param date
+	 * @return
+	 */
+	public static Long toLongDate(Date date){
+		String format = new SimpleDateFormat(FORMAT_YMD).format(date);
+		if(StringUtils.isBlank(format)){
+			return 0L;
+		}
+		return Long.parseLong(format);
 	}
 }

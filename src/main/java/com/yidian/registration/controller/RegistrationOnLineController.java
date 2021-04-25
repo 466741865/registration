@@ -7,8 +7,6 @@ import com.yidian.registration.service.IRegistrationService;
 import com.yidian.registration.utils.Tools;
 import com.yidian.registration.vo.PageVo;
 import com.yidian.registration.vo.ResultVo;
-import com.yidian.registration.vo.registration.ConfigAddVo;
-import com.yidian.registration.vo.registration.ConfigVo;
 import com.yidian.registration.vo.registration.RegistrationVo;
 import com.yidian.registration.vo.req.RegistrationListReq;
 import org.slf4j.Logger;
@@ -22,15 +20,15 @@ import java.util.Objects;
 
 /**
  * @Author: QingHang
- * @Description: 预约管理
+ * @Description: 在线挂号
  * @Date: 2021/1/21 23:23
  */
 @RestController
-@RequestMapping("/registration/manager")
-public class RegistrationManagerController {
+@RequestMapping("/registration/onLine")
+public class RegistrationOnLineController {
 
 
-    Logger logger = LoggerFactory.getLogger(RegistrationManagerController.class);
+    Logger logger = LoggerFactory.getLogger(RegistrationOnLineController.class);
 
     @Autowired
     private IRegistrationService registrationService;
