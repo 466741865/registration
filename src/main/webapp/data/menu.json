@@ -306,7 +306,7 @@
 				"title": "病号信息",
 				"icon": "layui-icon layui-icon-username",
 				"type":1,
-				"href": "views/system/user/user.html",
+				"href": "views/business/patient/patientManager.html",
 				"spread": true
 			}
 
