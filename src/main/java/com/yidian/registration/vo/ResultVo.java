@@ -1,5 +1,7 @@
 package com.yidian.registration.vo;
 
+import com.yidian.registration.enums.StatusEnum;
+
 /**
  * @author : QingHang
  * @version 1.0
@@ -8,7 +10,7 @@ package com.yidian.registration.vo;
  **/
 public class ResultVo<T> {
 
-    public static final int SUCCESS_CODE = 1;
+    public static final int SUCCESS_CODE = StatusEnum.SUCCESS.getCode();
     public static final String SUCCESS_MESSAGE = "success";
 
 
