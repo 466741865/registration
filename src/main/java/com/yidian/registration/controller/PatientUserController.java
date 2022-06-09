@@ -11,13 +11,18 @@ import com.yidian.registration.vo.patientuser.PatientUserInfoVo;
 import com.yidian.registration.vo.patientuser.PatientUserPayMentInfoVo;
 import com.yidian.registration.vo.patientuser.PatientUserPayMentVo;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpRequest;
+import org.apache.http.params.HttpParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: QingHang
@@ -123,9 +128,10 @@ public class PatientUserController {
      * @param limit
      * @return
      */
-    @RequestMapping(value = "/getPayMentList", produces = "application/json;charset=UTF-8")
-    public PageVo<List<PatientUserPayMentInfoVo>> getPayMentList(Long pid, Integer page, Integer limit) {
+    @RequestMapping(value = "/getPayMentList")
+    public PageVo<List<PatientUserPayMentInfoVo>> getPayMentList(HttpServletRequest request, Long pid, Integer page, Integer limit) {
         logger.info("[getPayMentList]用户缴费信息列表,start，pid={}, pageNo={}, pageSize={}", pid, page, limit);
+        Map parameterMap = request.getParameterMap();
         if (Tools.isNull(page) || page <= 0) {
             page = Constants.DEFAULT_PAGE_NO;
         }

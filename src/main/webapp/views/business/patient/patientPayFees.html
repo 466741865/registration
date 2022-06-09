@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../../../component/pear/css/pear.css"/>
+</head>
+<body>
+<form class="layui-form" action="">
+    <div class="mainBox">
+        <div class="main-container">
+            <div class="main-container">
+                <div class="layui-form-item">
+                    <input type="hidden" id="pid" name="pid">
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">姓名</label>
+                    <div class="layui-input-block">
+                        <input type="text" id="patientUserName" class="layui-input" disabled="disabled">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">购买日期</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input" id="payDate" name="payDate" placeholder="请输入购买日期">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">缴费金额</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="payMoney" lay-verify="title" autocomplete="off" placeholder="请输入缴费金额"
+                               class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">购买次数</label>
+                    <div class="layui-input-block">
+                        <input type="number" name="buyNum" lay-verify="title" autocomplete="off" placeholder="请输入购买次数"
+                               class="layui-input">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="bottom">
+        <div class="button-container">
+            <button type="submit" class="pear-btn pear-btn-primary pear-btn-sm" lay-submit=""
+                    lay-filter="patient-user-save">
+                <i class="layui-icon layui-icon-ok"></i>
+                提交
+            </button>
+            <button type="reset" class="pear-btn pear-btn-sm">
+                <i class="layui-icon layui-icon-refresh"></i>
+                重置
+            </button>
+        </div>
+    </div>
+</form>
+<script src="../../../component/layui/layui.js"></script>
+<script src="../../../component/pear/pear.js"></script>
+<script>
+    layui.use(['form', 'jquery', 'popup'], function () {
+        let form = layui.form;
+        let $ = layui.jquery;
+        var popup = layui.popup;
+        var laydate = layui.laydate;
+
+        //日期选择器
+        laydate.render({
+            elem: '#payDate'
+        });
+
+        form.on('submit(patient-user-save)', function (data) {
+            // let roleIds = "";
+            // $('input[type=checkbox]:checked').each(function() {
+            //     roleIds += $(this).val()+",";
+            // });
+            // roleIds = roleIds.substr(0,roleIds.length-1);
+            // data.field.roleIds = roleIds;
+
+            $.ajax({
+                url: '/patient/user/payMent',
+                data: data.field,
+                dataType: 'JSON',
+                method: "POST",
+                success: function (result) {
+                    if (result.code == 0) {
+                        popup.success('添加成功', function () {
+                            parent.layer.close(parent.layer.getFrameIndex(window.name));//关闭当前页
+                            parent.layui.table.reload("patient-user-table");
+                        });
+                    } else {
+                        popup.success('添加失败' + result.message, function () {
+                            parent.layer.close(parent.layer.getFrameIndex(window.name));//关闭当前页
+                            parent.layui.table.reload("patient-user-table");
+                        });
+                    }
+                }
+            })
+            return false;
+        });
+    })
+</script>
+<script>
+</script>
+</body>
+</html>
