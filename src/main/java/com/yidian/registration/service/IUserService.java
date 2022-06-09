@@ -23,12 +23,12 @@ public interface IUserService {
 
     /**
      *
-     * @param userName
+     * @param mobile
      * @param realName
      * @param state
      * @return
      */
-    PageVo<List<UserInfoVo>> getUserList(String userName, String realName, Integer state, Integer pageNo , Integer pageSize);
+    PageVo<List<UserInfoVo>> getUserList(String mobile, String realName, Integer state, Integer pageNo , Integer pageSize);
 
     /**
      * 添加用户
