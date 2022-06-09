@@ -48,7 +48,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public PageVo<List<UserInfoVo>> getUserList(String userName, String realName, Integer state, Integer pageNo, Integer pageSize) {
+    public PageVo<List<UserInfoVo>> getUserList(String mobile, String realName, Integer state, Integer pageNo, Integer pageSize) {
 
 
         List<UserInfoVo> vos = new ArrayList<>();
@@ -57,8 +57,8 @@ public class UserServiceImpl implements IUserService {
         try {
 
             //查询数据量
-            int count = userDao.getUserListCount(userName, realName, state);
-            logger.info("[getUserList]根据条件查询用户列表,查询到用户数量为：{}，userName={},realName={},state={}", count, userName, realName, state);
+            int count = userDao.getUserListCount(mobile, realName, state);
+            logger.info("[getUserList]根据条件查询用户列表,查询到用户数量为：{}，mobile={},realName={},state={}", count, mobile, realName, state);
             if (count <= 0) {
                 pageVo.setCode(StatusEnum.SUCCESS.getCode());
                 pageVo.setData(vos);
@@ -67,8 +67,8 @@ public class UserServiceImpl implements IUserService {
             }
             pageVo.setCount(count);
             //查询列表
-            List<SysUserEntity> list = userDao.getUserList(userName, realName, state, (pageNo - 1) * pageSize, pageSize);
-            logger.info("[getUserList]根据条件查询用户列表,查询到用户列表，userName={},realName={},state={}，list：{}", userName, realName, state, JSON.toJSON(list));
+            List<SysUserEntity> list = userDao.getUserList(mobile, realName, state, (pageNo - 1) * pageSize, pageSize);
+            logger.info("[getUserList]根据条件查询用户列表,查询到用户列表，mobile={},realName={},state={}，list：{}", mobile, realName, state, JSON.toJSON(list));
             if (Tools.isNull(list)) {
                 pageVo.setCode(StatusEnum.SUCCESS.getCode());
                 pageVo.setData(vos);
@@ -82,6 +82,7 @@ public class UserServiceImpl implements IUserService {
                 vo.setPhone(entity.getMobile());
                 vo.setState(entity.getState());
                 vo.setUid(entity.getId());
+                vo.setCreateTime(entity.getCreateTime());
 
                 vos.add(vo);
             }
@@ -109,6 +110,7 @@ public class UserServiceImpl implements IUserService {
             entity.setUsername(userAddVo.getUserName().trim());
             entity.setCreateTime(new Date());
             entity.setUpdateTime(new Date());
+            entity.setState((byte) UserStatusEnum.ENABLED.getCode());
 
             int res = userDao.insert(entity);
             logger.info("[addUser]添加用户完成，--end--，result：{}",res);
@@ -184,7 +186,7 @@ public class UserServiceImpl implements IUserService {
             int res = userDao.updateByPrimaryKey(entity);
             logger.info("[updateUserState]编辑用户状态完成，--end--，result：{}",res);
             if(res > 0){
-                resultVo.setCode(StatusEnum.FAIL_CODE.getCode());
+                resultVo.setCode(StatusEnum.SUCCESS.getCode());
                 resultVo.setMessage(message+"成功");
                 resultVo.setData(true);
                 return resultVo;

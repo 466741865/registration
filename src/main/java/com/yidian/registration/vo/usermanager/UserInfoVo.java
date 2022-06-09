@@ -1,5 +1,7 @@
 package com.yidian.registration.vo.usermanager;
 
+import java.util.Date;
+
 /**
  * @author : QingHang
  * @version 1.0
@@ -20,6 +22,8 @@ public class UserInfoVo {
     private int state;
 
     private String email;
+
+    private Date createTime;
 
     public Long getUid() {
         return uid;
@@ -69,6 +73,14 @@ public class UserInfoVo {
         this.email = email;
     }
 
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
     @Override
     public String toString() {
         return "UserInfoVo{" +
@@ -76,8 +88,9 @@ public class UserInfoVo {
                 ", userName='" + userName + '\'' +
                 ", phone='" + phone + '\'' +
                 ", realName='" + realName + '\'' +
-                ", state='" + state +
-                ", sex='" + email + '\'' +
+                ", state=" + state +
+                ", email='" + email + '\'' +
+                ", createTime=" + createTime +
                 '}';
     }
 }

@@ -10,7 +10,9 @@ import com.yidian.registration.vo.usermanager.UserInfoVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -33,23 +35,23 @@ public class UserManagerController {
 
     /**
      * 获取用户列表
-     * @param userName
+     * @param mobile
      * @param realName
      * @param state
      * @return
      */
     @RequestMapping(value = "/getUserList", produces="application/json;charset=UTF-8")
-    public PageVo<List<UserInfoVo>> getUserList(String userName, String realName, Integer state , Integer page , Integer limit){
-        logger.info("[getUserList]根据条件查询用户列表,start，userName={},realName={},state={},pageNo={},pageSize={}", userName, realName, state, page, limit);
+    public PageVo<List<UserInfoVo>> getUserList(String mobile, String realName, Integer state , Integer page , Integer limit){
+        logger.info("[getUserList]根据条件查询用户列表,start，mobile={},realName={},state={},pageNo={},pageSize={}", mobile, realName, state, page, limit);
         if(Tools.isNull(page) || page <= 0 ){
             page = 1;
         }if(Tools.isNull(limit) || limit <= 0){
             limit = 10;
         }
-        PageVo<List<UserInfoVo>> pageVos = userService.getUserList(userName,realName,state,page,limit);
+        PageVo<List<UserInfoVo>> pageVos = userService.getUserList(mobile,realName,state,page,limit);
         pageVos.setPageNum(page);
         pageVos.setPageSize(limit);
-        logger.info("[getUserList]根据条件查询用户列表,end，userName={},realName={},state={} ,res={}", userName, realName, state, JSON.toJSON(pageVos));
+        logger.info("[getUserList]根据条件查询用户列表,end，mobile={},realName={},state={} ,res={}", mobile, realName, state, JSON.toJSON(pageVos));
         return pageVos;
 
     }
@@ -59,7 +61,7 @@ public class UserManagerController {
      * @param userAddVo 用户信息
      * @return
      */
-    @RequestMapping(value = "/addUser", produces="application/json;charset=UTF-8")
+    @PostMapping(value = "/addUser", produces="application/json;charset=UTF-8")
     public ResultVo<Boolean> addUser(UserAddVo userAddVo){
         logger.info("[addUser]添加用户，userAddVo={}", userAddVo.toString());
         if(Tools.isNull(userAddVo) || Tools.isNull(userAddVo.getUserName()) || Tools.isNull(userAddVo.getRealName()) || Tools.isNull(userAddVo.getPwd()) || Tools.isNull(userAddVo.getPhone()) || Tools.isNull(userAddVo.getEmail())){
