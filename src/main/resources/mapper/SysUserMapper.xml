@@ -60,7 +60,7 @@
     select id, username, `password`, salt, real_name, mobile, email, `state`, update_time,
     create_time
     from sys_user
-    where username = #{username} and password = #{password}
+    where username = #{username} and password = #{password} and  `state` = 1
   </select>
 
   <!-- 根据条件查询用户列表 -->
@@ -69,11 +69,11 @@
     create_time
     from sys_user
     where 1=1
-    <if test="userName !=null and userName !=''">
-      AND username = #{userName}
+    <if test="mobile !=null and mobile !=''">
+      AND mobile like concat('%',#{mobile},'%')
     </if>
     <if test="realName !=null and realName !=''">
-      AND real_name = #{realName}
+      AND real_name like concat('%',#{realName},'%')
     </if>
     <if test="state !=null and state >=0">
       AND state = #{state}
@@ -83,14 +83,14 @@
   </select>
   <!-- 根据条件查询用户列表 -->
   <select id="getUserListCount" resultType="java.lang.Integer">
-    select count(1)
+    select count(*)
     from sys_user
     where 1=1
-    <if test="userName !=null and userName !=''">
-      AND username = #{userName}
+    <if test="mobile !=null and mobile !=''">
+      AND mobile like concat('%',#{mobile},'%')
     </if>
     <if test="realName !=null and realName !=''">
-      AND real_name = #{realName}
+      AND real_name like concat('%',#{realName},'%')
     </if>
     <if test="state !=null and state >=0">
       AND state = #{state}

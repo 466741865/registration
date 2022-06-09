@@ -22,21 +22,21 @@ public interface SysUserDao {
 
     /**
      * 根据条件查询用户列表
-     * @param userName
+     * @param mobile
      * @param realName
      * @param state
      * @param pageNum
      * @param pageSize
      * @return
      */
-    List<SysUserEntity> getUserList(@Param("userName") String userName,@Param("realName") String realName, @Param("state") Integer state,@Param("pageNum") Integer pageNum ,@Param("pageSize") Integer pageSize);
+    List<SysUserEntity> getUserList(@Param("mobile") String mobile,@Param("realName") String realName, @Param("state") Integer state,@Param("pageNum") Integer pageNum ,@Param("pageSize") Integer pageSize);
 
     /**
      * 根据条件查询用户数
-     * @param userName
+     * @param mobile
      * @param realName
      * @param state
      * @return
      */
-    int getUserListCount(@Param("userName") String userName,@Param("realName") String realName, @Param("state") Integer state);
+    int getUserListCount(@Param("mobile") String mobile,@Param("realName") String realName, @Param("state") Integer state);
 }

@@ -1,11 +1,3 @@
-/**
-
- @Name：layui.age Tag标签
- @Author：lih
- @License：MIT
-    
- */
- 
 layui.define('jquery', function(exports){
   "use strict";
   
