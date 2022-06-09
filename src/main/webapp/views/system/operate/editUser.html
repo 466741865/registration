@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../../../component/pear/css/pear.css" />
+</head>
+<body>
+<form class="layui-form" action="">
+    <div class="mainBox">
+        <div class="main-container">
+            <div class="main-container">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">账号</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="userName" lay-verify="title" autocomplete="off" placeholder="请输入账号" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">姓名</label>
+                    <div class="layui-input-block">
+                        <input type="text"  name="realName" lay-verify="title" autocomplete="off" placeholder="请输入姓名" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">邮箱</label>
+                    <div class="layui-input-block">
+                        <input type="text"  name="email" lay-verify="title" autocomplete="off" placeholder="请输入邮箱" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">密码</label>
+                    <div class="layui-input-block">
+                        <input type="text"  name="pwd" lay-verify="title" autocomplete="off" placeholder="请输入密码" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">电话</label>
+                    <div class="layui-input-block">
+                        <input type="text"  name="phone" lay-verify="title" autocomplete="off" placeholder="请输入电话" class="layui-input">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<!--    <div class="bottom">-->
+<!--        <div class="button-container">-->
+<!--            <button type="submit" class="pear-btn pear-btn-primary pear-btn-sm" lay-submit="" lay-filter="user-save">-->
+<!--                <i class="layui-icon layui-icon-ok"></i>-->
+<!--                提交-->
+<!--            </button>-->
+<!--            <button type="reset" class="pear-btn pear-btn-sm">-->
+<!--                <i class="layui-icon layui-icon-refresh"></i>-->
+<!--                重置-->
+<!--            </button>-->
+<!--        </div>-->
+<!--    </div>-->
+</form>
+<script src="../../../component/layui/layui.js"></script>
+<script src="../../../component/pear/pear.js"></script>
+<script>
+layui.use(['form','jquery'],function(){
+    let form = layui.form;
+    let $ = layui.jquery;
+
+    form.on('submit(user-save)', function(data){
+        // let roleIds = "";
+        // $('input[type=checkbox]:checked').each(function() {
+        //     roleIds += $(this).val()+",";
+        // });
+        // roleIds = roleIds.substr(0,roleIds.length-1);
+        // data.field.roleIds = roleIds;
+        var userInfo = {
+            "userName":data.field.userName,
+            "pwd":data.field.pwd,
+            "phone":data.field.phone,
+            "realName":data.field.realName,
+            "email":data.field.email
+        };
+        $.ajax({
+            url:'/user/manager/addUser',
+            data:data.field,
+            dataType:'JSON',
+            method: "POST",
+            success:function(result){
+                if(result.code == 0){
+                    layer.msg(result.msg,{icon:1,time:1000},function(){
+                        parent.layer.close(parent.layer.getFrameIndex(window.name));//关闭当前页
+                        parent.layui.table.reload("user-table");
+                    });
+                }else{
+                    layer.msg(result.msg,{icon:2,time:1000,width:80,hight:50});
+                }
+            }
+        })
+        return false;
+    });
+})
+</script>
+<script>
+</script>
+</body>
+</html>
