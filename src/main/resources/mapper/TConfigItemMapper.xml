@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yidian.registration.dao.TConfigItemDao">
+  <resultMap id="BaseResultMap" type="com.yidian.registration.entity.TConfigItem">
+    <result column="id" jdbcType="BIGINT" property="id" />
+    <result column="hospital_id" jdbcType="BIGINT" property="hospitalId" />
+    <result column="item_name" jdbcType="VARCHAR" property="itemName" />
+    <result column="commission" jdbcType="DECIMAL" property="commission" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <insert id="insert" parameterType="com.yidian.registration.entity.TConfigItem">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into t_config_item (hospital_id, item_name, commission, 
+      `status`, create_time, update_time
+      )
+    values (#{hospitalId,jdbcType=BIGINT}, #{itemName,jdbcType=VARCHAR}, #{commission,jdbcType=DECIMAL}, 
+      #{status,jdbcType=TINYINT}, now(), now()
+      )
+  </insert>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, hospital_id, item_name, commission, `status`, create_time, update_time
+    from t_config_item
+  </select>
+
+  <select id="selectItemListTotal" resultType="int">
+        select count(1)
+        from t_config_item
+        where `status` = 1 and item_name like concat('%', #{name}, '%')
+    </select>
+
+  <select id="selectItemConfigList" resultMap="BaseResultMap">
+        select *
+        from t_config_item
+        where `status` = 1 and item_name like concat('%', #{name}, '%')
+        limit #{index}, #{pageSize}
+    </select>
+
+  <update id="updateItemConfig" parameterType="com.yidian.registration.entity.TConfigItem">
+    update t_config_item
+    <set>
+      <if test="hospitalId != null">
+        hospital_id = #{hospitalId},
+      </if>
+      <if test="itemName != null">
+        item_name = #{itemName},
+      </if>
+      <if test="commission != null">
+        commission = #{commission},
+      </if>
+      <if test="status != null">
+        `status` = #{status},
+      </if>
+      update_time = now()
+    </set>
+    where id = #{id}
+  </update>
+
+  <select id="selectInfoById" resultMap="BaseResultMap">
+        select *
+        from t_config_item
+        where id = #{id}
+  </select>
+
+  <select id="selectItemConfigListByHid" resultMap="BaseResultMap">
+    select *
+    from t_config_item
+    where `status` = 1 and hospital_id = #{hid}
+  </select>
+
+</mapper>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yidian.registration.dao.TConfigHospitalDao">
+    <resultMap id="BaseResultMap" type="com.yidian.registration.entity.TConfigHospital">
+        <result column="id" jdbcType="BIGINT" property="id"/>
+        <result column="hospital_name" jdbcType="VARCHAR" property="hospitalName"/>
+        <result column="basic_salary" jdbcType="DECIMAL" property="basicSalary"/>
+        <result column="status" jdbcType="TINYINT" property="status"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+    <insert id="insert" parameterType="com.yidian.registration.entity.TConfigHospital">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into t_config_hospital (hospital_name, basic_salary, `status`,
+        create_time, update_time)
+        values (#{hospitalName,jdbcType=VARCHAR}, #{basicSalary,jdbcType=DECIMAL}, #{status,jdbcType=TINYINT},
+        now(),now())
+    </insert>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select id, hospital_name, basic_salary, `status`, create_time, update_time
+        from t_config_hospital
+    </select>
+
+    <select id="selectHospitalListTotal" resultType="int">
+        select count(1)
+        from t_config_hospital
+        where `status` = 1 and hospital_name like concat('%', #{name}, '%')
+    </select>
+
+    <select id="selectHospitalConfigList" resultMap="BaseResultMap">
+        select *
+        from t_config_hospital
+        where `status` = 1 and hospital_name like concat('%', #{name}, '%')
+        limit #{index}, #{pageSize}
+    </select>
+
+    <update id="updateHospitalConfig" parameterType="com.yidian.registration.entity.TConfigHospital">
+        update t_config_hospital
+        <set>
+            <if test="hospitalName != null">
+                hospital_name = #{hospitalName},
+            </if>
+            <if test="basicSalary != null">
+                basic_salary = #{basicSalary},
+            </if>
+            <if test="status != null">
+                `status` = #{status},
+            </if>
+            update_time = now()
+        </set>
+        where id = #{id}
+    </update>
+
+    <select id="selectInfoById" resultMap="BaseResultMap">
+        select *
+        from t_config_hospital
+        where id = #{id}
+    </select>
+
+</mapper>
