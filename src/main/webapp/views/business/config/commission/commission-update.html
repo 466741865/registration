@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../../../../component/pear/css/pear.css"/>
+</head>
+<body>
+<form class="layui-form" action="">
+    <div class="mainBox">
+        <div class="main-container">
+            <div class="main-container">
+                <div class="layui-form-item">
+                    <input type="hidden" id="user_id" name="user_id">
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">姓名</label>
+                    <div class="layui-input-block">
+                        <input type="text" id="name" name="name" lay-verify="title" autocomplete="off" placeholder="请输入项目"
+                               class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">联系方式</label>
+                    <div class="layui-input-block">
+                        <input type="text" id="phone" name="phone" lay-verify="title" autocomplete="off" placeholder="请输入项目"
+                               class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">医院</label>
+                    <div class="layui-input-block">
+                        <select id="hospital" name="hospital" lay-filter="buildingFilter" lay-verify="title">
+
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">项目</label>
+                    <div class="layui-input-block">
+                        <select id="item" name="item" lay-verify="title">
+
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">提成</label>
+                    <div class="layui-input-block">
+                        <input type="text" lay-verify="number" id="commission" name="commission" lay-verify="title" autocomplete="off"
+                               placeholder="请输入提成，单位百分比，最大值：100" onblur="value=zhzs(this.value)" class="layui-input">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="bottom">
+        <div class="button-container">
+            <button type="submit" class="pear-btn pear-btn-primary pear-btn-sm" lay-submit=""
+                    lay-filter="update">
+                <i class="layui-icon layui-icon-ok"></i>
+                提交
+            </button>
+            <button type="reset" class="pear-btn pear-btn-sm">
+                <i class="layui-icon layui-icon-refresh"></i>
+                重置
+            </button>
+        </div>
+    </div>
+</form>
+<script src="../../../../component/layui/layui.js"></script>
+<script src="../../../../component/pear/pear.js"></script>
+<script src="../../../../component/utils/utils.js"></script>
+<script>
+    layui.use(['form', 'jquery', 'popup'], function (obj) {
+        let form = layui.form;
+        let $ = layui.jquery;
+        var popup = layui.popup;
+
+        //获取参数
+        var currentUrl = location.href;
+        var lastIndexOf = currentUrl.lastIndexOf("?");
+        var substr = currentUrl.substr(lastIndexOf+1, currentUrl.length);
+
+        var split = substr.split("&");
+
+        var hospitalIdStr = split[0];
+        var hospitalIdL = hospitalIdStr.split("=");
+        var hospitalId = hospitalIdL[1];
+
+        var itemIdStr = split[1];
+        var itemIdL = itemIdStr.split("=");
+        var itemId = itemIdL[1];
+
+        var hospitalQuery = {
+            page: "1",
+            limit: "100"
+        }
+        $.ajax({
+            url: '/config/hospital/getList',
+            data: hospitalQuery,
+            dataType: 'JSON',
+            method: "GET",
+            success: function (result) {
+                console.log(result);
+                if (result.code === 0) {
+                    var list = result.data;
+                    var opt = "<option value=''></option>";
+                    for (var i = 0; i < list.length; i++) {
+                        if (hospitalId == list[i].id) {
+                            opt += "<option selected value=\"" + list[i].id + "\">" + list[i].hospitalName + "</option>";
+                        } else {
+                            opt += "<option value=\"" + list[i].id + "\">" + list[i].hospitalName + "</option>";
+                        }
+                    }
+                    $("#hospital").html(opt);
+                    form.render('select');
+                } else {
+                    notice.warning("获取医院列表失败:" + result.message);
+                }
+            }
+        });
+
+        $.ajax({
+            url: '/config/item/getListByHid?hid=' + hospitalId,
+            dataType: 'JSON',
+            method: "GET",
+            success: function (result) {
+                if (result === null || result.length <= 0) {
+                    notice.warning("该医院未配置项目");
+                } else {
+                    var opt = "<option value=''></option>";
+                    for (var i = 0; i < result.length; i++) {
+                        if (itemId == result[i].id) {
+                            opt += "<option selected value=\"" + result[i].id + "\">" + result[i].itemName + "</option>";
+                        } else {
+                            opt += "<option value=\"" + result[i].id + "\">" + result[i].itemName + "</option>";
+                        }
+                    }
+                    $("#item").html(opt);
+                    form.render('select');
+                }
+            }
+        });
+
+        // 联动
+        form.on('select(buildingFilter)', function(data){
+            console.log("getItemList:"+data)
+            var hospitalId = data.value;
+            $("#itemId").empty();
+            $.ajax({
+                url: '/config/item/getListByHid?hid=' + hospitalId,
+                dataType: 'JSON',
+                method: "GET",
+                success: function (result) {
+                    if (result === null || result.length <= 0) {
+                        notice.warning("该医院未配置项目");
+                    } else {
+                        var opt = "<option value=\"\"></option>";
+                        for (var i = 0; i < result.length; i++) {
+                            opt += "<option value=\"" + result[i].id + "\">" + result[i].itemName + "</option>";
+                        }
+                        $("#item").html(opt);
+                        form.render('select');
+                    }
+                }
+            });
+        });
+
+        form.on('submit(update)', function (data) {
+            var formData = {
+                id: $("#user_id").val(),
+                name: $("#name").val(),
+                phone: $("#phone").val(),
+                hospitalId: $("#hospital").val(),
+                itemId: $("#item").val(),
+                commission: $("#commission").val(),
+            }
+            $.ajax({
+                url: '/config/user/commission/update',
+                data: formData,
+                dataType: 'JSON',
+                method: "POST",
+                success: function (result) {
+                    if (result.code === 0) {
+                        popup.success('修改成功', function () {
+                            parent.layer.close(parent.layer.getFrameIndex(window.name));//关闭当前页
+                            parent.layui.table.reload("list-table");
+                        });
+                    } else {
+                        popup.success('修改失败' + result.message, function () {
+                            parent.layer.close(parent.layer.getFrameIndex(window.name));//关闭当前页
+                            parent.layui.table.reload("list-table");
+                        });
+                    }
+                }
+            })
+            return false;
+        });
+    })
+</script>
+<script>
+</script>
+</body>
+</html>

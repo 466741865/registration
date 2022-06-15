@@ -407,7 +407,7 @@
 		}]
 	},
 	{
-		"id": "app",
+		"id": "patient",
 		"title": "预约管理",
 		"icon": "layui-icon layui-icon-app",
 		"type": 0,
@@ -420,5 +420,37 @@
 			"openType": "_iframe",
 			"href": "views/business/patient/patientManager.html"
 		}]
+	},
+	{
+		"id": "config",
+		"title": "配置管理",
+		"icon": "layui-icon layui-icon-app",
+		"type": 0,
+		"href": "",
+		"children": [{
+			"id": 1101,
+			"title": "医院管理",
+			"icon": "layui-icon layui-icon-user",
+			"type": 1,
+			"openType": "_iframe",
+			"href": "views/business/config/hospital/hospitalManager.html"
+		},
+		{
+			"id": 1102,
+			"title": "项目管理",
+			"icon": "layui-icon layui-icon-user",
+			"type": 1,
+			"openType": "_iframe",
+			"href": "views/business/config/item/itemManager.html"
+		},
+		{
+			"id": 1103,
+			"title": "人员管理",
+			"icon": "layui-icon layui-icon-user",
+			"type": 1,
+			"openType": "_iframe",
+			"href": "views/business/config/commission/userCommissionManager.html"
+		}
+		]
 	}
 ]

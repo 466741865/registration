@@ -4,6 +4,7 @@ import com.yidian.registration.dao.TConfigHospitalDao;
 import com.yidian.registration.entity.TConfigHospital;
 import com.yidian.registration.enums.UserStatusEnum;
 import com.yidian.registration.service.IConfigHospitalService;
+import com.yidian.registration.utils.DateBuilder;
 import com.yidian.registration.vo.PageVo;
 import com.yidian.registration.vo.config.hospital.ConfigHospitalAddVo;
 import com.yidian.registration.vo.config.hospital.ConfigHospitalDetailVo;
@@ -35,22 +36,22 @@ public class ConfigHospitalServiceImpl implements IConfigHospitalService {
 
 
     @Override
-    public PageVo<List<ConfigHospitalDetailVo>> getHospitalConfigList(String name, Integer pageNo, Integer pageSize) {
-        logger.info("getHospitalConfigList start, name:{}, pageNo:{}, pageSize:{}", name, pageNo, pageSize);
+    public PageVo<List<ConfigHospitalDetailVo>> getHospitalConfigList(String hospitalName, Integer pageNo, Integer pageSize) {
+        logger.info("getHospitalConfigList start, hospitalName:{}, pageNo:{}, pageSize:{}", hospitalName, pageNo, pageSize);
         PageVo<List<ConfigHospitalDetailVo>> pageVo = new PageVo<>();
         pageVo.setCount(0);
         pageVo.setData(Collections.emptyList());
         pageVo.setPageNum(pageNo);
         pageVo.setPageSize(pageSize);
         //查询总量
-        int configListTotal = configHospitalDao.selectHospitalListTotal(name);
+        int configListTotal = configHospitalDao.selectHospitalListTotal(hospitalName);
         if (configListTotal <= 0) {
             return pageVo;
         }
         pageVo.setCount(configListTotal);
 
         int index = (pageNo - 1) * pageSize;
-        List<TConfigHospital> configList = configHospitalDao.selectHospitalConfigList(name, index, pageSize);
+        List<TConfigHospital> configList = configHospitalDao.selectHospitalConfigList(hospitalName, index, pageSize);
         if (CollectionUtils.isEmpty(configList)) {
             return pageVo;
         }
@@ -60,7 +61,7 @@ public class ConfigHospitalServiceImpl implements IConfigHospitalService {
             list.add(vo);
         }
         pageVo.setData(list);
-        logger.info("getHospitalConfigList start, name:{}, pageNo:{}, pageSize:{}, pageVo:{}", name, pageNo, pageSize, pageVo);
+        logger.info("getHospitalConfigList start, hospitalName:{}, pageNo:{}, pageSize:{}, pageVo:{}", hospitalName, pageNo, pageSize, pageVo);
         return pageVo;
     }
 
@@ -73,9 +74,11 @@ public class ConfigHospitalServiceImpl implements IConfigHospitalService {
     private ConfigHospitalDetailVo entityToVo(TConfigHospital hospital) {
         ConfigHospitalDetailVo vo = new ConfigHospitalDetailVo();
         vo.setId(hospital.getId());
+        vo.setHospitalName(hospital.getHospitalName());
         vo.setBasicSalary(hospital.getBasicSalary());
         vo.setStatus(hospital.getStatus());
-        vo.setCreateTime(hospital.getCreateTime());
+        vo.setCreateTime(DateBuilder.formatDate(hospital.getCreateTime(), DateBuilder.FORMAT_FULL));
+        vo.setUpdateTime(DateBuilder.formatDate(hospital.getUpdateTime(), DateBuilder.FORMAT_FULL));
         return vo;
     }
 
@@ -97,7 +100,7 @@ public class ConfigHospitalServiceImpl implements IConfigHospitalService {
         logger.info("addHospitalConfig start addVo:{}", addVo);
         TConfigHospital hospital = new TConfigHospital();
         hospital.setHospitalName(addVo.getHospitalName());
-        hospital.setBasicSalary(new BigDecimal(addVo.getBasicSalary()));
+        hospital.setBasicSalary(addVo.getBasicSalary());
         hospital.setStatus((byte) UserStatusEnum.ENABLED.getCode());
         int insert = configHospitalDao.insert(hospital);
         logger.info("addHospitalConfig end addVo:{}, insertres:{}", addVo, insert);

@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>人员提成管理</title>
+		<link rel="stylesheet" href="../../../../component/pear/css/pear.css" />
+	</head>
+	<body class="pear-container">
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<form class="layui-form" action="">
+					<div class="layui-form-item">
+						<div class="layi-form-item layui-inline">
+							<label class="layui-form-label">姓名</label>
+							<div class="layui-input-inline">
+								<input type="text" name="name" placeholder="" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item layui-inline">
+							<button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="query">
+								<i class="layui-icon layui-icon-search"></i>
+								查询
+							</button>
+							<button type="reset" class="pear-btn pear-btn-md">
+								<i class="layui-icon layui-icon-refresh"></i>
+								重置
+							</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<table id="list-table" lay-filter="list-table"></table>
+			</div>
+		</div>
+
+		<script type="text/html" id="list-toolbar">
+			<button class="pear-btn pear-btn-primary pear-btn-md" lay-event="add">
+		        <i class="layui-icon layui-icon-add-1"></i>
+		        新增
+		    </button>
+		</script>
+
+		<script type="text/html" id="list-item-bar">
+				<button class="pear-btn pear-btn-primary pear-btn-sm" lay-event="update">编辑</button>
+				<button class="pear-btn pear-btn-primary pear-btn-sm"  lay-event="delete">删除</button>
+		</script>
+
+		<script type="text/html" id="list-item-state">
+			{{#if (d.status == 1) { }}
+				<span>正常</span>
+			{{# }else if(d.status == 0){ }}
+				<span>删除</span>
+			{{# } }}
+		</script>
+		<script type="text/html" id="list-item-type">
+			{{#if (d.type == 1) { }}
+				<span>主</span>
+			{{# }else if(d.type == 2){ }}
+				<span>副</span>
+			{{# } }}
+		</script>
+
+		<script type="text/html" id="user-createTime">
+			{{layui.util.toDateString(d.createTime, 'yyyy-MM-dd')}}
+		</script>
+
+		<script src="../../../../component/layui/layui.js"></script>
+		<script src="../../../../component/pear/pear.js"></script>
+		<script>
+			layui.use(['table', 'form', 'jquery','common', 'popup', 'notice'], function() {
+				let table = layui.table;
+				let form = layui.form;
+				let $ = layui.jquery;
+				let common = layui.common;
+				var popup = layui.popup;
+				var notice = layui.notice;
+
+				let cols = [
+					[{
+							type: 'checkbox'
+						},
+						{
+							title: 'ID',
+							field: 'id',
+							align: 'center',
+							width: 30
+						},
+                        {
+							title: '姓名',
+							field: 'name',
+							align: 'center',
+							width: 120
+						},
+                        {
+                            title: '联系方式',
+                            field: 'phone',
+                            align: 'center',
+							width: 120
+                        },
+						{
+							title: '医院',
+							field: 'hospitalName',
+							align: 'center',
+						},
+                        {
+                            title: '项目',
+                            field: 'itemName',
+                            align: 'center',
+							width: 100
+                        },
+                        {
+                            title: '提成(%)',
+                            field: 'commission',
+                            align: 'center',
+							width: 80
+                        },
+                        {
+                            title: '类型',
+                            field: 'type',
+                            align: 'center',
+							templet: '#list-item-type',
+							width: 60
+                        },
+						{
+							title: '编辑时间',
+							field: 'updateTime',
+							align: 'center'
+						},
+						{
+							title: '状态',
+							field: 'status',
+							align: 'center',
+							templet: '#list-item-state',
+							width: 80
+
+						},
+						{
+							title: '操作',
+							align: 'center',
+							toolbar: '#list-item-bar',
+							width: 200
+						}
+					]
+				]
+
+				table.render({
+					elem: '#list-table',
+					url: '/config/user/commission/getList',
+					page: true,
+					cols: cols,
+					skin: 'line',
+					toolbar: '#list-toolbar',
+					defaultToolbar: [{
+						title: '刷新',
+						layEvent: 'refresh',
+						icon: 'layui-icon-refresh',
+					}, 'filter', 'print', 'exports']
+				});
+
+				table.on('tool(list-table)', function(obj) {
+					if (obj.event === 'update') {
+						window.update(obj);
+					} else if (obj.event === 'delete') {
+						window.delete(obj);
+					}
+				});
+
+				table.on('toolbar(list-table)', function(obj) {
+					if (obj.event === 'add') {
+						window.add();
+					} else if (obj.event === 'refresh') {
+						window.refresh();
+					} else if (obj.event === 'batchRemove') {
+						window.batchRemove(obj);
+					}
+				});
+
+				form.on('submit(query)', function(data) {
+					table.reload('list-table', {
+						where: data.field
+					})
+					return false;
+				});
+
+				form.on('switch(user-enable)', function(obj) {
+					layer.tips(this.value + ' ' + this.name + '：' + obj.elem.checked, obj.othis);
+				});
+
+				window.add = function() {
+					layer.open({
+						type: 2,
+						title: '添加用户',
+						shade: 0.1,
+						area: [common.isModile()?'100%':'500px', common.isModile()?'100%':'500px'],
+						content: 'commission-add.html'
+					});
+				}
+				window.update = function (obj) {
+					layer.open({
+						type: 2,
+						title: '编辑人员提成信息',
+						shade: 0.1,
+						area: [common.isModile() ? '100%' : '500px', common.isModile() ? '100%' : '500px'],
+						content: "commission-update.html?hospitalId="+obj.data.hospitalId+"&itemId="+obj.data.itemId,
+						success: function (layero, index) {
+							var body = layer.getChildFrame('body', index);
+							body.find('#item_id').val(obj.data.id)
+							//请求详情
+							$.getJSON("/config/user/commission/getInfo", "uid=" + obj.data.id, function (detail) {
+								console.log(detail);
+								if (detail.code !== 0) {
+									layer.alert("获取详情失败", "提示信息", function (index) {
+										layer.close(index);
+									})
+								} else {
+									body.find('#user_id').val(obj.data.id)
+									body.find('#name').val(detail.data.name);
+									body.find('#phone').val(detail.data.phone);
+									body.find('#commission').val(detail.data.commission);
+								}
+							});
+						}
+					});
+				}
+
+
+				window.delete = function(obj) {
+					layer.confirm("确定要删除？", {icon:3,title:'提示'}, function (index) {
+						console.log(obj.data.id);
+						console.log(obj.data.hospitalName);
+						$.ajax({
+							type: 'GET',
+							url: '/config/user/commission/delete?uid=' + obj.data.id,
+							success: function (data) {
+								if (data.code === 0) {
+									notice.success("删除成功");
+									layui.table.reload("list-table");
+								}else {
+									notice.error("删除失败："+data.message);
+								}
+							}
+					     });
+						layer.close(index);
+					});
+				}
+				window.refresh = function(param) {
+					table.reload('list-table');
+				}
+			})
+		</script>
+	</body>
+</html>

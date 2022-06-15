@@ -33,18 +33,18 @@ public class ConfigHospitalController {
     private IConfigHospitalService configHospitalService;
 
     @RequestMapping(value = "/getList", produces = "application/json;charset=UTF-8")
-    public PageVo<List<ConfigHospitalDetailVo>> getHospitalList(String name, Integer page, Integer limit) {
-        logger.info("[getHospitalList]获取单位列表,start，name={}, pageNo={}, pageSize={}", name, page, limit);
+    public PageVo<List<ConfigHospitalDetailVo>> getHospitalList(String hospitalName, Integer page, Integer limit) {
+        logger.info("[getHospitalList]获取单位列表,start，hospitalName={}, pageNo={}, pageSize={}", hospitalName, page, limit);
         if (Tools.isNull(page) || page <= 0) {
             page = Constants.DEFAULT_PAGE_NO;
         }
         if (Tools.isNull(limit) || limit <= 0) {
             limit = Constants.DEFAULT_PAGE_SIZE;
         }
-        PageVo<List<ConfigHospitalDetailVo>> pageVo = configHospitalService.getHospitalConfigList(name, page, limit);
+        PageVo<List<ConfigHospitalDetailVo>> pageVo = configHospitalService.getHospitalConfigList(hospitalName, page, limit);
         pageVo.setPageNum(page);
         pageVo.setPageSize(limit);
-        logger.info("[getHospitalList]获取单位列表,end，name={}, pageNo={}, pageSize={}, res:{}", name, page, limit, JSON.toJSON(pageVo));
+        logger.info("[getHospitalList]获取单位列表,end，hospitalName={}, pageNo={}, pageSize={}, res:{}", hospitalName, page, limit, JSON.toJSON(pageVo));
         return pageVo;
 
     }
@@ -55,7 +55,7 @@ public class ConfigHospitalController {
      * @param addVo 添加单位
      * @return
      */
-    @PostMapping(value = "/add", produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/add", produces = "application/json;charset=UTF-8")
     public ResultVo<Boolean> addHospital(ConfigHospitalAddVo addVo) {
         logger.info("[addHospital]添加单位，userAddVo={}", JSON.toJSON(addVo));
         if (Tools.isNull(addVo) || Tools.isNull(addVo.getHospitalName()) ||
@@ -92,7 +92,7 @@ public class ConfigHospitalController {
      * @param updateVo
      * @return
      */
-    @PostMapping(value = "/update", produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/update", produces = "application/json;charset=UTF-8")
     public ResultVo<Boolean> updateInfo(ConfigHospitalUpdateVo updateVo) {
         logger.info("[updateInfo]修改信息，updateVo={}", updateVo);
         if (Tools.isNull(updateVo) || updateVo.getId() <= 0) {

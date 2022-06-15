@@ -16,10 +16,10 @@ public interface IConfigItemService {
 
     /**
      * 查询配置列表
-     * @param name
+     * @param itemName
      * @return
      */
-    PageVo<List<ConfigItemDetailVo>> getItemConfigList(String name, Integer pageNo, Integer pageSize);
+    PageVo<List<ConfigItemDetailVo>> getItemConfigList(String itemName, Integer pageNo, Integer pageSize);
 
     /**
      * 查询配置详情

@@ -13,18 +13,18 @@ public interface TConfigHospitalDao {
     /**
      * 查询list总量
      *
-     * @param name
+     * @param hospitalName
      * @return
      */
-    int selectHospitalListTotal(@Param("name") String name);
+    int selectHospitalListTotal(@Param("hospitalName") String hospitalName);
 
     /**
      * 查询list
      *
-     * @param name
+     * @param hospitalName
      * @return
      */
-    List<TConfigHospital> selectHospitalConfigList(@Param("name") String name, @Param("index") int index, @Param("pageSize") int pageSize);
+    List<TConfigHospital> selectHospitalConfigList(@Param("hospitalName") String hospitalName, @Param("index") int index, @Param("pageSize") int pageSize);
 
     int updateHospitalConfig(TConfigHospital hospital);
 

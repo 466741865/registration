@@ -34,18 +34,18 @@ public class ConfigItemController {
     private IConfigItemService configItemService;
 
     @RequestMapping(value = "/getList", produces = "application/json;charset=UTF-8")
-    public PageVo<List<ConfigItemDetailVo>> getItemList(String name, Integer page, Integer limit) {
-        logger.info("[getItemList]获取项目列表,start，name={}, pageNo={}, pageSize={}", name, page, limit);
+    public PageVo<List<ConfigItemDetailVo>> getItemList(String itemName, Integer page, Integer limit) {
+        logger.info("[getItemList]获取项目列表,start，itemName={}, pageNo={}, pageSize={}", itemName, page, limit);
         if (Tools.isNull(page) || page <= 0) {
             page = Constants.DEFAULT_PAGE_NO;
         }
         if (Tools.isNull(limit) || limit <= 0) {
             limit = Constants.DEFAULT_PAGE_SIZE;
         }
-        PageVo<List<ConfigItemDetailVo>> pageVo = configItemService.getItemConfigList(name, page, limit);
+        PageVo<List<ConfigItemDetailVo>> pageVo = configItemService.getItemConfigList(itemName, page, limit);
         pageVo.setPageNum(page);
         pageVo.setPageSize(limit);
-        logger.info("[getItemList]获取项目列表,end，name={}, pageNo={}, pageSize={}, res:{}", name, page, limit, JSON.toJSON(pageVo));
+        logger.info("[getItemList]获取项目列表,end，itemName={}, pageNo={}, pageSize={}, res:{}", itemName, page, limit, JSON.toJSON(pageVo));
         return pageVo;
     }
 
@@ -55,7 +55,7 @@ public class ConfigItemController {
      * @param addVo 添加项目
      * @return
      */
-    @PostMapping(value = "/add", produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/add", produces = "application/json;charset=UTF-8")
     public ResultVo<Boolean> addItem(ConfigItemAddVo addVo) {
         logger.info("[addItem]添加项目，userAddVo={}", JSON.toJSON(addVo));
         if (Tools.isNull(addVo) || Tools.isNull(addVo.getItemName())

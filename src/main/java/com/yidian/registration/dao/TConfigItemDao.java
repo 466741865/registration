@@ -13,18 +13,18 @@ public interface TConfigItemDao {
     /**
      * 查询list总量
      *
-     * @param name
+     * @param itemName
      * @return
      */
-    int selectItemListTotal(@Param("name") String name);
+    int selectItemListTotal(@Param("itemName") String itemName);
 
     /**
      * 查询list
      *
-     * @param name
+     * @param itemName
      * @return
      */
-    List<TConfigItem> selectItemConfigList(@Param("name") String name, @Param("index") int index, @Param("pageSize") int pageSize);
+    List<TConfigItem> selectItemConfigList(@Param("itemName") String itemName, @Param("index") int index, @Param("pageSize") int pageSize);
 
     int updateItemConfig(TConfigItem hospital);
 

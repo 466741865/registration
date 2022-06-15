@@ -16,10 +16,10 @@ public interface IConfigHospitalService {
 
     /**
      * 查询配置列表
-     * @param name
+     * @param hospitalName
      * @return
      */
-    PageVo<List<ConfigHospitalDetailVo>> getHospitalConfigList(String name, Integer pageNo, Integer pageSize);
+    PageVo<List<ConfigHospitalDetailVo>> getHospitalConfigList(String hospitalName, Integer pageNo, Integer pageSize);
 
     /**
      * 查询医院详情

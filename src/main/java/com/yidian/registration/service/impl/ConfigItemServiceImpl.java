@@ -6,6 +6,7 @@ import com.yidian.registration.entity.TConfigHospital;
 import com.yidian.registration.entity.TConfigItem;
 import com.yidian.registration.enums.UserStatusEnum;
 import com.yidian.registration.service.IConfigItemService;
+import com.yidian.registration.utils.DateBuilder;
 import com.yidian.registration.vo.PageVo;
 import com.yidian.registration.vo.config.item.ConfigItemAddVo;
 import com.yidian.registration.vo.config.item.ConfigItemDetailVo;
@@ -40,22 +41,22 @@ public class ConfigItemServiceImpl implements IConfigItemService {
 
 
     @Override
-    public PageVo<List<ConfigItemDetailVo>> getItemConfigList(String name, Integer pageNo, Integer pageSize) {
-        logger.info("getItemConfigList start, name:{}, pageNo:{}, pageSize:{}", name, pageNo, pageSize);
+    public PageVo<List<ConfigItemDetailVo>> getItemConfigList(String itemName, Integer pageNo, Integer pageSize) {
+        logger.info("getItemConfigList start, itemName:{}, pageNo:{}, pageSize:{}", itemName, pageNo, pageSize);
         PageVo<List<ConfigItemDetailVo>> pageVo = new PageVo<>();
         pageVo.setCount(0);
         pageVo.setData(Collections.emptyList());
         pageVo.setPageNum(pageNo);
         pageVo.setPageSize(pageSize);
         //查询总量
-        int configListTotal = configItemDao.selectItemListTotal(name);
+        int configListTotal = configItemDao.selectItemListTotal(itemName);
         if (configListTotal <= 0) {
             return pageVo;
         }
         pageVo.setCount(configListTotal);
 
         int index = (pageNo - 1) * pageSize;
-        List<TConfigItem> configList = configItemDao.selectItemConfigList(name, index, pageSize);
+        List<TConfigItem> configList = configItemDao.selectItemConfigList(itemName, index, pageSize);
         if (CollectionUtils.isEmpty(configList)) {
             return pageVo;
         }
@@ -65,7 +66,7 @@ public class ConfigItemServiceImpl implements IConfigItemService {
             list.add(vo);
         }
         pageVo.setData(list);
-        logger.info("getItemConfigList start, name:{}, pageNo:{}, pageSize:{}, pageVo:{}", name, pageNo, pageSize, pageVo);
+        logger.info("getItemConfigList start, itemName:{}, pageNo:{}, pageSize:{}, pageVo:{}", itemName, pageNo, pageSize, pageVo);
         return pageVo;
     }
 
@@ -92,7 +93,8 @@ public class ConfigItemServiceImpl implements IConfigItemService {
         vo.setHospitalId(item.getHospitalId());
         vo.setCommission(item.getCommission());
         vo.setStatus(item.getStatus());
-        vo.setCreateTime(item.getCreateTime());
+        vo.setCreateTime(DateBuilder.formatDate(item.getCreateTime(), DateBuilder.FORMAT_FULL));
+        vo.setUpdateTime(DateBuilder.formatDate(item.getUpdateTime(), DateBuilder.FORMAT_FULL));
         return vo;
     }
 
@@ -128,7 +130,6 @@ public class ConfigItemServiceImpl implements IConfigItemService {
         if(Objects.isNull(item)){
             return false;
         }
-        item.setItemName(updateVo.getItemName());
         item.setItemName(updateVo.getItemName());
         item.setHospitalId(updateVo.getHospitalId());
         item.setCommission(new BigDecimal(updateVo.getCommission()));

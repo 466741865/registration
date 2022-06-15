@@ -26,13 +26,20 @@
     <select id="selectHospitalListTotal" resultType="int">
         select count(1)
         from t_config_hospital
-        where `status` = 1 and hospital_name like concat('%', #{name}, '%')
+        where `status` = 1
+        <if test="hospitalName != null and hospitalName != ''">
+            and hospital_name like concat('%', #{hospitalName}, '%')
+        </if>
     </select>
 
     <select id="selectHospitalConfigList" resultMap="BaseResultMap">
         select *
         from t_config_hospital
-        where `status` = 1 and hospital_name like concat('%', #{name}, '%')
+        where `status` = 1
+        <if test="hospitalName != null and hospitalName != ''">
+            and hospital_name like concat('%', #{hospitalName}, '%')
+        </if>
+        order by update_time desc
         limit #{index}, #{pageSize}
     </select>
 

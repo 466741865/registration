@@ -55,11 +55,12 @@ public class ConfigUserCommissionController {
      * @param addVo 添加用户
      * @return
      */
-    @PostMapping(value = "/add", produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/add", produces = "application/json;charset=UTF-8")
     public ResultVo<Boolean> addUserCommission(ConfigUserCommissionAddVo addVo) {
         logger.info("[addUserCommission]添加用户，userAddVo={}", JSON.toJSON(addVo));
         if (Tools.isNull(addVo) || Tools.isNull(addVo.getName())
                 || Tools.isNull(addVo.getCommission())
+                || Tools.isNull(addVo.getHospitalId())
                 || Tools.isNull(addVo.getItemId())) {
             logger.info("[addUserCommission]添加用户，参数存在空值");
             return new ResultVo<>(-1, "请填写完整的信息");

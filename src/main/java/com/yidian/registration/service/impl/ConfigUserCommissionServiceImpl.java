@@ -1,11 +1,14 @@
 package com.yidian.registration.service.impl;
 
+import com.yidian.registration.dao.TConfigHospitalDao;
 import com.yidian.registration.dao.TConfigItemDao;
 import com.yidian.registration.dao.TConfigUserCommissionDao;
+import com.yidian.registration.entity.TConfigHospital;
 import com.yidian.registration.entity.TConfigItem;
 import com.yidian.registration.entity.TConfigUserCommission;
 import com.yidian.registration.enums.UserStatusEnum;
 import com.yidian.registration.service.IConfigUserCommissionService;
+import com.yidian.registration.utils.DateBuilder;
 import com.yidian.registration.vo.PageVo;
 import com.yidian.registration.vo.config.user.ConfigUserCommissionAddVo;
 import com.yidian.registration.vo.config.user.ConfigUserCommissionDeatilVo;
@@ -38,6 +41,9 @@ public class ConfigUserCommissionServiceImpl implements IConfigUserCommissionSer
     @Resource
     private TConfigItemDao configItemDao;
 
+    @Resource
+    private TConfigHospitalDao configHospitalDao;
+
 
     @Override
     public PageVo<List<ConfigUserCommissionDeatilVo>> getUserCommissionConfigList(String name, Integer pageNo, Integer pageSize) {
@@ -69,12 +75,17 @@ public class ConfigUserCommissionServiceImpl implements IConfigUserCommissionSer
         return pageVo;
     }
 
-    private ConfigUserCommissionDeatilVo setUserCommissionVo(TConfigUserCommission commission){
+    private ConfigUserCommissionDeatilVo setUserCommissionVo(TConfigUserCommission commission) {
         ConfigUserCommissionDeatilVo vo = entityToVo(commission);
         //查询项目信息
         TConfigItem item = configItemDao.selectInfoById(commission.getItemId());
-        if(Objects.nonNull(item)){
+        if (Objects.nonNull(item)) {
             vo.setItemName(item.getItemName());
+        }
+        //查询单位信息
+        TConfigHospital hospital = configHospitalDao.selectInfoById(item.getHospitalId());
+        if (Objects.nonNull(hospital)) {
+            vo.setHospitalName(hospital.getHospitalName());
         }
         return vo;
     }
@@ -88,13 +99,15 @@ public class ConfigUserCommissionServiceImpl implements IConfigUserCommissionSer
     private ConfigUserCommissionDeatilVo entityToVo(TConfigUserCommission userCommission) {
         ConfigUserCommissionDeatilVo vo = new ConfigUserCommissionDeatilVo();
         vo.setId(userCommission.getId());
+        vo.setHospitalId(userCommission.getHospitalId());
         vo.setItemId(userCommission.getItemId());
         vo.setName(userCommission.getName());
         vo.setPhone(userCommission.getPhone());
         vo.setType(userCommission.getType());
         vo.setCommission(userCommission.getCommission().toString());
         vo.setStatus(userCommission.getStatus());
-        vo.setCreateTime(userCommission.getCreateTime());
+        vo.setCreateTime(DateBuilder.formatDate(userCommission.getCreateTime(), DateBuilder.FORMAT_FULL));
+        vo.setUpdateTime(DateBuilder.formatDate(userCommission.getUpdateTime(), DateBuilder.FORMAT_FULL));
         return vo;
     }
 
@@ -117,9 +130,10 @@ public class ConfigUserCommissionServiceImpl implements IConfigUserCommissionSer
         TConfigUserCommission userCommission = new TConfigUserCommission();
         userCommission.setName(addVo.getName());
         userCommission.setPhone(addVo.getPhone());
+        userCommission.setHospitalId(addVo.getHospitalId());
         userCommission.setItemId(addVo.getItemId());
         userCommission.setCommission(new BigDecimal(addVo.getCommission()));
-        userCommission.setType(addVo.getType());
+        userCommission.setType((byte) 2);
         userCommission.setStatus((byte) UserStatusEnum.ENABLED.getCode());
         int insert = configUserCommissionDao.insert(userCommission);
         logger.info("addUserCommissionConfig end addVo:{}, insertres:{}", addVo, insert);
@@ -129,12 +143,13 @@ public class ConfigUserCommissionServiceImpl implements IConfigUserCommissionSer
     @Override
     public boolean updateUserCommissionConfig(ConfigUserCommissionUpdateVo updateVo) {
         TConfigUserCommission userCommission = configUserCommissionDao.selectInfoById(updateVo.getId());
-        if(Objects.isNull(userCommission)){
+        if (Objects.isNull(userCommission)) {
             return false;
         }
         userCommission.setName(updateVo.getName());
         userCommission.setPhone(updateVo.getPhone());
         userCommission.setCommission(new BigDecimal(updateVo.getCommission()));
+        userCommission.setHospitalId(updateVo.getHospitalId());
         userCommission.setItemId(updateVo.getItemId());
         userCommission.setType(updateVo.getType());
         userCommission.setStatus(updateVo.getStatus());

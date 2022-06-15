@@ -7,11 +7,11 @@ public class ConfigUserCommissionAddVo {
 
     private String phone;
 
+    private Long hospitalId;
+
     private Long itemId;
 
     private String commission;
-
-    private Byte type;
 
     public String getName() {
         return name;
@@ -27,6 +27,14 @@ public class ConfigUserCommissionAddVo {
 
     public void setPhone(String phone) {
         this.phone = phone == null ? null : phone.trim();
+    }
+
+    public Long getHospitalId() {
+        return hospitalId;
+    }
+
+    public void setHospitalId(Long hospitalId) {
+        this.hospitalId = hospitalId;
     }
 
     public Long getItemId() {
@@ -45,14 +53,6 @@ public class ConfigUserCommissionAddVo {
         this.commission = commission;
     }
 
-    public Byte getType() {
-        return type;
-    }
-
-    public void setType(Byte type) {
-        this.type = type;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -60,9 +60,9 @@ public class ConfigUserCommissionAddVo {
         sb.append(" [");
         sb.append(", name=").append(name);
         sb.append(", phone=").append(phone);
+        sb.append(", hospitalId=").append(hospitalId);
         sb.append(", itemId=").append(itemId);
         sb.append(", commission=").append(commission);
-        sb.append(", type=").append(type);
         sb.append("]");
         return sb.toString();
     }

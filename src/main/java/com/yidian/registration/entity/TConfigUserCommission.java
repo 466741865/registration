@@ -11,6 +11,8 @@ public class TConfigUserCommission implements Serializable {
 
     private String phone;
 
+    private Long hospitalId;
+
     private Long itemId;
 
     private BigDecimal commission;
@@ -47,6 +49,14 @@ public class TConfigUserCommission implements Serializable {
 
     public void setPhone(String phone) {
         this.phone = phone == null ? null : phone.trim();
+    }
+
+    public Long getHospitalId() {
+        return hospitalId;
+    }
+
+    public void setHospitalId(Long hospitalId) {
+        this.hospitalId = hospitalId;
     }
 
     public Long getItemId() {
@@ -106,6 +116,7 @@ public class TConfigUserCommission implements Serializable {
         sb.append(", id=").append(id);
         sb.append(", name=").append(name);
         sb.append(", phone=").append(phone);
+        sb.append(", hospitalId=").append(hospitalId);
         sb.append(", itemId=").append(itemId);
         sb.append(", commission=").append(commission);
         sb.append(", type=").append(type);

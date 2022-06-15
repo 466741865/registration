@@ -10,6 +10,10 @@ public class ConfigUserCommissionDeatilVo {
 
     private String phone;
 
+    private Long hospitalId;
+
+    private String hospitalName;
+
     private Long itemId;
 
     private String itemName;
@@ -20,9 +24,9 @@ public class ConfigUserCommissionDeatilVo {
 
     private Byte status;
 
-    private Date createTime;
+    private String createTime;
 
-    private Date updateTime;
+    private String updateTime;
 
     public Long getId() {
         return id;
@@ -46,6 +50,22 @@ public class ConfigUserCommissionDeatilVo {
 
     public void setPhone(String phone) {
         this.phone = phone == null ? null : phone.trim();
+    }
+
+    public Long getHospitalId() {
+        return hospitalId;
+    }
+
+    public void setHospitalId(Long hospitalId) {
+        this.hospitalId = hospitalId;
+    }
+
+    public String getHospitalName() {
+        return hospitalName;
+    }
+
+    public void setHospitalName(String hospitalName) {
+        this.hospitalName = hospitalName;
     }
 
     public Long getItemId() {
@@ -88,19 +108,19 @@ public class ConfigUserCommissionDeatilVo {
         this.status = status;
     }
 
-    public Date getCreateTime() {
+    public String getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
 
-    public Date getUpdateTime() {
+    public String getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(Date updateTime) {
+    public void setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
     }
 
@@ -112,6 +132,8 @@ public class ConfigUserCommissionDeatilVo {
         sb.append(", id=").append(id);
         sb.append(", name=").append(name);
         sb.append(", phone=").append(phone);
+        sb.append(", hospitalId=").append(hospitalId);
+        sb.append(", hospitalName=").append(hospitalName);
         sb.append(", itemId=").append(itemId);
         sb.append(", itemName=").append(itemName);
         sb.append(", commission=").append(commission);

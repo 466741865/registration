@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../../../../component/pear/css/pear.css"/>
+</head>
+<body>
+<form class="layui-form" action="">
+    <div class="mainBox">
+        <div class="main-container">
+            <div class="main-container">
+                <div class="layui-form-item">
+                    <input type="hidden" id="hospital_id" name="hospital_id">
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">医院</label>
+                    <div class="layui-input-block">
+                        <input type="text" id="hospital_name" name="hospitalName" lay-verify="title" autocomplete="off" placeholder="请输入医院"
+                               class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">底薪</label>
+                    <div class="layui-input-block">
+                        <input type="text" lay-verify="number" id="basic_salary" name="basicSalary" lay-verify="title" autocomplete="off" placeholder="请输入底薪"
+                               onblur="value=zhzs(this.value)" class="layui-input">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="bottom">
+        <div class="button-container">
+            <button type="submit" class="pear-btn pear-btn-primary pear-btn-sm" lay-submit=""
+                    lay-filter="update">
+                <i class="layui-icon layui-icon-ok"></i>
+                提交
+            </button>
+            <button type="reset" class="pear-btn pear-btn-sm">
+                <i class="layui-icon layui-icon-refresh"></i>
+                重置
+            </button>
+        </div>
+    </div>
+</form>
+<script src="../../../../component/layui/layui.js"></script>
+<script src="../../../../component/pear/pear.js"></script>
+<script src="../../../../component/utils/utils.js"></script>
+
+<script>
+    layui.use(['form', 'jquery', 'popup'], function (obj) {
+        let form = layui.form;
+        let $ = layui.jquery;
+        var popup = layui.popup;
+        var hid = $("#hospital_id").val();
+
+        form.on('submit(update)', function (data) {
+            var formData = {
+                id:$("#hospital_id").val(),
+                hospitalName:$("#hospital_name").val(),
+                basicSalary:$("#basic_salary").val(),
+            }
+            $.ajax({
+                url: '/config/hospital/update',
+                data: formData,
+                dataType: 'JSON',
+                method: "POST",
+                success: function (result) {
+                    if (result.code === 0) {
+                        popup.success('修改成功', function() {
+                            parent.layer.close(parent.layer.getFrameIndex(window.name));//关闭当前页
+                            parent.layui.table.reload("list-table");
+                        });
+                    } else {
+                        popup.success('修改失败' + result.message, function () {
+                            parent.layer.close(parent.layer.getFrameIndex(window.name));//关闭当前页
+                            parent.layui.table.reload("list-table");
+                        });
+                    }
+                }
+            })
+            return false;
+        });
+    })
+</script>
+<script>
+</script>
+</body>
+</html>

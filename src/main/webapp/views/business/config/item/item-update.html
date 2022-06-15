@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../../../../component/pear/css/pear.css"/>
+</head>
+<body>
+<form class="layui-form" action="">
+    <div class="mainBox">
+        <div class="main-container">
+            <div class="main-container">
+                <div class="layui-form-item">
+                    <input type="hidden" id="item_id" name="item_id">
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">医院</label>
+                    <div class="layui-input-block">
+                        <select id="hospital" name="hospital" lay-verify="title">
+
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">项目</label>
+                    <div class="layui-input-block">
+                        <input type="text" id="itemName" name="itemName" lay-verify="title" autocomplete="off" placeholder="请输入项目"
+                               class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">提成</label>
+                    <div class="layui-input-block">
+                        <input type="text" lay-verify="number" id="commission" name="commission" lay-verify="title" autocomplete="off"
+                               placeholder="请输入提成，单位百分比，最大值：100" onblur="value=zhzs(this.value)" class="layui-input">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="bottom">
+        <div class="button-container">
+            <button type="submit" class="pear-btn pear-btn-primary pear-btn-sm" lay-submit=""
+                    lay-filter="update">
+                <i class="layui-icon layui-icon-ok"></i>
+                提交
+            </button>
+            <button type="reset" class="pear-btn pear-btn-sm">
+                <i class="layui-icon layui-icon-refresh"></i>
+                重置
+            </button>
+        </div>
+    </div>
+</form>
+<script src="../../../../component/layui/layui.js"></script>
+<script src="../../../../component/pear/pear.js"></script>
+<script src="../../../../component/utils/utils.js"></script>
+<script>
+    layui.use(['form', 'jquery', 'popup'], function (obj) {
+        let form = layui.form;
+        let $ = layui.jquery;
+        var popup = layui.popup;
+
+        //获取参数
+        var currentUrl = location.href;
+        var lastIndexOf = currentUrl.lastIndexOf("?");
+        var substr = currentUrl.substr(lastIndexOf+1, currentUrl.length);
+        var split = substr.split("=");
+        var hospitalId = split[1];
+
+        var hospitalQuery = {
+            page: "1",
+            limit: "100"
+        }
+        $.ajax({
+            url: '/config/hospital/getList',
+            data: hospitalQuery,
+            dataType: 'JSON',
+            method: "GET",
+            success: function (result) {
+                if (result.code === 0) {
+                    var list = result.data;
+                    var opt = "<option value=''></option>";
+                    for (var i = 0; i < list.length; i++) {
+                        if (hospitalId == list[i].id) {
+                            opt += "<option selected value=\"" + list[i].id + "\">" + list[i].hospitalName + "</option>";
+                        } else {
+                            opt += "<option value=\"" + list[i].id + "\">" + list[i].hospitalName + "</option>";
+                        }
+                    }
+                    $("#hospital").html(opt);
+                    form.render('select');
+                } else {
+                    notice.warning("获取医院列表失败:" + result.message);
+                }
+            }
+        });
+
+
+        form.on('submit(update)', function (data) {
+            var formData = {
+                id: $("#item_id").val(),
+                hospitalId: $("#hospital").val(),
+                itemName: $("#itemName").val(),
+                commission: $("#commission").val(),
+            }
+            $.ajax({
+                url: '/config/item/update',
+                data: formData,
+                dataType: 'JSON',
+                method: "POST",
+                success: function (result) {
+                    if (result.code === 0) {
+                        popup.success('修改成功', function () {
+                            parent.layer.close(parent.layer.getFrameIndex(window.name));//关闭当前页
+                            parent.layui.table.reload("list-table");
+                        });
+                    } else {
+                        popup.success('修改失败' + result.message, function () {
+                            parent.layer.close(parent.layer.getFrameIndex(window.name));//关闭当前页
+                            parent.layui.table.reload("list-table");
+                        });
+                    }
+                }
+            })
+            return false;
+        });
+    })
+</script>
+<script>
+</script>
+</body>
+</html>
