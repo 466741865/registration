@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -122,6 +123,23 @@ public class ConfigUserCommissionController {
         Boolean result = configUserCommissionService.deleteConfig(uid);
         logger.info("[delete]删除信息,end,uid={},res={}", uid, result);
         return new ResultVo<>(result);
+    }
+
+    /**
+     * 根据项目id查询项目列表
+     * @param itemId
+     * @return
+     */
+    @RequestMapping(value = "/getListByIid", produces = "application/json;charset=UTF-8")
+    public List<ConfigUserCommissionDeatilVo> getUserCommissionListByIid(Long itemId) {
+        logger.info("[getUserCommissionListByIid]获取提成人员列表,start，iid={}", itemId);
+        if (Tools.isNull(itemId) || itemId <= 0) {
+            logger.info("[getUserCommissionListByIid]获取提成人员列表，参数存在空值");
+            return Collections.emptyList();
+        }
+        List<ConfigUserCommissionDeatilVo> userCommissionDeatilVos = configUserCommissionService.getUserCommissionConfigListByIid(itemId);
+        logger.info("[getUserCommissionListByIid]获取提成人员列表,end，itemId={}, res:{}", itemId, JSON.toJSON(userCommissionDeatilVos));
+        return userCommissionDeatilVos;
     }
 
 

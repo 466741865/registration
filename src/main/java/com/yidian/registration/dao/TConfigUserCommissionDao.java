@@ -29,4 +29,6 @@ public interface TConfigUserCommissionDao {
     int updateConfig(TConfigUserCommission hospital);
 
     TConfigUserCommission selectInfoById(@Param("id") Long id);
+
+    List<TConfigUserCommission> selectConfigListByIid(@Param("itemId") Long itemId, @Param("type") Integer type);
 }

@@ -2,8 +2,10 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title>医院管理</title>
+		<title>票据管理</title>
 		<link rel="stylesheet" href="../../../../component/pear/css/pear.css" />
+		<link rel="stylesheet" href="../../../../component/layui/css/layui.css" media="all"/>
+
 	</head>
 	<body class="pear-container">
 		<div class="layui-card">
@@ -11,9 +13,22 @@
 				<form class="layui-form" action="">
 					<div class="layui-form-item">
 						<div class="layi-form-item layui-inline">
-							<label class="layui-form-label">医院名称</label>
+							<label class="layui-form-label">月份</label>
 							<div class="layui-input-inline">
-								<input type="text" name="hospitalName" placeholder="" class="layui-input">
+								<input type="text" class="layui-input" id="settleDate" name="settleDate" placeholder="月份">
+							</div>
+						</div>
+						<div class="layi-form-item layui-inline">
+							<label class="layui-form-label">开票人</label>
+							<div class="layui-input-inline">
+								<input type="text" id="name" name="name" placeholder="" class="layui-input">
+							</div>
+						</div>
+						<div class="layi-form-item layui-inline">
+							<label class="layui-form-label">医院</label>
+							<div class="layui-input-block">
+								<select id="hospitalId" name="hospitalId" lay-filter="hospitalFilter" lay-verify="title">
+								</select>
 							</div>
 						</div>
 						<div class="layui-form-item layui-inline">
@@ -62,14 +77,17 @@
 
 		<script src="../../../../component/layui/layui.js"></script>
 		<script src="../../../../component/pear/pear.js"></script>
+
 		<script>
-			layui.use(['table', 'form', 'jquery','common', 'popup', 'notice'], function() {
+			layui.use(['table', 'form', 'jquery','common', 'popup', 'notice', 'laydate'], function() {
 				let table = layui.table;
 				let form = layui.form;
 				let $ = layui.jquery;
 				let common = layui.common;
 				var popup = layui.popup;
 				var notice = layui.notice;
+				var laydate = layui.laydate;
+
 
 				let cols = [
 					[{
@@ -79,28 +97,53 @@
 							title: 'ID',
 							field: 'id',
 							align: 'center',
-							width: 50
+							width: 30
 						},
                         {
-							title: '医院',
-							field: 'hospitalName',
-							align: 'center'
+							title: '所属月份',
+							field: 'settleDate',
+							align: 'center',
+							width: 100
 						},
                         {
-                            title: '底薪（元）',
-                            field: 'basicSalary',
-                            align: 'center'
-                        },
+							title: '开票日期',
+							field: 'invoiceDate',
+							align: 'center',
+							width: 120
+						},
                         {
-							title: '编辑时间',
-							field: 'updateTime',
-							align: 'center'
+                            title: '开票人',
+                            field: 'patientName',
+                            align: 'center',
+							width: 100
                         },
 						{
-							title: '状态',
-							field: 'status',
+							title: '项目',
+							field: 'itemName',
 							align: 'center',
-							templet: '#list-item-state'
+							width: 100
+						},
+                        {
+                            title: '金额',
+                            field: 'invoiceMoney',
+                            align: 'center',
+							width: 100
+                        },
+						{
+							title: '医院',
+							field: 'hospitalName',
+							align: 'center',
+						},
+                        {
+                            title: '归属人',
+                            field: 'belongName',
+                            align: 'center',
+							width: 100
+                        },
+						{
+							title: '创建时间',
+							field: 'createTime',
+							align: 'center'
 						},
 						{
 							title: '操作',
@@ -110,10 +153,40 @@
 						}
 					]
 				]
+				//年月选择器
+				laydate.render({
+					elem: '#settleDate'
+					,type: 'month'
+				});
+
+				var hQuery = {
+					page: "1",
+					limit: "100"
+				}
+
+				$.ajax({
+					url: '/config/hospital/getList',
+					data: hQuery,
+					dataType: 'JSON',
+					method: "GET",
+					success: function (result) {
+						if (result.code === 0) {
+							var list = result.data;
+							var opt = "<option value=\"\"></option>";
+							for (var i = 0; i < list.length; i++) {
+								opt += "<option value=\"" + list[i].id + "\">" + list[i].hospitalName + "</option>";
+							}
+							$("#hospitalId").html(opt);
+							form.render('select');
+						} else {
+							notice.warning("获取医院列表失败:" + result.message);
+						}
+					}
+				});
 
 				table.render({
 					elem: '#list-table',
-					url: '/config/hospital/getList',
+					url: '/account/bill/getList',
 					page: true,
 					cols: cols,
 					skin: 'line',
@@ -157,43 +230,46 @@
 				window.add = function() {
 					layer.open({
 						type: 2,
-						title: '添加医院',
+						title: '添加用户',
 						shade: 0.1,
-						area: [common.isModile()?'100%':'500px', common.isModile()?'100%':'400px'],
-						content: 'hospital-add.html'
+						area: [common.isModile()?'100%':'550px', common.isModile()?'100%':'550px'],
+						content: 'accountBills-add.html'
 					});
 				}
-				window.update = function(obj) {
+				window.update = function (obj) {
 					layer.open({
 						type: 2,
-						title: '编辑信息',
+						title: '编辑人员提成信息',
 						shade: 0.1,
-						area: [common.isModile()?'100%':'400px', common.isModile()?'100%':'300px'],
-						content: 'hospital-update.html',
-						success: function(layero, index){
+						area: [common.isModile() ? '100%' : '550px', common.isModile() ? '100%' : '550px'],
+						content: "accountBills-update.html?hospitalId="+obj.data.hospitalId+"&itemId="+obj.data.itemId+"&belongId="+obj.data.belongId,
+						success: function (layero, index) {
 							var body = layer.getChildFrame('body', index);
-							body.find('#hospital_id').val(obj.data.id)
+							body.find('#item_id').val(obj.data.id)
 							//请求详情
-							$.getJSON("/config/hospital/getInfo", "hid="+obj.data.id, function(detail){
-								if(detail.code != 0){
-									layer.alert("获取详情失败","提示信息", function (index) {
+							$.getJSON("/account/bill/getInfo", "rid=" + obj.data.id, function (detail) {
+								if (detail.code !== 0) {
+									layer.alert("获取详情失败", "提示信息", function (index) {
 										layer.close(index);
 									})
-								}else{
-									body.find('#hospital_id').val(detail.data.id);
-									body.find('#hospital_name').val(detail.data.hospitalName);
-									body.find('#basic_salary').val(detail.data.basicSalary);
+								} else {
+									body.find('#record_id').val(obj.data.id)
+									body.find('#patientName').val(detail.data.patientName);
+									body.find('#invoiceMoney').val(detail.data.invoiceMoney);
+									body.find('#invoiceDate').val(detail.data.invoiceDate);
+									body.find('#settleDate').val(detail.data.settleDate);
 								}
 							});
 						}
 					});
 				}
 
+
 				window.delete = function(obj) {
 					layer.confirm("确定要删除？", {icon:3,title:'提示'}, function (index) {
 						$.ajax({
 							type: 'GET',
-							url: '/config/hospital/delete?hid=' + obj.data.id,
+							url: '/account/bill/delete?rid=' + obj.data.id,
 							success: function (data) {
 								if (data.code === 0) {
 									notice.success("删除成功");
@@ -204,7 +280,6 @@
 							}
 					     });
 						layer.close(index);
-						notice.clear();
 					});
 				}
 				window.refresh = function(param) {

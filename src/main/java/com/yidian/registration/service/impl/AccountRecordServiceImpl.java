@@ -10,6 +10,7 @@ import com.yidian.registration.entity.TConfigItem;
 import com.yidian.registration.entity.TConfigUserCommission;
 import com.yidian.registration.enums.UserStatusEnum;
 import com.yidian.registration.service.IAccountRecordService;
+import com.yidian.registration.utils.DateBuilder;
 import com.yidian.registration.vo.PageVo;
 import com.yidian.registration.vo.account.record.AccountRecordAddVo;
 import com.yidian.registration.vo.account.record.AccountRecordDetailVo;
@@ -50,22 +51,22 @@ public class AccountRecordServiceImpl implements IAccountRecordService {
 
 
     @Override
-    public PageVo<List<AccountRecordDetailVo>> getAccountRecordList(String name, Integer pageNo, Integer pageSize) {
-        logger.info("getAccountRecordList start, name:{}, pageNo:{}, pageSize:{}", name, pageNo, pageSize);
+    public PageVo<List<AccountRecordDetailVo>> getAccountRecordList(String name, String settleDate, Long hospitalId, Integer pageNo, Integer pageSize) {
+        logger.info("getAccountRecordList start, name:{}, settleDate:{}, hospitalId:{}, pageNo:{}, pageSize:{}", name, settleDate, hospitalId, pageNo, pageSize);
         PageVo<List<AccountRecordDetailVo>> pageVo = new PageVo<>();
         pageVo.setCount(0);
         pageVo.setData(Collections.emptyList());
         pageVo.setPageNum(pageNo);
         pageVo.setPageSize(pageSize);
         //查询总量
-        int configListTotal = AccountRecordDao.selectRecordListTotal(name);
+        int configListTotal = AccountRecordDao.selectRecordListTotal(name, settleDate, hospitalId);
         if (configListTotal <= 0) {
             return pageVo;
         }
         pageVo.setCount(configListTotal);
 
         int index = (pageNo - 1) * pageSize;
-        List<TAccountRecord> recordList = AccountRecordDao.selectRecordList(name, index, pageSize);
+        List<TAccountRecord> recordList = AccountRecordDao.selectRecordList(name, settleDate, hospitalId, index, pageSize);
         if (CollectionUtils.isEmpty(recordList)) {
             return pageVo;
         }
@@ -75,7 +76,7 @@ public class AccountRecordServiceImpl implements IAccountRecordService {
             list.add(vo);
         }
         pageVo.setData(list);
-        logger.info("getAccountRecordList start, name:{}, pageNo:{}, pageSize:{}, pageVo:{}", name, pageNo, pageSize, pageVo);
+        logger.info("getAccountRecordList start, name:{}, hospitalId:{}, pageNo:{}, pageSize:{}, pageVo:{}", name, pageNo, hospitalId, pageSize, pageVo);
         return pageVo;
     }
 
@@ -96,8 +97,8 @@ public class AccountRecordServiceImpl implements IAccountRecordService {
         vo.setSettleDate(record.getSettleDate());
         vo.setInvoiceDate(record.getInvoiceDate());
         vo.setStatus(record.getStatus());
-        vo.setCreateTime(record.getCreateTime());
-        vo.setUpdateTime(record.getUpdateTime());
+        vo.setCreateTime(DateBuilder.formatDate(record.getCreateTime(), DateBuilder.FORMAT_FULL));
+        vo.setUpdateTime(DateBuilder.formatDate(record.getUpdateTime(), DateBuilder.FORMAT_FULL));
         return vo;
     }
 

@@ -49,4 +49,11 @@ public interface IConfigUserCommissionService {
      */
     boolean deleteConfig(Long id);
 
+    /**
+     * 根据项目Id获取提成人员列表
+     * @param iid
+     * @return
+     */
+    List<ConfigUserCommissionDeatilVo>  getUserCommissionConfigListByIid(Long iid);
+
 }

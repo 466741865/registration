@@ -24,27 +24,27 @@ import java.util.List;
  * @Date: 2022/6/11 10:35
  */
 @RestController
-@RequestMapping("/account/record")
-public class AccountRecordController {
+@RequestMapping("/account/bill")
+public class AccountBillController {
 
-    Logger logger = LoggerFactory.getLogger(AccountRecordController.class);
+    Logger logger = LoggerFactory.getLogger(AccountBillController.class);
 
     @Resource
     private IAccountRecordService AccountRecordService;
 
     @RequestMapping(value = "/getList", produces = "application/json;charset=UTF-8")
-    public PageVo<List<AccountRecordDetailVo>> getRecordList(String name, Integer page, Integer limit) {
-        logger.info("[getRecordList]获取记录列表,start，name={}, pageNo={}, pageSize={}", name, page, limit);
+    public PageVo<List<AccountRecordDetailVo>> getBillList(String name, String settleDate, Long hospitalId, Integer page, Integer limit) {
+        logger.info("[getRecordList]获取记录列表,start，name={}, settleDate={}, hospitalId:{}, pageNo={}, pageSize={}", name, settleDate, hospitalId, page, limit);
         if (Tools.isNull(page) || page <= 0) {
             page = Constants.DEFAULT_PAGE_NO;
         }
         if (Tools.isNull(limit) || limit <= 0) {
             limit = Constants.DEFAULT_PAGE_SIZE;
         }
-        PageVo<List<AccountRecordDetailVo>> pageVo = AccountRecordService.getAccountRecordList(name, page, limit);
+        PageVo<List<AccountRecordDetailVo>> pageVo = AccountRecordService.getAccountRecordList(name, settleDate, hospitalId, page, limit);
         pageVo.setPageNum(page);
         pageVo.setPageSize(limit);
-        logger.info("[getRecordList]获取记录列表,end，name={}, pageNo={}, pageSize={}, res:{}", name, page, limit, JSON.toJSON(pageVo));
+        logger.info("[getRecordList]获取记录列表,end，name={}, settleDate={}, hospitalId:{}, pageNo={}, pageSize={}, res:{}", name, settleDate, hospitalId, page, limit, JSON.toJSON(pageVo));
         return pageVo;
 
     }
@@ -55,7 +55,7 @@ public class AccountRecordController {
      * @param addVo 添加记录
      * @return
      */
-    @PostMapping(value = "/add", produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/add", produces = "application/json;charset=UTF-8")
     public ResultVo<Boolean> addRecord(AccountRecordAddVo addVo) {
         logger.info("[addRecord]添加记录，userAddVo={}", JSON.toJSON(addVo));
         if (Tools.isNull(addVo) || Tools.isNull(addVo.getPatientName())

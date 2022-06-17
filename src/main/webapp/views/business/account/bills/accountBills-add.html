@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link rel="stylesheet" href="../../../../component/pear/css/pear.css"/>
+    <link rel="stylesheet" href="../../../../component/layui/css/layui.css"/>
+
 </head>
 <body>
 <form class="layui-form" action="">
@@ -12,40 +14,50 @@
             <div class="main-container">
 
                 <div class="layui-form-item">
-                    <label class="layui-form-label">姓名</label>
+                    <label class="layui-form-label">开票人</label>
                     <div class="layui-input-block">
-                        <input type="text" name="name" lay-verify="title" autocomplete="off" placeholder="请输入项目"
+                        <input type="text" name="patientName" lay-verify="title" autocomplete="off" placeholder="请输入项目"
                                class="layui-input">
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">联系方式</label>
+                    <label class="layui-form-label">开票医院</label>
                     <div class="layui-input-block">
-                        <input type="text" name="phone" lay-verify="title" autocomplete="off" placeholder="请输入项目"
-                               class="layui-input">
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">医院</label>
-                    <div class="layui-input-block">
-                        <select id="hospitalId" name="hospitalId" lay-filter="buildingFilter" lay-verify="title">
-
+                        <select id="hospitalId" name="hospitalId" lay-filter="hospitalFilter" lay-verify="title">
                         </select>
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">项目</label>
+                    <label class="layui-form-label">开票项目</label>
                     <div class="layui-input-block">
-                        <select id="itemId" name="itemId" lay-verify="title">
-
+                        <select id="itemId" name="itemId" lay-filter="itemFilter" lay-verify="title">
                         </select>
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">提成</label>
+                    <label class="layui-form-label">开票金额</label>
                     <div class="layui-input-block">
-                        <input type="text" lay-verify="number" name="commission" lay-verify="title" autocomplete="off"
-                               placeholder="请输入提成，单位百分比，最大值：100" onblur="value=zhzs(this.value)" class="layui-input">
+                        <input type="text" lay-verify="number" name="invoiceMoney" lay-verify="title" autocomplete="off"
+                               placeholder="请输入金额，单位：元" onblur="value=zhzs(this.value)" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">开票日期</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input" id="invoiceDate" name="invoiceDate" placeholder="请选择开票日期">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">所属月份</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input" id="settleDate" name="settleDate" placeholder="请选择所属月份">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">归属人</label>
+                    <div class="layui-input-block">
+                        <select id="belongId" name="belongId" lay-verify="title">
+                        </select>
                     </div>
                 </div>
             </div>
@@ -70,11 +82,24 @@
 <script src="../../../../component/utils/utils.js"></script>
 
 <script>
-    layui.use(['form', 'jquery', 'popup', 'notice'], function () {
+    layui.use(['form', 'jquery', 'popup', 'notice', 'laydate'], function () {
         let form = layui.form;
         let $ = layui.jquery;
         var popup = layui.popup;
         var notice = layui.notice;
+        var laydate = layui.laydate;
+
+
+        //年月日
+        laydate.render({
+            elem: '#invoiceDate'
+        });
+
+        //年月选择器
+        laydate.render({
+            elem: '#settleDate'
+            ,type: 'month'
+        });
 
         var itemQuery = {
             page: "1",
@@ -101,10 +126,11 @@
             }
         });
 
-        // 联动
-        form.on('select(buildingFilter)', function(data){
+        // 医院-项目联动
+        form.on('select(hospitalFilter)', function(data){
             var hospitalId = data.value;
             $("#itemId").empty();
+            $("#belongId").empty();
             $.ajax({
                 url: '/config/item/getListByHid?hid=' + hospitalId,
                 dataType: 'JSON',
@@ -124,9 +150,32 @@
             });
         });
 
+        // 项目-人员联动
+        form.on('select(itemFilter)', function(data){
+            var itemId = data.value;
+            $("#belongId").empty();
+            $.ajax({
+                url: '/config/user/commission/getListByIid?itemId=' + itemId,
+                dataType: 'JSON',
+                method: "GET",
+                success: function (result) {
+                    if (result === null || result.length <= 0) {
+                        notice.warning("该医院项目未配置提成人员");
+                    } else {
+                        var opt = "<option value=\"\"></option>";
+                        for (var i = 0; i < result.length; i++) {
+                            opt += "<option value=\"" + result[i].id + "\">" + result[i].name + "</option>";
+                        }
+                        $("#belongId").html(opt);
+                        form.render('select');
+                    }
+                }
+            });
+        });
+
         form.on('submit(save)', function (data) {
             $.ajax({
-                url: '/config/user/commission/add',
+                url: '/account/bill/add',
                 data: data.field,
                 dataType: 'JSON',
                 method: "POST",

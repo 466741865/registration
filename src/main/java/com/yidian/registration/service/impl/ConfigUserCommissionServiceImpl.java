@@ -6,10 +6,12 @@ import com.yidian.registration.dao.TConfigUserCommissionDao;
 import com.yidian.registration.entity.TConfigHospital;
 import com.yidian.registration.entity.TConfigItem;
 import com.yidian.registration.entity.TConfigUserCommission;
+import com.yidian.registration.enums.UserCommissionTypeEnum;
 import com.yidian.registration.enums.UserStatusEnum;
 import com.yidian.registration.service.IConfigUserCommissionService;
 import com.yidian.registration.utils.DateBuilder;
 import com.yidian.registration.vo.PageVo;
+import com.yidian.registration.vo.config.item.ConfigItemDetailVo;
 import com.yidian.registration.vo.config.user.ConfigUserCommissionAddVo;
 import com.yidian.registration.vo.config.user.ConfigUserCommissionDeatilVo;
 import com.yidian.registration.vo.config.user.ConfigUserCommissionUpdateVo;
@@ -81,11 +83,11 @@ public class ConfigUserCommissionServiceImpl implements IConfigUserCommissionSer
         TConfigItem item = configItemDao.selectInfoById(commission.getItemId());
         if (Objects.nonNull(item)) {
             vo.setItemName(item.getItemName());
-        }
-        //查询单位信息
-        TConfigHospital hospital = configHospitalDao.selectInfoById(item.getHospitalId());
-        if (Objects.nonNull(hospital)) {
-            vo.setHospitalName(hospital.getHospitalName());
+            //查询单位信息
+            TConfigHospital hospital = configHospitalDao.selectInfoById(item.getHospitalId());
+            if (Objects.nonNull(hospital)) {
+                vo.setHospitalName(hospital.getHospitalName());
+            }
         }
         return vo;
     }
@@ -133,7 +135,7 @@ public class ConfigUserCommissionServiceImpl implements IConfigUserCommissionSer
         userCommission.setHospitalId(addVo.getHospitalId());
         userCommission.setItemId(addVo.getItemId());
         userCommission.setCommission(new BigDecimal(addVo.getCommission()));
-        userCommission.setType((byte) 2);
+        userCommission.setType((byte) UserCommissionTypeEnum.DEPUTY.getType());
         userCommission.setStatus((byte) UserStatusEnum.ENABLED.getCode());
         int insert = configUserCommissionDao.insert(userCommission);
         logger.info("addUserCommissionConfig end addVo:{}, insertres:{}", addVo, insert);
@@ -165,5 +167,30 @@ public class ConfigUserCommissionServiceImpl implements IConfigUserCommissionSer
         UserCommission.setStatus((byte) UserStatusEnum.DISABLE.getCode());
         int result = configUserCommissionDao.updateConfig(UserCommission);
         return result > 0;
+    }
+
+    @Override
+    public List<ConfigUserCommissionDeatilVo> getUserCommissionConfigListByIid(Long itemId) {
+        logger.info("getUserCommissionConfigListByIid start itemId:{}", itemId);
+        List<ConfigUserCommissionDeatilVo> list = new ArrayList<>();
+        //查询主提成人员
+        List<TConfigUserCommission> commissions1 = configUserCommissionDao.selectConfigListByIid(null, UserCommissionTypeEnum.MAIN.getType());
+        if (!CollectionUtils.isEmpty(commissions1)) {
+            for (TConfigUserCommission commission : commissions1) {
+                ConfigUserCommissionDeatilVo detailVo = entityToVo(commission);
+                list.add(detailVo);
+            }
+        }
+        //查询副提成人员
+        List<TConfigUserCommission> commissions2 = configUserCommissionDao.selectConfigListByIid(itemId, UserCommissionTypeEnum.DEPUTY.getType());
+        if (CollectionUtils.isEmpty(commissions2)) {
+            return list;
+        }
+        for (TConfigUserCommission commission : commissions2) {
+            ConfigUserCommissionDeatilVo detailVo = entityToVo(commission);
+            list.add(detailVo);
+        }
+        logger.info("getUserCommissionConfigListByIid end itemId:{}", itemId);
+        return list;
     }
 }

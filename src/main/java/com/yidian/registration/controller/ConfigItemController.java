@@ -132,7 +132,7 @@ public class ConfigItemController {
     public List<ConfigItemDetailVo> getItemListByHid(Long hid) {
         logger.info("[getItemListByHid]获取项目列表,start，hid={}", hid);
         if (Tools.isNull(hid) || hid <= 0) {
-            logger.info("[delete]删除信息，参数存在空值");
+            logger.info("[getItemListByHid]获取项目列表，参数存在空值");
             return Collections.emptyList();
         }
         List<ConfigItemDetailVo> itemConfigList = configItemService.getItemConfigListByHid(hid);

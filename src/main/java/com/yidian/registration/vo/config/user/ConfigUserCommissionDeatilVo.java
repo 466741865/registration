@@ -1,7 +1,6 @@
 package com.yidian.registration.vo.config.user;
 
 
-import java.util.Date;
 
 public class ConfigUserCommissionDeatilVo {
     private Long id;

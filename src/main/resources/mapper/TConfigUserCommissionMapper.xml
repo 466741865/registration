@@ -19,7 +19,8 @@
         </selectKey>
         insert into t_config_user_commission (`name`, phone, hospital_id, item_id,
         commission, `type`, `status`, create_time, update_time)
-        values (#{name,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{hospitalId,jdbcType=BIGINT}, #{itemId,jdbcType=BIGINT},
+        values (#{name,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{hospitalId,jdbcType=BIGINT},
+        #{itemId,jdbcType=BIGINT},
         #{commission,jdbcType=DECIMAL}, #{type,jdbcType=TINYINT}, #{status,jdbcType=TINYINT},
         now(), now())
     </insert>
@@ -81,5 +82,17 @@
         select *
         from t_config_user_commission
         where id = #{id}
+    </select>
+
+    <select id="selectConfigListByIid" resultMap="BaseResultMap">
+        select *
+        from t_config_user_commission
+        where `status` = 1
+        <if test="itemId != null and itemId > 0">
+            and item_id = #{itemId}
+        </if>
+        <if test="type != null and type > 0">
+            and `type` = #{type}
+        </if>
     </select>
 </mapper>

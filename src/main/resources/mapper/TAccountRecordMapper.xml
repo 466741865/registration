@@ -41,6 +41,12 @@
         <if test="patientName != null and patientName != ''">
             and patient_name like concat('%', #{patientName}, '%')
         </if>
+        <if test="settleDate != null and settleDate != ''">
+            and settle_date like concat('%', #{settleDate}, '%')
+        </if>
+        <if test="hospitalId != null and hospitalId > 0">
+            and hospital_id like concat('%', #{hospitalId}, '%')
+        </if>
     </select>
 
     <select id="selectRecordList" resultMap="BaseResultMap">
@@ -50,15 +56,21 @@
         <if test="patientName != null and patientName != ''">
             and patient_name like concat('%', #{patientName}, '%')
         </if>
-        order by id desc
+        <if test="settleDate != null and settleDate != ''">
+            and settle_date like concat('%', #{settleDate}, '%')
+        </if>
+        <if test="hospitalId != null and hospitalId > 0">
+            and hospital_id like concat('%', #{hospitalId}, '%')
+        </if>
+        order by update_time desc
         limit #{index}, #{pageSize}
     </select>
 
     <update id="updateRecord" parameterType="com.yidian.registration.entity.TAccountRecord">
         update t_account_record
         <set>
-            <if test="patient_name != null">
-                patient_name = #{patient_name},
+            <if test="patientName != null">
+                patient_name = #{patientName},
             </if>
             <if test="hospitalId != null">
                 hospital_id = #{hospitalId},

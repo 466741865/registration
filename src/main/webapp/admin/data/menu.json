@@ -423,34 +423,52 @@
 	},
 	{
 		"id": "config",
+		"title": "账单管理",
+		"icon": "layui-icon layui-icon-app",
+		"type": 0,
+		"href": "",
+		"children": [
+			{
+				"id": 1201,
+				"title": "票据管理",
+				"icon": "layui-icon layui-icon-user",
+				"type": 1,
+				"openType": "_iframe",
+				"href": "views/business/account/bills/accountBillsManager.html"
+			}
+		]
+	},
+	{
+		"id": "config",
 		"title": "配置管理",
 		"icon": "layui-icon layui-icon-app",
 		"type": 0,
 		"href": "",
-		"children": [{
-			"id": 1101,
-			"title": "医院管理",
-			"icon": "layui-icon layui-icon-user",
-			"type": 1,
-			"openType": "_iframe",
-			"href": "views/business/config/hospital/hospitalManager.html"
-		},
-		{
-			"id": 1102,
-			"title": "项目管理",
-			"icon": "layui-icon layui-icon-user",
-			"type": 1,
-			"openType": "_iframe",
-			"href": "views/business/config/item/itemManager.html"
-		},
-		{
-			"id": 1103,
-			"title": "人员管理",
-			"icon": "layui-icon layui-icon-user",
-			"type": 1,
-			"openType": "_iframe",
-			"href": "views/business/config/commission/userCommissionManager.html"
-		}
+		"children": [
+			{
+				"id": 1101,
+				"title": "医院管理",
+				"icon": "layui-icon layui-icon-user",
+				"type": 1,
+				"openType": "_iframe",
+				"href": "views/business/config/hospital/hospitalManager.html"
+			},
+			{
+				"id": 1102,
+				"title": "项目管理",
+				"icon": "layui-icon layui-icon-user",
+				"type": 1,
+				"openType": "_iframe",
+				"href": "views/business/config/item/itemManager.html"
+			},
+			{
+				"id": 1103,
+				"title": "人员管理",
+				"icon": "layui-icon layui-icon-user",
+				"type": 1,
+				"openType": "_iframe",
+				"href": "views/business/config/commission/userCommissionManager.html"
+			}
 		]
 	}
 ]
