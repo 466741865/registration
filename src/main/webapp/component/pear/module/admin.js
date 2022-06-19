@@ -81,7 +81,7 @@ layui.define(['message', 'table', 'jquery', 'element', 'yaml', 'form', 'tab', 'm
 			}
 
 			this.logoRender = function(param) {
-				$(".layui-logo .logo").attr("src", param.logo.image);
+				$(".layui-logo .logo").attr("src", "../../../admin/images/logo.png");
 				$(".layui-logo .title").html(param.logo.title);
 			}
 

@@ -1,34 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.yidian.registration.dao.TAccountStatisticsDetailDao">
-  <resultMap id="BaseResultMap" type="com.yidian.registration.entity.TAccountStatisticsDetail">
-    <result column="id" jdbcType="BIGINT" property="id" />
-    <result column="statistics_id" jdbcType="BIGINT" property="statisticsId" />
-    <result column="item_id" jdbcType="BIGINT" property="itemId" />
-    <result column="item_name" jdbcType="VARCHAR" property="itemName" />
-    <result column="total_money" jdbcType="DECIMAL" property="totalMoney" />
-    <result column="commission" jdbcType="DECIMAL" property="commission" />
-    <result column="income" jdbcType="DECIMAL" property="income" />
-    <result column="status" jdbcType="TINYINT" property="status" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-  </resultMap>
-  <insert id="insert" parameterType="com.yidian.registration.entity.TAccountStatisticsDetail">
-    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into t_account_statistics_detail (statistics_id, item_id, item_name, 
-      total_money, commission, income, 
-      `status`, create_time, update_time
-      )
-    values (#{statisticsId,jdbcType=BIGINT}, #{itemId,jdbcType=BIGINT}, #{itemName,jdbcType=VARCHAR}, 
-      #{totalMoney,jdbcType=DECIMAL}, #{commission,jdbcType=DECIMAL}, #{income,jdbcType=DECIMAL}, 
-      #{status,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
-      )
-  </insert>
-  <select id="selectAll" resultMap="BaseResultMap">
-    select id, statistics_id, item_id, item_name, total_money, commission, income, `status`, 
-    create_time, update_time
-    from t_account_statistics_detail
-  </select>
+    <resultMap id="BaseResultMap" type="com.yidian.registration.entity.TAccountStatisticsDetail">
+        <result column="id" jdbcType="BIGINT" property="id"/>
+        <result column="statistics_id" jdbcType="BIGINT" property="statisticsId"/>
+        <result column="item_id" jdbcType="BIGINT" property="itemId"/>
+        <result column="item_name" jdbcType="VARCHAR" property="itemName"/>
+        <result column="total_money" jdbcType="DECIMAL" property="totalMoney"/>
+        <result column="commission" jdbcType="DECIMAL" property="commission"/>
+        <result column="income" jdbcType="DECIMAL" property="income"/>
+        <result column="status" jdbcType="TINYINT" property="status"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+    <insert id="insert" parameterType="com.yidian.registration.entity.TAccountStatisticsDetail">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into t_account_statistics_detail (statistics_id, item_id, item_name,
+        total_money, commission, income,
+        `status`, create_time, update_time
+        )
+        values (#{statisticsId,jdbcType=BIGINT}, #{itemId,jdbcType=BIGINT}, #{itemName,jdbcType=VARCHAR},
+        #{totalMoney,jdbcType=DECIMAL}, #{commission,jdbcType=DECIMAL}, #{income,jdbcType=DECIMAL},
+        #{status,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+        )
+    </insert>
+
+    <insert id="batchInsert">
+        insert into t_account_statistics_detail (statistics_id, item_id, item_name,
+        total_money, commission, income,
+        `status`, create_time, update_time
+        )
+        values
+        <foreach collection="records" item="record" index="index" separator=",">
+            (#{record.statisticsId,jdbcType=BIGINT}, #{record.itemId,jdbcType=BIGINT},
+            #{record.itemName,jdbcType=VARCHAR},
+            #{record.totalMoney,jdbcType=DECIMAL}, #{record.commission,jdbcType=DECIMAL},
+            #{record.income,jdbcType=DECIMAL},
+            #{record.status,jdbcType=TINYINT},now(), now()
+            )
+        </foreach>
+    </insert>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select id, statistics_id, item_id, item_name, total_money, commission, income, `status`,
+        create_time, update_time
+        from t_account_statistics_detail
+    </select>
+    <select id="selectDetailBySid" resultMap="BaseResultMap">
+        select *
+        from t_account_statistics_detail
+        where statistics_id = #{sid}
+    </select>
+
+    <update id="deleteBySid">
+        update t_account_statistics_detail
+        set  `status` = 0, update_time = now()
+        where statistics_id = #{sid}
+    </update>
 </mapper>

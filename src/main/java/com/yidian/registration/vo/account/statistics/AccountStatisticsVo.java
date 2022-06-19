@@ -1,11 +1,10 @@
-package com.yidian.registration.entity;
+package com.yidian.registration.vo.account.statistics;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 
-public class TAccountStatistics implements Serializable {
+public class AccountStatisticsVo {
+
     private Long id;
 
     private String month;
@@ -22,13 +21,11 @@ public class TAccountStatistics implements Serializable {
 
     private Byte status;
 
-    private Date createTime;
+    private String createTime;
 
-    private Date updateTime;
+    private String updateTime;
 
-    private List<TAccountStatisticsDetail> itemStatistics;
-
-    private static final long serialVersionUID = 1L;
+    private List<AccountStatisticsDetailVo> detailList;
 
     public Long getId() {
         return id;
@@ -94,28 +91,28 @@ public class TAccountStatistics implements Serializable {
         this.status = status;
     }
 
-    public Date getCreateTime() {
+    public String getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
 
-    public Date getUpdateTime() {
+    public String getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(Date updateTime) {
+    public void setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
     }
 
-    public List<TAccountStatisticsDetail> getItemStatistics() {
-        return itemStatistics;
+    public List<AccountStatisticsDetailVo> getDetailList() {
+        return detailList;
     }
 
-    public void setItemStatistics(List<TAccountStatisticsDetail> itemStatistics) {
-        this.itemStatistics = itemStatistics;
+    public void setDetailList(List<AccountStatisticsDetailVo> detailList) {
+        this.detailList = detailList;
     }
 
     @Override
@@ -123,7 +120,6 @@ public class TAccountStatistics implements Serializable {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());
         sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
         sb.append(", month=").append(month);
         sb.append(", hospitalId=").append(hospitalId);
@@ -134,7 +130,7 @@ public class TAccountStatistics implements Serializable {
         sb.append(", status=").append(status);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);
-        sb.append(", serialVersionUID=").append(serialVersionUID);
+        sb.append(", detailList=").append(detailList);
         sb.append("]");
         return sb.toString();
     }

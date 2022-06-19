@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../../../../component/pear/css/pear.css"/>
+    <link rel="stylesheet" href="../../../../component/layui/css/layui.css"/>
+
+</head>
+<body>
+<form class="layui-form" action="">
+    <div class="mainBox">
+        <div class="main-container">
+            <div class="main-container">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">账单月份：</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input" id="settleDate" name="settleDate" placeholder="请选择所属月份">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">医院：</label>
+                    <div class="layui-input-block">
+                        <select id="hospitalId" name="hospitalId" lay-verify="title">
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="bottom">
+        <div class="button-container">
+            <button type="submit" class="pear-btn pear-btn-primary pear-btn-sm" lay-submit=""
+                    lay-filter="save">
+                <i class="layui-icon layui-icon-ok"></i>
+                生成账单
+            </button>
+            <button type="reset" class="pear-btn pear-btn-sm">
+                <i class="layui-icon layui-icon-refresh"></i>
+                重置
+            </button>
+        </div>
+    </div>
+</form>
+<script src="../../../../component/layui/layui.js"></script>
+<script src="../../../../component/pear/pear.js"></script>
+
+<script>
+    layui.use(['form', 'jquery', 'popup', 'notice', 'laydate'], function () {
+        let form = layui.form;
+        let $ = layui.jquery;
+        var popup = layui.popup;
+        var notice = layui.notice;
+        var laydate = layui.laydate;
+
+        //年月选择器
+        laydate.render({
+            elem: '#settleDate'
+            ,type: 'month'
+        });
+
+        var itemQuery = {
+            page: "1",
+            limit: "100"
+        }
+
+        $.ajax({
+            url: '/config/hospital/getList',
+            data: itemQuery,
+            dataType: 'JSON',
+            method: "GET",
+            success: function (result) {
+                if (result.code === 0) {
+                    var list = result.data;
+                    var opt = "<option value=\"\">所有医院</option>";
+                    for (var i = 0; i < list.length; i++) {
+                        opt += "<option value=\"" + list[i].id + "\">" + list[i].hospitalName + "</option>";
+                    }
+                    $("#hospitalId").html(opt);
+                    form.render('select');
+                } else {
+                    notice.warning("获取医院列表失败:" + result.message);
+                }
+            }
+        });
+
+        form.on('submit(save)', function (data) {
+            var params = {
+                settleDate: data.field.settleDate,
+                hospitalId: data.field.hospitalId
+            }
+
+            $.ajax({
+                url: '/account/statistics/generateStatistics',
+                data: params,
+                dataType: 'JSON',
+                method: "POST",
+                success: function (result) {
+                    if (result.code === 0) {
+                        popup.success('账单生成成功', function () {
+                            parent.layer.close(parent.layer.getFrameIndex(window.name));//关闭当前页
+                            parent.layui.table.reload("list-table");
+                        });
+                    } else {
+                        popup.success('账单生成失败: '+ result.message);
+                    }
+                }
+            })
+            return false;
+        });
+
+    })
+</script>
+<script>
+</script>
+</body>
+</html>

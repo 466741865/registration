@@ -1,29 +1,32 @@
 package com.yidian.registration.vo.account.statistics;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
+/**
+ * @Author: QingHang
+ * @Description: TODO
+ * @Date: 2022/6/18 16:49
+ */
 public class AccountStatisticsDetailVo {
-
     private Long id;
 
-    private String month;
+    private Long statisticsId;
 
-    private Long hospitalId;
+    private Long itemId;
 
-    private String hospitalName;
+    private String itemName;
 
-    private BigDecimal invoiceTotalMoney;
+    private BigDecimal totalMoney;
+
+    private BigDecimal commission;
 
     private BigDecimal income;
 
-    private BigDecimal basicSalary;
-
     private Byte status;
 
-    private Date createTime;
+    private String createTime;
 
-    private Date updateTime;
+    private String updateTime;
 
     public Long getId() {
         return id;
@@ -33,36 +36,44 @@ public class AccountStatisticsDetailVo {
         this.id = id;
     }
 
-    public String getMonth() {
-        return month;
+    public Long getStatisticsId() {
+        return statisticsId;
     }
 
-    public void setMonth(String month) {
-        this.month = month == null ? null : month.trim();
+    public void setStatisticsId(Long statisticsId) {
+        this.statisticsId = statisticsId;
     }
 
-    public Long getHospitalId() {
-        return hospitalId;
+    public Long getItemId() {
+        return itemId;
     }
 
-    public void setHospitalId(Long hospitalId) {
-        this.hospitalId = hospitalId;
+    public void setItemId(Long itemId) {
+        this.itemId = itemId;
     }
 
-    public String getHospitalName() {
-        return hospitalName;
+    public String getItemName() {
+        return itemName;
     }
 
-    public void setHospitalName(String hospitalName) {
-        this.hospitalName = hospitalName;
+    public void setItemName(String itemName) {
+        this.itemName = itemName == null ? null : itemName.trim();
     }
 
-    public BigDecimal getInvoiceTotalMoney() {
-        return invoiceTotalMoney;
+    public BigDecimal getTotalMoney() {
+        return totalMoney;
     }
 
-    public void setInvoiceTotalMoney(BigDecimal invoiceTotalMoney) {
-        this.invoiceTotalMoney = invoiceTotalMoney;
+    public void setTotalMoney(BigDecimal totalMoney) {
+        this.totalMoney = totalMoney;
+    }
+
+    public BigDecimal getCommission() {
+        return commission;
+    }
+
+    public void setCommission(BigDecimal commission) {
+        this.commission = commission;
     }
 
     public BigDecimal getIncome() {
@@ -73,14 +84,6 @@ public class AccountStatisticsDetailVo {
         this.income = income;
     }
 
-    public BigDecimal getBasicSalary() {
-        return basicSalary;
-    }
-
-    public void setBasicSalary(BigDecimal basicSalary) {
-        this.basicSalary = basicSalary;
-    }
-
     public Byte getStatus() {
         return status;
     }
@@ -89,19 +92,19 @@ public class AccountStatisticsDetailVo {
         this.status = status;
     }
 
-    public Date getCreateTime() {
+    public String getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
 
-    public Date getUpdateTime() {
+    public String getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(Date updateTime) {
+    public void setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
     }
 
@@ -111,16 +114,17 @@ public class AccountStatisticsDetailVo {
         sb.append(getClass().getSimpleName());
         sb.append(" [");
         sb.append(", id=").append(id);
-        sb.append(", month=").append(month);
-        sb.append(", hospitalId=").append(hospitalId);
-        sb.append(", hospitalName=").append(hospitalName);
-        sb.append(", invoiceTotalMoney=").append(invoiceTotalMoney);
+        sb.append(", statisticsId=").append(statisticsId);
+        sb.append(", itemId=").append(itemId);
+        sb.append(", itemName=").append(itemName);
+        sb.append(", totalMoney=").append(totalMoney);
+        sb.append(", commission=").append(commission);
         sb.append(", income=").append(income);
-        sb.append(", basicSalary=").append(basicSalary);
         sb.append(", status=").append(status);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);
         sb.append("]");
         return sb.toString();
     }
+
 }

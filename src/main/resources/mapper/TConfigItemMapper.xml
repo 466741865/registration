@@ -70,12 +70,12 @@
         select *
         from t_config_item
         where id = #{id}
-  </select>
+    </select>
 
     <select id="selectItemConfigListByHid" resultMap="BaseResultMap">
-    select *
-    from t_config_item
-    where `status` = 1 and hospital_id = #{hid}
-  </select>
+        select *
+        from t_config_item
+        where `status` = 1 and hospital_id = #{hid}
+     </select>
 
 </mapper>

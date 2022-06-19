@@ -30,4 +30,7 @@ public interface TConfigHospitalDao {
 
     TConfigHospital selectInfoById(@Param("id") Long id);
 
+    List<TConfigHospital> selectHospitalList(@Param("hospitalId") Long hospitalId, @Param("index") int index, @Param("pageSize") int pageSize);
+
+
 }

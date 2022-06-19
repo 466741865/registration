@@ -25,9 +25,9 @@
         now(), now())
     </insert>
     <select id="selectAll" resultMap="BaseResultMap">
-    select id, `name`, phone, hospital_id, item_id, commission, `type`, create_time, update_time
-    from t_config_user_commission
-  </select>
+        select id, `name`, phone, hospital_id, item_id, commission, `type`, create_time, update_time
+        from t_config_user_commission
+    </select>
 
     <select id="selectConfigListTotal" resultType="int">
         select count(1)

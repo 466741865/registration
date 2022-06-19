@@ -42,10 +42,10 @@
             and patient_name like concat('%', #{patientName}, '%')
         </if>
         <if test="settleDate != null and settleDate != ''">
-            and settle_date like concat('%', #{settleDate}, '%')
+            and settle_date = #{settleDate}
         </if>
         <if test="hospitalId != null and hospitalId > 0">
-            and hospital_id like concat('%', #{hospitalId}, '%')
+            and hospital_id = #{hospitalId}
         </if>
     </select>
 
@@ -57,10 +57,10 @@
             and patient_name like concat('%', #{patientName}, '%')
         </if>
         <if test="settleDate != null and settleDate != ''">
-            and settle_date like concat('%', #{settleDate}, '%')
+            and settle_date = #{settleDate}
         </if>
         <if test="hospitalId != null and hospitalId > 0">
-            and hospital_id like concat('%', #{hospitalId}, '%')
+            and hospital_id = #{hospitalId}
         </if>
         order by update_time desc
         limit #{index}, #{pageSize}
@@ -102,5 +102,14 @@
         select *
         from t_account_record
         where id = #{id}
+    </select>
+
+    <select id="calculateInvoiceAmount" resultType="decimal">
+        select sum(invoice_money)
+        from t_account_record
+        where  `status` = 1
+             and settle_date = #{settleDate}
+             and hospital_id = #{hospitalId}
+             and item_id = #{itemId}
     </select>
 </mapper>

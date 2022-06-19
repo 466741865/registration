@@ -66,4 +66,15 @@
         where id = #{id}
     </select>
 
+    <select id="selectHospitalList" resultMap="BaseResultMap">
+        select *
+        from t_config_hospital
+        where `status` = 1
+        <if test="hospitalId != null and hospitalId > 0">
+            and id = #{hospitalId}
+        </if>
+        order by id
+        limit #{index}, #{pageSize}
+    </select>
+
 </mapper>

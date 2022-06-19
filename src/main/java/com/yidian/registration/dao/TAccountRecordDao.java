@@ -3,6 +3,7 @@ package com.yidian.registration.dao;
 import com.yidian.registration.entity.TAccountRecord;
 import org.apache.ibatis.annotations.Param;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface TAccountRecordDao {
@@ -29,4 +30,6 @@ public interface TAccountRecordDao {
     int updateRecord(TAccountRecord hospital);
 
     TAccountRecord selectInfoById(@Param("id") Long id);
+
+    BigDecimal calculateInvoiceAmount(@Param("settleDate") String settleDate, @Param("hospitalId") Long hospitalId, @Param("itemId") Long itemId);
 }

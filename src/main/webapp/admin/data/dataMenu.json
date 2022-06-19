@@ -1,39 +1,39 @@
 [{
-		"id": 1,
-		"title": "工作空间",
-		"type": 0,
+	"id": 1,
+	"title": "工作空间",
+	"type": 0,
+	"icon": "layui-icon layui-icon-console",
+	"href": "",
+	"children": [{
+		"id": 10,
+		"title": "控制后台",
 		"icon": "layui-icon layui-icon-console",
-		"href": "",
-		"children": [{
-			"id": 10,
-			"title": "控制后台",
-			"icon": "layui-icon layui-icon-console",
-			"type": 1,
-			"openType": "_iframe",
-			"href": "view/console/console1.html"
-		}, {
-			"id": 13,
-			"title": "数据分析",
-			"icon": "layui-icon layui-icon-console",
-			"type": 1,
-			"openType": "_iframe",
-			"href": "view/console/console2.html"
-		}, {
-			"id": 14,
-			"title": "百度一下",
-			"icon": "layui-icon layui-icon-console",
-			"type": 1,
-			"openType": "_iframe",
-			"href": "http://www.baidu.com"
-		}, {
-			"id": 15,
-			"title": "主题预览",
-			"icon": "layui-icon layui-icon-console",
-			"type": 1,
-			"openType": "_iframe",
-			"href": "view/system/theme.html"
-		}]
-	},
+		"type": 1,
+		"openType": "_iframe",
+		"href": "views/console/console1.html"
+	}, {
+		"id": 13,
+		"title": "数据分析",
+		"icon": "layui-icon layui-icon-console",
+		"type": 1,
+		"openType": "_iframe",
+		"href": "views/console/console2.html"
+	}, {
+		"id": 14,
+		"title": "百度一下",
+		"icon": "layui-icon layui-icon-console",
+		"type": 1,
+		"openType": "_iframe",
+		"href": "http://www.baidu.com"
+	}, {
+		"id": 15,
+		"title": "主题预览",
+		"icon": "layui-icon layui-icon-console",
+		"type": 1,
+		"openType": "_iframe",
+		"href": "views/system/theme.html"
+	}]
+},
 	{
 		"id": "component",
 		"title": "常用组件",
@@ -45,42 +45,43 @@
 			"title": "基础组件",
 			"icon": "layui-icon layui-icon-console",
 			"type": 0,
-			"children": [{
-				"id": 2011,
-				"title": "功能按钮",
-				"icon": "layui-icon layui-icon-face-smile",
-				"type": 1,
-				"openType": "_iframe",
-				"href": "view/document/button.html"
-			}, {
-				"id": 2014,
-				"title": "表单集合",
-				"icon": "layui-icon layui-icon-face-cry",
-				"type": 1,
-				"openType": "_iframe",
-				"href": "view/document/form.html"
-			}, {
-				"id": 2010,
-				"title": "字体图标",
-				"icon": "layui-icon layui-icon-face-cry",
-				"type": 1,
-				"openType": "_iframe",
-				"href": "view/document/icon.html"
-			}, {
-				"id": 2012,
-				"title": "多选下拉",
-				"icon": "layui-icon layui-icon-face-cry",
-				"type": 1,
-				"openType": "_iframe",
-				"href": "view/document/select.html"
-			}, {
-				"id": 2013,
-				"title": "动态标签",
-				"icon": "layui-icon layui-icon-face-cry",
-				"type": 1,
-				"openType": "_iframe",
-				"href": "view/document/tag.html"
-			}]
+			"children": [
+				{
+					"id": 2011,
+					"title": "功能按钮",
+					"icon": "layui-icon layui-icon-face-smile",
+					"type": 1,
+					"openType": "_iframe",
+					"href": "views/document/button.html"
+				}, {
+					"id": 2014,
+					"title": "表单集合",
+					"icon": "layui-icon layui-icon-face-cry",
+					"type": 1,
+					"openType": "_iframe",
+					"href": "views/document/form.html"
+				}, {
+					"id": 2010,
+					"title": "字体图标",
+					"icon": "layui-icon layui-icon-face-cry",
+					"type": 1,
+					"openType": "_iframe",
+					"href": "views/document/icon.html"
+				}, {
+					"id": 2012,
+					"title": "多选下拉",
+					"icon": "layui-icon layui-icon-face-cry",
+					"type": 1,
+					"openType": "_iframe",
+					"href": "views/document/select.html"
+				}, {
+					"id": 2013,
+					"title": "动态标签",
+					"icon": "layui-icon layui-icon-face-cry",
+					"type": 1,
+					"openType": "_iframe",
+					"href": "views/document/tag.html"
+				}]
 		}, {
 			"id": 203,
 			"title": "进阶组件",
@@ -92,42 +93,42 @@
 				"icon": "layui-icon layui-icon-face-cry",
 				"type": 1,
 				"openType": "_iframe",
-				"href": "view/document/table.html"
+				"href": "views/document/table.html"
 			}, {
 				"id": 2032,
 				"title": "分布表单",
 				"icon": "layui-icon layui-icon-face-cry",
 				"type": 1,
 				"openType": "_iframe",
-				"href": "view/document/step.html"
+				"href": "views/document/step.html"
 			}, {
 				"id": 2033,
 				"title": "树形表格",
 				"icon": "layui-icon layui-icon-face-cry",
 				"type": 1,
 				"openType": "_iframe",
-				"href": "view/document/treetable.html"
+				"href": "views/document/treetable.html"
 			}, {
 				"id": 2034,
 				"title": "树状结构",
 				"icon": "layui-icon layui-icon-face-cry",
 				"type": 1,
 				"openType": "_iframe",
-				"href": "view/document/dtree.html"
+				"href": "views/document/dtree.html"
 			}, {
 				"id": 2035,
 				"title": "文本编辑",
 				"icon": "layui-icon layui-icon-face-cry",
 				"type": 1,
 				"openType": "_iframe",
-				"href": "view/document/tinymce.html"
+				"href": "views/document/tinymce.html"
 			}, {
 				"id": 2036,
 				"title": "卡片组件",
 				"icon": "layui-icon layui-icon-face-cry",
 				"type": 1,
 				"openType": "_iframe",
-				"href": "view/document/card.html"
+				"href": "views/document/card.html"
 			}]
 		}, {
 			"id": 202,
@@ -140,28 +141,28 @@
 				"icon": "layui-icon layui-icon-face-cry",
 				"type": 1,
 				"openType": "_iframe",
-				"href": "view/document/drawer.html"
+				"href": "views/document/drawer.html"
 			}, {
 				"id": 2022,
 				"title": "消息通知",
 				"icon": "layui-icon layui-icon-face-cry",
 				"type": 1,
 				"openType": "_iframe",
-				"href": "view/document/notice.html"
+				"href": "views/document/notice.html"
 			}, {
 				"id": 2024,
 				"title": "加载组件",
 				"icon": "layui-icon layui-icon-face-cry",
 				"type": 1,
 				"openType": "_iframe",
-				"href": "view/document/loading.html"
+				"href": "views/document/loading.html"
 			}, {
 				"id": 2023,
 				"title": "弹层组件",
 				"icon": "layui-icon layui-icon-face-cry",
 				"type": 1,
 				"openType": "_iframe",
-				"href": "view/document/popup.html"
+				"href": "views/document/popup.html"
 			}]
 		},{
 			"id": 60331,
@@ -174,14 +175,14 @@
 				"icon": "layui-icon layui-icon-face-cry",
 				"type": 1,
 				"openType": "_iframe",
-				"href": "view/document/tab.html"
+				"href": "views/document/tab.html"
 			},{
 				"id": 60132,
 				"title": "数据菜单",
 				"icon": "layui-icon layui-icon-face-cry",
 				"type": 1,
 				"openType": "_iframe",
-				"href": "view/document/menu.html"
+				"href": "views/document/menu.html"
 			}]
 		}, {
 			"id": 204,
@@ -189,20 +190,20 @@
 			"icon": "layui-icon layui-icon-console",
 			"type": 0,
 			"children": [{
-					"id": 2041,
-					"title": "哈希加密",
-					"icon": "layui-icon layui-icon-face-cry",
-					"type": 1,
-					"openType": "_iframe",
-					"href": "view/document/hash.html"
-				},
+				"id": 2041,
+				"title": "哈希加密",
+				"icon": "layui-icon layui-icon-face-cry",
+				"type": 1,
+				"openType": "_iframe",
+				"href": "views/document/hash.html"
+			},
 				{
 					"id": 2042,
 					"title": "图标选择",
 					"icon": "layui-icon layui-icon-face-cry",
 					"type": 1,
 					"openType": "_iframe",
-					"href": "view/document/iconPicker.html"
+					"href": "views/document/iconPicker.html"
 				},
 				{
 					"id": 2043,
@@ -210,7 +211,7 @@
 					"icon": "layui-icon layui-icon-face-cry",
 					"type": 1,
 					"openType": "_iframe",
-					"href": "view/document/area.html"
+					"href": "views/document/area.html"
 				},
 				{
 					"id": 2044,
@@ -218,7 +219,7 @@
 					"icon": "layui-icon layui-icon-face-cry",
 					"type": 1,
 					"openType": "_iframe",
-					"href": "view/document/count.html"
+					"href": "views/document/count.html"
 				},
 				{
 					"id": 2045,
@@ -226,7 +227,7 @@
 					"icon": "layui-icon layui-icon-face-cry",
 					"type": 1,
 					"openType": "_iframe",
-					"href": "view/document/topBar.html"
+					"href": "views/document/topBar.html"
 				}
 			]
 		}]
@@ -238,20 +239,20 @@
 		"type": 0,
 		"href": "",
 		"children": [{
-				"id": "success",
-				"title": "成功",
-				"icon": "layui-icon layui-icon-face-smile",
-				"type": 1,
-				"openType": "_iframe",
-				"href": "view/result/success.html"
-			},
+			"id": "success",
+			"title": "成功",
+			"icon": "layui-icon layui-icon-face-smile",
+			"type": 1,
+			"openType": "_iframe",
+			"href": "views/result/success.html"
+		},
 			{
 				"id": "failure",
 				"title": "失败",
 				"icon": "layui-icon layui-icon-face-cry",
 				"type": 1,
 				"openType": "_iframe",
-				"href": "view/result/error.html"
+				"href": "views/result/error.html"
 			}
 		]
 	},
@@ -262,20 +263,20 @@
 		"type": 0,
 		"href": "",
 		"children": [{
-				"id": 403,
-				"title": "403",
-				"icon": "layui-icon layui-icon-face-smile",
-				"type": 1,
-				"openType": "_iframe",
-				"href": "view/error/403.html"
-			},
+			"id": 403,
+			"title": "403",
+			"icon": "layui-icon layui-icon-face-smile",
+			"type": 1,
+			"openType": "_iframe",
+			"href": "views/error/403.html"
+		},
 			{
 				"id": 404,
 				"title": "404",
 				"icon": "layui-icon layui-icon-face-cry",
 				"type": 1,
 				"openType": "_iframe",
-				"href": "view/error/404.html"
+				"href": "views/error/404.html"
 			},
 
 			{
@@ -284,7 +285,7 @@
 				"icon": "layui-icon layui-icon-face-cry",
 				"type": 1,
 				"openType": "_iframe",
-				"href": "view/error/500.html"
+				"href": "views/error/500.html"
 			}
 
 		]
@@ -296,20 +297,20 @@
 		"type": 0,
 		"href": "",
 		"children": [{
-				"id": 601,
-				"title": "用户管理",
-				"icon": "layui-icon layui-icon-face-smile",
-				"type": 1,
-				"openType": "_iframe",
-				"href": "view/system/user.html"
-			},
+			"id": 601,
+			"title": "用户管理",
+			"icon": "layui-icon layui-icon-face-smile",
+			"type": 1,
+			"openType": "_iframe",
+			"href": "views/system/user.html"
+		},
 			{
 				"id": 602,
 				"title": "角色管理",
 				"icon": "layui-icon layui-icon-face-cry",
 				"type": 1,
 				"openType": "_iframe",
-				"href": "view/system/role.html"
+				"href": "views/system/role.html"
 			},
 
 			{
@@ -318,7 +319,7 @@
 				"icon": "layui-icon layui-icon-face-cry",
 				"type": 1,
 				"openType": "_iframe",
-				"href": "view/system/power.html"
+				"href": "views/system/power.html"
 			},
 
 			{
@@ -327,7 +328,7 @@
 				"icon": "layui-icon layui-icon-face-cry",
 				"type": 1,
 				"openType": "_iframe",
-				"href": "view/system/deptment.html"
+				"href": "views/system/deptment.html"
 			},
 			{
 				"id": 605,
@@ -335,14 +336,14 @@
 				"icon": "layui-icon layui-icon-face-cry",
 				"type": 1,
 				"openType": "_iframe",
-				"href": "view/system/log.html"
+				"href": "views/system/log.html"
 			}, {
 				"id": 606,
 				"title": "数据字典",
 				"icon": "layui-icon layui-icon-face-cry",
 				"type": 1,
 				"openType": "_iframe",
-				"href": "view/system/dict.html"
+				"href": "views/system/dict.html"
 			}
 
 		]
@@ -366,7 +367,108 @@
 			"icon": "layui-icon layui-icon-face-smile",
 			"type": 1,
 			"openType": "_iframe",
-			"href": "view/system/space.html"
+			"href": "views/system/space.html"
 		}]
+	}, {
+	"id": "echarts",
+	"title": "数据图表",
+	"icon": "layui-icon layui-icon-chart",
+	"type": 0,
+	"href": "",
+	"children": [{
+		"id": 12121,
+		"title": "折线图",
+		"icon": "layui-icon layui-icon-face-smile",
+		"type": 1,
+		"openType": "_iframe",
+		"href": "views/echarts/line.html"
+	}, {
+		"id": 121212,
+		"title": "柱状图",
+		"icon": "layui-icon layui-icon-face-smile",
+		"type": 1,
+		"openType": "_iframe",
+		"href": "views/echarts/column.html"
+	}]
+},
+	{
+		"id": "code",
+		"title": "开发工具",
+		"icon": "layui-icon layui-icon-util",
+		"type": 0,
+		"href": "",
+		"children": [{
+			"id": 801,
+			"title": "表单构建",
+			"icon": "layui-icon layui-icon-util",
+			"type": 1,
+			"openType": "_iframe",
+			"href": "component/code/index.html"
+		}]
+	},
+	{
+		"id": "patient",
+		"title": "预约管理",
+		"icon": "layui-icon layui-icon-app",
+		"type": 0,
+		"href": "",
+		"children": [{
+			"id": 901,
+			"title": "病源管理",
+			"icon": "layui-icon layui-icon-user",
+			"type": 1,
+			"openType": "_iframe",
+			"href": "views/business/patient/patientManager.html"
+		}]
+	},
+	{
+		"id": "config",
+		"title": "账单管理",
+		"icon": "layui-icon layui-icon-app",
+		"type": 0,
+		"href": "",
+		"children": [
+			{
+				"id": 1201,
+				"title": "票据管理",
+				"icon": "layui-icon layui-icon-user",
+				"type": 1,
+				"openType": "_iframe",
+				"href": "views/business/account/bills/accountBillsManager.html"
+			}
+		]
+	},
+	{
+		"id": "config",
+		"title": "配置管理",
+		"icon": "layui-icon layui-icon-app",
+		"type": 0,
+		"href": "",
+		"children": [
+			{
+				"id": 1101,
+				"title": "医院管理",
+				"icon": "layui-icon layui-icon-user",
+				"type": 1,
+				"openType": "_iframe",
+				"href": "views/business/config/hospital/hospitalManager.html"
+			},
+			{
+				"id": 1102,
+				"title": "项目管理",
+				"icon": "layui-icon layui-icon-user",
+				"type": 1,
+				"openType": "_iframe",
+				"href": "views/business/config/item/itemManager.html"
+			},
+			{
+				"id": 1103,
+				"title": "人员管理",
+				"icon": "layui-icon layui-icon-user",
+				"type": 1,
+				"openType": "_iframe",
+				"href": "views/business/config/commission/userCommissionManager.html"
+			}
+		]
 	}
 ]
