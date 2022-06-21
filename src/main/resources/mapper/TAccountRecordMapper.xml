@@ -111,5 +111,8 @@
              and settle_date = #{settleDate}
              and hospital_id = #{hospitalId}
              and item_id = #{itemId}
+             <if test="belongId != null and belongId > 0">
+                 and belong_id = #{belongId}
+             </if>
     </select>
 </mapper>

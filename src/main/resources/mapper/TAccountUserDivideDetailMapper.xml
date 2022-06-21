@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yidian.registration.dao.TAccountUserDivideDetailDao">
+  <resultMap id="BaseResultMap" type="com.yidian.registration.entity.TAccountUserDivideDetail">
+    <result column="id" jdbcType="BIGINT" property="id" />
+    <result column="divide_id" jdbcType="BIGINT" property="divideId" />
+    <result column="belong_id" jdbcType="BIGINT" property="belongId" />
+    <result column="belong_name" jdbcType="VARCHAR" property="belongName" />
+    <result column="hospital_id" jdbcType="BIGINT" property="hospitalId" />
+    <result column="hospital_name" jdbcType="VARCHAR" property="hospitalName" />
+    <result column="item_id" jdbcType="BIGINT" property="itemId" />
+    <result column="item_name" jdbcType="VARCHAR" property="itemName" />
+    <result column="invoice_total_money" jdbcType="DECIMAL" property="invoiceTotalMoney" />
+    <result column="commission" jdbcType="DECIMAL" property="commission" />
+    <result column="commission_type" jdbcType="TINYINT" property="commissionType" />
+    <result column="income" jdbcType="DECIMAL" property="income" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <insert id="insert" parameterType="com.yidian.registration.entity.TAccountUserDivideDetail">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into t_account_user_divide_detail (divide_id, belong_id, belong_name, 
+      hospital_id, hospital_name, item_id, 
+      item_name, invoice_total_money, commission, 
+      commission_type, income, `status`, 
+      create_time, update_time)
+    values (#{divideId,jdbcType=BIGINT}, #{belongId,jdbcType=BIGINT}, #{belongName,jdbcType=VARCHAR}, 
+      #{hospitalId,jdbcType=BIGINT}, #{hospitalName,jdbcType=VARCHAR}, #{itemId,jdbcType=BIGINT}, 
+      #{itemName,jdbcType=VARCHAR}, #{invoiceTotalMoney,jdbcType=DECIMAL}, #{commission,jdbcType=DECIMAL}, 
+      #{commissionType,jdbcType=TINYINT}, #{income,jdbcType=DECIMAL}, #{status,jdbcType=TINYINT}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, divide_id, belong_id, belong_name, hospital_id, hospital_name, item_id, 
+    item_name, invoice_total_money, commission, commission_type, income, `status`, create_time, 
+    update_time
+    from t_account_user_divide_detail
+  </select>
+
+    <select id="selectDetailListByDid" resultMap="BaseResultMap">
+    select *
+    from t_account_user_divide_detail
+    where divide_id = #{did}
+    <if test="type != null and type > 0">
+      and commission_type = #{type}
+    </if>
+  </select>
+
+  <insert id="batchInsert">
+    insert into t_account_user_divide_detail (divide_id, belong_id, belong_name,
+      hospital_id, hospital_name, item_id,
+      item_name, invoice_total_money, commission,
+      commission_type, income, `status`,
+      create_time, update_time)
+    values
+    <foreach collection="records" item="record" index="index" separator=",">
+      (#{record.divideId,jdbcType=BIGINT}, #{record.belongId,jdbcType=BIGINT}, #{record.belongName,jdbcType=VARCHAR},
+      #{record.hospitalId,jdbcType=BIGINT}, #{record.hospitalName,jdbcType=VARCHAR}, #{record.itemId,jdbcType=BIGINT},
+      #{record.itemName,jdbcType=VARCHAR}, #{record.invoiceTotalMoney,jdbcType=DECIMAL}, #{record.commission,jdbcType=DECIMAL},
+      #{record.commissionType,jdbcType=TINYINT}, #{record.income,jdbcType=DECIMAL}, #{record.status,jdbcType=TINYINT},
+       now(), now())
+    </foreach>
+  </insert>
+
+  <select id="calculateItemInvoiceAmount" resultMap="BaseResultMap">
+    select sum(invoice_total_money) as invoiceTotalMoney, sum(income) as income
+    from t_account_user_divide_detail
+    where  `status` = 1
+    and divide_id = #{did}
+    <if test="cType != null and cType > 0">
+      and commission_type = #{cType}
+    </if>
+  </select>
+
+</mapper>

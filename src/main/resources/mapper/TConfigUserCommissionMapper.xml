@@ -95,4 +95,16 @@
             and `type` = #{type}
         </if>
     </select>
+
+    <select id="selectUserCommissionConfigList" resultMap="BaseResultMap">
+        select *
+        from t_config_user_commission
+        where `status` = 1
+        <if test="belongId != null and belongId > 0">
+            and id = #{belongId}
+        </if>
+        <if test="type != null and type > 0">
+            and `type` = #{type}
+        </if>
+    </select>
 </mapper>

@@ -57,11 +57,11 @@ public class AccountStatisticsServiceImpl implements IAccountStatisticsService {
         pageVo.setPageNum(pageNo);
         pageVo.setPageSize(pageSize);
         //查询总量
-        int configListTotal = accountStatisticsDao.selectListTotal(hospitalId, settleDate);
-        if (configListTotal <= 0) {
+        int total = accountStatisticsDao.selectListTotal(hospitalId, settleDate);
+        if (total <= 0) {
             return pageVo;
         }
-        pageVo.setCount(configListTotal);
+        pageVo.setCount(total);
 
         int index = (pageNo - 1) * pageSize;
         List<TAccountStatistics> recordList = accountStatisticsDao.selectList(hospitalId, settleDate, index, pageSize);
@@ -104,7 +104,6 @@ public class AccountStatisticsServiceImpl implements IAccountStatisticsService {
         //查询详情
         List<TAccountStatisticsDetail> statisticsDetails = accountStatisticsDetailDao.selectDetailBySid(id);
         if (CollectionUtils.isEmpty(statisticsDetails)) {
-            accountStatisticsVo.setDetailList(detailList);
             accountStatisticsVo.setDetailList(Collections.emptyList());
             return accountStatisticsVo;
         }
@@ -255,7 +254,7 @@ public class AccountStatisticsServiceImpl implements IAccountStatisticsService {
             statisticsDetail.setCommission(item.getCommission());
             statisticsDetail.setStatus((byte) UserStatusEnum.ENABLED.getCode());
             //根据医院、项目查找票据
-            BigDecimal invoiceMoney = accountRecordDao.calculateInvoiceAmount(settleDate, hospitalId, item.getId());
+            BigDecimal invoiceMoney = accountRecordDao.calculateInvoiceAmount(settleDate, hospitalId, item.getId(), null);
             if (Objects.isNull(invoiceMoney)) {
                 invoiceMoney = new BigDecimal(0);
             }

@@ -59,7 +59,7 @@ public class AesEncrypt {
 			byte[] result = cipher.doFinal(plain);// 加密
 			return result;
 		} catch (Exception e) {
-			LOG.error("【解密错误】{}", e.getMessage());
+			LOG.error("【加密错误】{}", e.getMessage());
 			throw new RuntimeException(e);
 		}
 	}//method
@@ -72,7 +72,7 @@ public class AesEncrypt {
 			byte[] result = cipher.doFinal(encrypt);
 			return result;
 		} catch (Exception e) {
-			LOG.error("【加密错误】{}", e.getMessage());
+			LOG.error("【解密错误】{}", e.getMessage());
 			throw new RuntimeException(e);
 		}
 	}//method
@@ -87,7 +87,7 @@ public class AesEncrypt {
 			String result = Base64Util.encodeToString(encryptBytes);
 			return result;
 		} catch (Exception e) {
-			LOG.error("【解密错误】{}", e.getMessage());
+			LOG.error("【加密错误】{}", e.getMessage());
 			throw new RuntimeException(e);
 		}
 	}//method
@@ -96,14 +96,14 @@ public class AesEncrypt {
 	 * 返回明文字符串，UTF8编码
 	 * @param encrypt base64编码的密文
 	 */
-	public String decrypt(String encrypt) throws Exception {
+	public String decrypt(String encrypt) {
 		try {
 			byte[] encryptBytes = Base64Util.decode(encrypt);
 			byte[] plainBytes = decrypt(encryptBytes);
 			return new String(plainBytes, UTF_8);
 		} catch (Exception e) {
-			LOG.error("【加密错误】{}", e.getMessage());
-			throw new Exception("参数解密失败,"+e.getMessage());
+			LOG.error("【解密错误】{}", e.getMessage());
+			throw new RuntimeException("参数解密失败,"+e.getMessage());
 		}
 	}//method
 

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yidian.registration.dao.TAccountUserDivideDao">
+    <resultMap id="BaseResultMap" type="com.yidian.registration.entity.TAccountUserDivide">
+        <result column="id" jdbcType="BIGINT" property="id"/>
+        <result column="month" jdbcType="VARCHAR" property="month"/>
+        <result column="belong_id" jdbcType="BIGINT" property="belongId"/>
+        <result column="belong_name" jdbcType="VARCHAR" property="belongName"/>
+        <result column="invoice_total_money" jdbcType="DECIMAL" property="invoiceTotalMoney"/>
+        <result column="income" jdbcType="DECIMAL" property="income"/>
+        <result column="commission_money" jdbcType="DECIMAL" property="commissionMoney"/>
+        <result column="status" jdbcType="TINYINT" property="status"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+    <insert id="insert" parameterType="com.yidian.registration.entity.TAccountUserDivide"
+            useGeneratedKeys="true" keyProperty="id">
+    insert into t_account_user_divide (`month`, belong_id, belong_name,
+      invoice_total_money, income, commission_money,
+      `status`, create_time, update_time
+      )
+    values (#{month,jdbcType=VARCHAR}, #{belongId,jdbcType=BIGINT}, #{belongName,jdbcType=VARCHAR}, 
+      #{invoiceTotalMoney,jdbcType=DECIMAL}, #{income,jdbcType=DECIMAL}, #{commissionMoney,jdbcType=DECIMAL},
+      #{status,jdbcType=TINYINT}, now(), now()
+      )
+  </insert>
+    <select id="selectAll" resultMap="BaseResultMap">
+    select id, `month`, belong_id, belong_name, invoice_total_money, income, commission_money,
+    `status`, create_time, update_time
+    from t_account_user_divide
+  </select>
+
+    <update id="update" parameterType="com.yidian.registration.entity.TAccountUserDivide">
+        update t_account_user_divide
+        <set>
+            <if test="invoiceTotalMoney != null">
+                invoice_total_money = #{invoiceTotalMoney},
+            </if>
+            <if test="income != null">
+                income = #{income},
+            </if>
+            <if test="commissionMoney != null">
+                commission_money = #{commissionMoney},
+            </if>
+
+            <if test="status != null">
+                `status` = #{status},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+
+    <select id="selectListTotal" resultType="int">
+        select count(*)
+        from t_account_user_divide
+        where `status` = 1
+        <if test="belongId != null and belongId > 0">
+            and belong_id = #{belongId}
+        </if>
+        <if test="month != null and month != ''">
+            and `month` = #{month}
+        </if>
+    </select>
+
+    <select id="selectList" resultMap="BaseResultMap">
+        select *
+        from t_account_user_divide
+        where `status` = 1
+        <if test="belongId != null and belongId > 0">
+            and belong_id = #{belongId}
+        </if>
+        <if test="month != null and month != ''">
+            and `month` = #{month}
+        </if>
+        order by `month`, id desc
+        limit #{index},#{pageSize}
+    </select>
+
+    <select id="selectInfoById" resultMap="BaseResultMap">
+    select *
+    from t_account_user_divide
+    where id = #{id}
+  </select>
+
+    <select id="selectInfoByMonth" resultMap="BaseResultMap">
+    select *
+    from t_account_user_divide
+    where belong_id = #{belongId} and `month` = #{month}
+  </select>
+</mapper>
