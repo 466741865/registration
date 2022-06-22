@@ -34,4 +34,6 @@ public interface TConfigUserCommissionDao {
 
     List<TConfigUserCommission> selectUserCommissionConfigList(@Param("belongId") Long belongId);
 
+    List<TConfigUserCommission> selectCommissionConfigList(@Param("belongId") Long belongId, @Param("hospitalId") Long hospitalId, @Param("itemId") Long itemId);
+
 }

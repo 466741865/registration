@@ -92,4 +92,13 @@
             and belong_id = #{belongId}
         </if>
     </select>
+
+    <select id="selectCommissionConfigList" resultMap="BaseResultMap">
+        select *
+        from t_config_user_commission
+        where `status` = 1
+            and belong_id = #{belongId}
+            and hospital_id = #{hospitalId}
+            and item_id = #{itemId}
+    </select>
 </mapper>

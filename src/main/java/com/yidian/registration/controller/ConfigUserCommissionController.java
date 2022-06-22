@@ -2,6 +2,7 @@ package com.yidian.registration.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.yidian.registration.constant.Constants;
+import com.yidian.registration.enums.StatusEnum;
 import com.yidian.registration.service.IConfigUserCommissionService;
 import com.yidian.registration.utils.Tools;
 import com.yidian.registration.vo.PageVo;
@@ -11,6 +12,7 @@ import com.yidian.registration.vo.config.user.ConfigUserCommissionDeatilVo;
 import com.yidian.registration.vo.config.user.ConfigUserCommissionUpdateVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @Author: QingHang
@@ -65,6 +68,12 @@ public class ConfigUserCommissionController {
             logger.info("[addUserCommission]添加用户项目提成，参数存在空值");
             return new ResultVo<>(-1, "请填写完整的信息");
         }
+        //校验
+        List<ConfigUserCommissionDeatilVo> configs = configUserCommissionService.getUserCommissionConfig(addVo.getBelongId(), addVo.getHospitalId(), addVo.getItemId());
+        if (!CollectionUtils.isEmpty(configs)) {
+            logger.info("[addUserCommission]添加用户项目提成, 已存在相同配置,end，userAddVo={}", addVo.toString());
+            return new ResultVo<>(StatusEnum.NODATA_CODE.getCode(), "已存在相同的配置，不可重复添加");
+        }
         Boolean res = configUserCommissionService.addUserCommissionConfig(addVo);
         logger.info("[addUserCommission]添加用户项目提成,end，userAddVo={},res={}", addVo.toString(), JSON.toJSON(res));
         return new ResultVo<>(res);
@@ -96,13 +105,26 @@ public class ConfigUserCommissionController {
      */
     @PostMapping(value = "/update", produces = "application/json;charset=UTF-8")
     public ResultVo<Boolean> updateInfo(ConfigUserCommissionUpdateVo updateVo) {
-        logger.info("[updateInfo]修改信息，updateVo={}", updateVo);
-        if (Tools.isNull(updateVo) || updateVo.getId() <= 0) {
-            logger.info("[updateInfo]修改信息，参数存在空值");
-            return new ResultVo<>(-1, "请选择单位");
+        logger.info("[updateInfo]修改用户项目提成，updateVo={}", updateVo);
+        if (Tools.isNull(updateVo) || updateVo.getId() <= 0
+                || Tools.isNull(updateVo.getBelongId())
+                || Tools.isNull(updateVo.getCommission())
+                || Tools.isNull(updateVo.getHospitalId())
+                || Tools.isNull(updateVo.getItemId())) {
+            logger.info("[updateInfo]修改用户项目提成，参数存在空值");
+            return new ResultVo<>(-1, "请选择列表信息");
+        }
+        //校验
+        List<ConfigUserCommissionDeatilVo> configs = configUserCommissionService.getUserCommissionConfig(updateVo.getBelongId(), updateVo.getHospitalId(), updateVo.getItemId());
+        if (!CollectionUtils.isEmpty(configs)) {
+            configs = configs.stream().filter(config -> !config.getId().equals(updateVo.getId())).collect(Collectors.toList());
+            if (!CollectionUtils.isEmpty(configs)) {
+                logger.info("[addUserCommission]修改用户项目提成, 已存在相同配置,end，userAddVo={}", updateVo.toString());
+                return new ResultVo<>(StatusEnum.NODATA_CODE.getCode(), "已存在相同的配置，请修改后再提交");
+            }
         }
         boolean result = configUserCommissionService.updateUserCommissionConfig(updateVo);
-        logger.info("[updateInfo]修改信息,end,updateVo={},res={}", updateVo, result);
+        logger.info("[updateInfo]修改用户项目提成,end,updateVo={},res={}", updateVo, result);
         return new ResultVo<>(result);
     }
 
@@ -126,6 +148,7 @@ public class ConfigUserCommissionController {
 
     /**
      * 根据项目id查询项目列表
+     *
      * @param itemId
      * @return
      */

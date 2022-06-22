@@ -86,7 +86,7 @@ public class ConfigUserCommissionServiceImpl implements IConfigUserCommissionSer
         ConfigUserCommissionDeatilVo vo = entityToVo(commission);
         //查询user信息
         TConfigUser user = configUserDao.selectInfoById(commission.getBelongId());
-        if(Objects.nonNull(user)){
+        if (Objects.nonNull(user)) {
             vo.setBelongName(user.getName());
         }
 
@@ -196,12 +196,27 @@ public class ConfigUserCommissionServiceImpl implements IConfigUserCommissionSer
             ConfigUserCommissionDeatilVo detailVo = entityToVo(commission);
             //查询user信息
             TConfigUser user = configUserDao.selectInfoById(commission.getBelongId());
-            if(Objects.nonNull(user)){
+            if (Objects.nonNull(user)) {
                 detailVo.setBelongName(user.getName());
             }
             list.add(detailVo);
         }
         logger.info("getUserCommissionConfigListByIid end itemId:{}", itemId);
+        return list;
+    }
+
+    @Override
+    public List<ConfigUserCommissionDeatilVo> getUserCommissionConfig(Long belongId, Long hospitalId, Long itemId) {
+        if(Objects.isNull(belongId) || Objects.isNull(hospitalId) || Objects.isNull(itemId)){
+            return Collections.emptyList();
+        }
+        List<TConfigUserCommission> userCommissions = configUserCommissionDao.selectCommissionConfigList(belongId, hospitalId, itemId);
+        List<ConfigUserCommissionDeatilVo> list = new ArrayList<>();
+        for (TConfigUserCommission commission : userCommissions) {
+            ConfigUserCommissionDeatilVo detailVo = entityToVo(commission);
+
+            list.add(detailVo);
+        }
         return list;
     }
 }

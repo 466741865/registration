@@ -56,4 +56,13 @@ public interface IConfigUserCommissionService {
      */
     List<ConfigUserCommissionDeatilVo>  getUserCommissionConfigListByIid(Long iid);
 
+    /**
+     * 查询指定的项目提成
+     * @param belongId
+     * @param hospitalId
+     * @param itemId
+     * @return
+     */
+    List<ConfigUserCommissionDeatilVo> getUserCommissionConfig(Long belongId, Long hospitalId, Long itemId);
+
 }
