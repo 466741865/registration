@@ -16,7 +16,7 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">开票人</label>
                     <div class="layui-input-block">
-                        <input type="text" name="patientName" lay-verify="title" autocomplete="off" placeholder="请输入项目"
+                        <input type="text" name="patientName" lay-verify="title" autocomplete="off" placeholder="请输入开票人"
                                class="layui-input">
                     </div>
                 </div>
@@ -164,7 +164,7 @@
                     } else {
                         var opt = "<option value=\"\"></option>";
                         for (var i = 0; i < result.length; i++) {
-                            opt += "<option value=\"" + result[i].id + "\">" + result[i].name + "</option>";
+                            opt += "<option value=\"" + result[i].belongId + "\">" + result[i].belongName + "</option>";
                         }
                         $("#belongId").html(opt);
                         form.render('select');

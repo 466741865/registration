@@ -34,20 +34,19 @@ public class ConfigUserCommissionController {
     private IConfigUserCommissionService configUserCommissionService;
 
     @RequestMapping(value = "/getList", produces = "application/json;charset=UTF-8")
-    public PageVo<List<ConfigUserCommissionDeatilVo>> getUserCommissionList(String name, Integer page, Integer limit) {
-        logger.info("[getUserCommissionList]获取用户列表,start，name={}, pageNo={}, pageSize={}", name, page, limit);
+    public PageVo<List<ConfigUserCommissionDeatilVo>> getUserCommissionList(Long belongId, Integer page, Integer limit) {
+        logger.info("[getUserCommissionList]获取用户提成项目列表,start，BelongId={}, pageNo={}, pageSize={}", belongId, page, limit);
         if (Tools.isNull(page) || page <= 0) {
             page = Constants.DEFAULT_PAGE_NO;
         }
         if (Tools.isNull(limit) || limit <= 0) {
             limit = Constants.DEFAULT_PAGE_SIZE;
         }
-        PageVo<List<ConfigUserCommissionDeatilVo>> pageVo = configUserCommissionService.getUserCommissionConfigList(name, page, limit);
+        PageVo<List<ConfigUserCommissionDeatilVo>> pageVo = configUserCommissionService.getUserCommissionConfigList(belongId, page, limit);
         pageVo.setPageNum(page);
         pageVo.setPageSize(limit);
-        logger.info("[getUserCommissionList]获取用户列表,end，name={}, pageNo={}, pageSize={}, res:{}", name, page, limit, JSON.toJSON(pageVo));
+        logger.info("[getUserCommissionList]获取用户提成项目列表,end，BelongId={}, pageNo={}, pageSize={}, res:{}", belongId, page, limit, JSON.toJSON(pageVo));
         return pageVo;
-
     }
 
     /**
@@ -58,16 +57,16 @@ public class ConfigUserCommissionController {
      */
     @RequestMapping(value = "/add", produces = "application/json;charset=UTF-8")
     public ResultVo<Boolean> addUserCommission(ConfigUserCommissionAddVo addVo) {
-        logger.info("[addUserCommission]添加用户，userAddVo={}", JSON.toJSON(addVo));
-        if (Tools.isNull(addVo) || Tools.isNull(addVo.getName())
+        logger.info("[addUserCommission]添加用户项目提成，userAddVo={}", JSON.toJSON(addVo));
+        if (Tools.isNull(addVo) || Tools.isNull(addVo.getBelongId())
                 || Tools.isNull(addVo.getCommission())
                 || Tools.isNull(addVo.getHospitalId())
                 || Tools.isNull(addVo.getItemId())) {
-            logger.info("[addUserCommission]添加用户，参数存在空值");
+            logger.info("[addUserCommission]添加用户项目提成，参数存在空值");
             return new ResultVo<>(-1, "请填写完整的信息");
         }
         Boolean res = configUserCommissionService.addUserCommissionConfig(addVo);
-        logger.info("[addUserCommission]添加用户,end，userAddVo={},res={}", addVo.toString(), JSON.toJSON(res));
+        logger.info("[addUserCommission]添加用户项目提成,end，userAddVo={},res={}", addVo.toString(), JSON.toJSON(res));
         return new ResultVo<>(res);
     }
 

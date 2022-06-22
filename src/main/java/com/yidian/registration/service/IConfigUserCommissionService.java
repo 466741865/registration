@@ -16,10 +16,10 @@ public interface IConfigUserCommissionService {
 
     /**
      * 查询配置列表
-     * @param name
+     * @param belongId
      * @return
      */
-    PageVo<List<ConfigUserCommissionDeatilVo>> getUserCommissionConfigList(String name, Integer pageNo, Integer pageSize);
+    PageVo<List<ConfigUserCommissionDeatilVo>> getUserCommissionConfigList(Long belongId, Integer pageNo, Integer pageSize);
 
     /**
      * 查询配置详情

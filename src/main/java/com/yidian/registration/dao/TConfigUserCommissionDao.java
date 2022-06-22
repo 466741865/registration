@@ -13,25 +13,25 @@ public interface TConfigUserCommissionDao {
     /**
      * 查询list总量
      *
-     * @param name
+     * @param belongId
      * @return
      */
-    int selectConfigListTotal(@Param("name") String name);
+    int selectConfigListTotal(@Param("belongId") Long belongId);
 
     /**
      * 查询list
      *
-     * @param name
+     * @param belongId
      * @return
      */
-    List<TConfigUserCommission> selectConfigList(@Param("name") String name, @Param("index") int index, @Param("pageSize") int pageSize);
+    List<TConfigUserCommission> selectConfigList(@Param("belongId") Long belongId, @Param("index") int index, @Param("pageSize") int pageSize);
 
-    int updateConfig(TConfigUserCommission hospital);
+    int updateConfig(TConfigUserCommission userCommission);
 
     TConfigUserCommission selectInfoById(@Param("id") Long id);
 
-    List<TConfigUserCommission> selectConfigListByIid(@Param("itemId") Long itemId, @Param("type") Integer type);
+    List<TConfigUserCommission> selectConfigListByIid(@Param("itemId") Long itemId);
 
-    List<TConfigUserCommission> selectUserCommissionConfigList(@Param("belongId") Long belongId, @Param("type") Integer type);
+    List<TConfigUserCommission> selectUserCommissionConfigList(@Param("belongId") Long belongId);
 
 }

@@ -3,9 +3,7 @@ package com.yidian.registration.vo.config.user;
 
 public class ConfigUserCommissionAddVo {
 
-    private String name;
-
-    private String phone;
+    private Long belongId;
 
     private Long hospitalId;
 
@@ -13,20 +11,12 @@ public class ConfigUserCommissionAddVo {
 
     private String commission;
 
-    public String getName() {
-        return name;
+    public Long getBelongId() {
+        return belongId;
     }
 
-    public void setName(String name) {
-        this.name = name == null ? null : name.trim();
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone == null ? null : phone.trim();
+    public void setBelongId(Long belongId) {
+        this.belongId = belongId;
     }
 
     public Long getHospitalId() {
@@ -58,8 +48,7 @@ public class ConfigUserCommissionAddVo {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());
         sb.append(" [");
-        sb.append(", name=").append(name);
-        sb.append(", phone=").append(phone);
+        sb.append(", belongId=").append(belongId);
         sb.append(", hospitalId=").append(hospitalId);
         sb.append(", itemId=").append(itemId);
         sb.append(", commission=").append(commission);

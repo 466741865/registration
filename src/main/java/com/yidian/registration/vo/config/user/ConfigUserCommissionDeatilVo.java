@@ -5,9 +5,9 @@ package com.yidian.registration.vo.config.user;
 public class ConfigUserCommissionDeatilVo {
     private Long id;
 
-    private String name;
+    private Long belongId;
 
-    private String phone;
+    private String belongName;
 
     private Long hospitalId;
 
@@ -18,8 +18,6 @@ public class ConfigUserCommissionDeatilVo {
     private String itemName;
 
     private String commission;
-
-    private Byte type;
 
     private Byte status;
 
@@ -35,20 +33,20 @@ public class ConfigUserCommissionDeatilVo {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public Long getBelongId() {
+        return belongId;
     }
 
-    public void setName(String name) {
-        this.name = name == null ? null : name.trim();
+    public void setBelongId(Long belongId) {
+        this.belongId = belongId;
     }
 
-    public String getPhone() {
-        return phone;
+    public String getBelongName() {
+        return belongName;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone == null ? null : phone.trim();
+    public void setBelongName(String belongName) {
+        this.belongName = belongName;
     }
 
     public Long getHospitalId() {
@@ -91,14 +89,6 @@ public class ConfigUserCommissionDeatilVo {
         this.commission = commission;
     }
 
-    public Byte getType() {
-        return type;
-    }
-
-    public void setType(Byte type) {
-        this.type = type;
-    }
-
     public Byte getStatus() {
         return status;
     }
@@ -129,14 +119,13 @@ public class ConfigUserCommissionDeatilVo {
         sb.append(getClass().getSimpleName());
         sb.append(" [");
         sb.append(", id=").append(id);
-        sb.append(", name=").append(name);
-        sb.append(", phone=").append(phone);
+        sb.append(", belongId=").append(belongId);
+        sb.append(", belongName=").append(belongName);
         sb.append(", hospitalId=").append(hospitalId);
         sb.append(", hospitalName=").append(hospitalName);
         sb.append(", itemId=").append(itemId);
         sb.append(", itemName=").append(itemName);
         sb.append(", commission=").append(commission);
-        sb.append(", type=").append(type);
         sb.append(", status=").append(status);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);

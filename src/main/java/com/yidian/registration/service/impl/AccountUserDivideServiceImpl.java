@@ -129,11 +129,11 @@ public class AccountUserDivideServiceImpl implements IAccountUserDivideService {
         accountDivideVo.setItemDivides(detailList);
         //是否是主类型
         TConfigUserCommission userCommission = configUserCommissionDao.selectInfoById(accountDivideVo.getBelongId());
-        if (Objects.nonNull(userCommission) && UserCommissionTypeEnum.MAIN.getType().equals((int) userCommission.getType())) {
-            //查询票据提成收入
-            List<AccountDivideDetailVo> commissionDetailList = getDivideItemDetail(did, DivideCommissionTypeEnum.DEPUTY.getType());
-            accountDivideVo.setItemDivides(detailList);
-        }
+//        if (Objects.nonNull(userCommission) && UserCommissionTypeEnum.MAIN.getType().equals((int) userCommission.getType())) {
+//            //查询票据提成收入
+//            List<AccountDivideDetailVo> commissionDetailList = getDivideItemDetail(did, DivideCommissionTypeEnum.DEPUTY.getType());
+//            accountDivideVo.setItemDivides(detailList);
+//        }
         return accountDivideVo;
     }
 
@@ -184,33 +184,34 @@ public class AccountUserDivideServiceImpl implements IAccountUserDivideService {
             throw new BizException(StatusEnum.NODATA_CODE.getCode(), "当月已存在有效分成账单");
         }
         //查找主分成人员
-        List<TConfigUserCommission> userCommissionsMain = configUserCommissionDao.selectUserCommissionConfigList(null, UserCommissionTypeEnum.MAIN.getType());
-        TConfigUserCommission commissionMain = null;
-        if (CollectionUtils.isEmpty(userCommissionsMain)) {
-            throw new BizException(StatusEnum.NODATA_CODE.getCode(), "缺少核心人员配置");
-        }
-        commissionMain = userCommissionsMain.get(0);
+//        List<TConfigUserCommission> userCommissionsMain = configUserCommissionDao.selectUserCommissionConfigList(null, UserCommissionTypeEnum.MAIN.getType());
+//        TConfigUserCommission commissionMain = null;
+//        if (CollectionUtils.isEmpty(userCommissionsMain)) {
+//            throw new BizException(StatusEnum.NODATA_CODE.getCode(), "缺少核心人员配置");
+//        }
+//        commissionMain = userCommissionsMain.get(0);
         //计算主分成人员的 开票收入
-        Long mainDivideId = generateMainUserDivide(commissionMain, settleDate);
+//        Long mainDivideId = generateMainUserDivide(commissionMain, settleDate);
         //查询普通分成人员
-        List<TConfigUserCommission> userCommissionsDeputy = configUserCommissionDao.selectUserCommissionConfigList(belongId, UserCommissionTypeEnum.DEPUTY.getType());
-        if (CollectionUtils.isEmpty(userCommissionsDeputy)) {
-            logger.info("[generateDivide] not query user commission, settleDate:{}, belongId:{}", settleDate, belongId);
-            return true;
-        }
+//        List<TConfigUserCommission> userCommissionsDeputy = configUserCommissionDao.selectUserCommissionConfigList(belongId, UserCommissionTypeEnum.DEPUTY.getType());
+//        if (CollectionUtils.isEmpty(userCommissionsDeputy)) {
+//            logger.info("[generateDivide] not query user commission, settleDate:{}, belongId:{}", settleDate, belongId);
+//            return true;
+//        }
+        List<TConfigUserCommission> userCommissionsDeputy = null;
         List<TAccountUserDivideDetail> itemDivide = new ArrayList<>();
         //计算普通分成人员的开票收入 todo
         for (TConfigUserCommission userCommission : userCommissionsDeputy) {
             //查询医院详情
             TConfigHospital configHospital = configHospitalDao.selectInfoById(userCommission.getHospitalId());
             TConfigItem configItem = configItemDao.selectInfoById(userCommission.getItemId());
-            if(Objects.isNull(commissionMain) || Objects.isNull(configItem)){
-                continue;
-            }
+//            if(Objects.isNull(commissionMain) || Objects.isNull(configItem)){
+//                continue;
+//            }
             //计算普通分成人员-项目开票总金额、分成金额
             TAccountUserDivideDetail itemDivideDeputy = new TAccountUserDivideDetail();
             itemDivideDeputy.setBelongId(userCommission.getId());
-            itemDivideDeputy.setBelongName(userCommission.getName());
+//            itemDivideDeputy.setBelongName(userCommission.getName());
             itemDivideDeputy.setHospitalId(userCommission.getHospitalId());
             itemDivideDeputy.setHospitalName(configHospital.getHospitalName());
             itemDivideDeputy.setItemId(userCommission.getId());
@@ -232,9 +233,9 @@ public class AccountUserDivideServiceImpl implements IAccountUserDivideService {
             TAccountUserDivideDetail itemDivideMain = new TAccountUserDivideDetail();
             BeanUtils.copyProperties(itemDivideDeputy, itemDivideMain);
             itemDivideMain.setCommissionType(DivideCommissionTypeEnum.DEPUTY.getType().byteValue());
-            itemDivideMain.setBelongId(commissionMain.getId());
-            itemDivideMain.setBelongName(commissionMain.getName());
-            itemDivideMain.setDivideId(mainDivideId);
+//            itemDivideMain.setBelongId(commissionMain.getId());
+//            itemDivideMain.setBelongName(commissionMain.getName());
+//            itemDivideMain.setDivideId(mainDivideId);
             BigDecimal mainCommission = configItem.getCommission().subtract(userCommission.getCommission());
             itemDivideMain.setCommission(mainCommission);
 
@@ -259,7 +260,7 @@ public class AccountUserDivideServiceImpl implements IAccountUserDivideService {
         TAccountUserDivide userDivide = new TAccountUserDivide();
         userDivide.setMonth(settleDate);
         userDivide.setBelongId(commissionMain.getId());
-        userDivide.setBelongName(commissionMain.getName());
+//        userDivide.setBelongName(commissionMain.getName());
         userDivide.setStatus((byte) UserStatusEnum.ENABLED.getCode());
         userDivide.setInvoiceTotalMoney(new BigDecimal(0));
         userDivide.setIncome(new BigDecimal(0));
@@ -341,7 +342,7 @@ public class AccountUserDivideServiceImpl implements IAccountUserDivideService {
         for (TConfigItem item : tConfigItems) {
             TAccountUserDivideDetail itemDivideDetail = new TAccountUserDivideDetail();
             itemDivideDetail.setBelongId(commissionMain.getId());
-            itemDivideDetail.setBelongName(commissionMain.getName());
+//            itemDivideDetail.setBelongName(commissionMain.getName());
             itemDivideDetail.setHospitalId(hospital.getId());
             itemDivideDetail.setHospitalName(hospital.getHospitalName());
             itemDivideDetail.setItemId(item.getId());

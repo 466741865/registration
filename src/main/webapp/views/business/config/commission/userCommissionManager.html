@@ -11,9 +11,10 @@
 				<form class="layui-form" action="">
 					<div class="layui-form-item">
 						<div class="layi-form-item layui-inline">
-							<label class="layui-form-label">姓名</label>
-							<div class="layui-input-inline">
-								<input type="text" name="name" placeholder="" class="layui-input">
+							<label class="layui-form-label">分成人员</label>
+							<div class="layui-input-block">
+								<select id="belongId" name="belongId" lay-verify="title">
+								</select>
 							</div>
 						</div>
 						<div class="layui-form-item layui-inline">
@@ -44,12 +45,8 @@
 		</script>
 
 		<script type="text/html" id="list-item-type-bar">
-			{{#if (d.type == 1) { }}
-			<span>不可编辑</span>
-			{{# }else if(d.type == 2){ }}
 			<button class="pear-btn pear-btn-primary pear-btn-sm" lay-event="update">编辑</button>
 			<button class="pear-btn pear-btn-primary pear-btn-sm"  lay-event="delete">删除</button>
-			{{# } }}
 		</script>
 
 		<script type="text/html" id="list-item-state">
@@ -57,13 +54,6 @@
 				<span>正常</span>
 			{{# }else if(d.status == 0){ }}
 				<span>删除</span>
-			{{# } }}
-		</script>
-		<script type="text/html" id="list-item-type">
-			{{#if (d.type == 1) { }}
-				<span>主</span>
-			{{# }else if(d.type == 2){ }}
-				<span>副</span>
 			{{# } }}
 		</script>
 
@@ -83,9 +73,7 @@
 				var notice = layui.notice;
 
 				let cols = [
-					[{
-							type: 'checkbox'
-						},
+					[
 						{
 							title: 'ID',
 							field: 'id',
@@ -94,16 +82,10 @@
 						},
                         {
 							title: '姓名',
-							field: 'name',
+							field: 'belongName',
 							align: 'center',
 							width: 120
 						},
-                        {
-                            title: '联系方式',
-                            field: 'phone',
-                            align: 'center',
-							width: 120
-                        },
 						{
 							title: '医院',
 							field: 'hospitalName',
@@ -120,13 +102,6 @@
                             field: 'commission',
                             align: 'center',
 							width: 80
-                        },
-                        {
-                            title: '类型',
-                            field: 'type',
-                            align: 'center',
-							templet: '#list-item-type',
-							width: 60
                         },
 						{
 							title: '编辑时间',
@@ -149,6 +124,32 @@
 						}
 					]
 				]
+
+				var uQuery = {
+					type:2,
+					page: "1",
+					limit: "100"
+				}
+
+				$.ajax({
+					url: '/config/user/getListByType',
+					data: uQuery,
+					dataType: 'JSON',
+					method: "GET",
+					success: function (result) {
+						if (result.code === 0) {
+							var list = result.data;
+							var opt = "<option value=\"\"></option>";
+							for (var i = 0; i < list.length; i++) {
+								opt += "<option value=\"" + list[i].id + "\">" + list[i].name + "</option>";
+							}
+							$("#belongId").html(opt);
+							form.render('select');
+						} else {
+							notice.warning("获取提成人员列表失败:" + result.message);
+						}
+					}
+				});
 
 				table.render({
 					elem: '#list-table',
@@ -196,7 +197,7 @@
 				window.add = function() {
 					layer.open({
 						type: 2,
-						title: '添加用户',
+						title: '添加人员项目提成',
 						shade: 0.1,
 						area: [common.isModile()?'100%':'500px', common.isModile()?'100%':'500px'],
 						content: 'commission-add.html'
@@ -205,10 +206,10 @@
 				window.update = function (obj) {
 					layer.open({
 						type: 2,
-						title: '编辑人员提成信息',
+						title: '编辑人员项目提成信息',
 						shade: 0.1,
 						area: [common.isModile() ? '100%' : '500px', common.isModile() ? '100%' : '500px'],
-						content: "commission-update.html?hospitalId="+obj.data.hospitalId+"&itemId="+obj.data.itemId,
+						content: "commission-update.html?hospitalId="+obj.data.hospitalId+"&itemId="+obj.data.itemId+"&belongId="+obj.data.belongId,
 						success: function (layero, index) {
 							var body = layer.getChildFrame('body', index);
 							body.find('#item_id').val(obj.data.id)
@@ -219,9 +220,7 @@
 										layer.close(index);
 									})
 								} else {
-									body.find('#user_id').val(obj.data.id)
-									body.find('#name').val(detail.data.name);
-									body.find('#phone').val(detail.data.phone);
+									body.find('#c_id').val(obj.data.id)
 									body.find('#commission').val(detail.data.commission);
 								}
 							});

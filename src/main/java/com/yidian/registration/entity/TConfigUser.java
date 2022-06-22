@@ -1,19 +1,16 @@
 package com.yidian.registration.entity;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Date;
 
-public class TConfigUserCommission implements Serializable {
+public class TConfigUser implements Serializable {
     private Long id;
 
-    private Long belongId;
+    private String name;
 
-    private Long hospitalId;
+    private String phone;
 
-    private Long itemId;
-
-    private BigDecimal commission;
+    private Byte type;
 
     private Byte status;
 
@@ -31,36 +28,28 @@ public class TConfigUserCommission implements Serializable {
         this.id = id;
     }
 
-    public Long getBelongId() {
-        return belongId;
+    public String getName() {
+        return name;
     }
 
-    public void setBelongId(Long belongId) {
-        this.belongId = belongId;
+    public void setName(String name) {
+        this.name = name == null ? null : name.trim();
     }
 
-    public Long getHospitalId() {
-        return hospitalId;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setHospitalId(Long hospitalId) {
-        this.hospitalId = hospitalId;
+    public void setPhone(String phone) {
+        this.phone = phone == null ? null : phone.trim();
     }
 
-    public Long getItemId() {
-        return itemId;
+    public Byte getType() {
+        return type;
     }
 
-    public void setItemId(Long itemId) {
-        this.itemId = itemId;
-    }
-
-    public BigDecimal getCommission() {
-        return commission;
-    }
-
-    public void setCommission(BigDecimal commission) {
-        this.commission = commission;
+    public void setType(Byte type) {
+        this.type = type;
     }
 
     public Byte getStatus() {
@@ -93,10 +82,9 @@ public class TConfigUserCommission implements Serializable {
         sb.append(getClass().getSimpleName());
         sb.append(" [");
         sb.append(", id=").append(id);
-        sb.append(", belongId=").append(belongId);
-        sb.append(", hospitalId=").append(hospitalId);
-        sb.append(", itemId=").append(itemId);
-        sb.append(", commission=").append(commission);
+        sb.append(", name=").append(name);
+        sb.append(", phone=").append(phone);
+        sb.append(", type=").append(type);
         sb.append(", status=").append(status);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);

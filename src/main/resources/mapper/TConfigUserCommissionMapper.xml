@@ -3,12 +3,10 @@
 <mapper namespace="com.yidian.registration.dao.TConfigUserCommissionDao">
     <resultMap id="BaseResultMap" type="com.yidian.registration.entity.TConfigUserCommission">
         <result column="id" jdbcType="BIGINT" property="id"/>
-        <result column="name" jdbcType="VARCHAR" property="name"/>
-        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <result column="belong_id" jdbcType="BIGINT" property="belongId"/>
         <result column="hospital_id" jdbcType="BIGINT" property="hospitalId"/>
         <result column="item_id" jdbcType="BIGINT" property="itemId"/>
         <result column="commission" jdbcType="DECIMAL" property="commission"/>
-        <result column="type" jdbcType="TINYINT" property="type"/>
         <result column="status" jdbcType="TINYINT" property="status"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
@@ -17,15 +15,14 @@
         <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
             SELECT LAST_INSERT_ID()
         </selectKey>
-        insert into t_config_user_commission (`name`, phone, hospital_id, item_id,
-        commission, `type`, `status`, create_time, update_time)
-        values (#{name,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{hospitalId,jdbcType=BIGINT},
-        #{itemId,jdbcType=BIGINT},
-        #{commission,jdbcType=DECIMAL}, #{type,jdbcType=TINYINT}, #{status,jdbcType=TINYINT},
+        insert into t_config_user_commission (belong_id, hospital_id, item_id,
+        commission, `status`, create_time, update_time)
+        values (#{belongId,jdbcType=BIGINT}, #{hospitalId,jdbcType=BIGINT},
+        #{itemId,jdbcType=BIGINT}, #{commission,jdbcType=DECIMAL}, #{status,jdbcType=TINYINT},
         now(), now())
     </insert>
     <select id="selectAll" resultMap="BaseResultMap">
-        select id, `name`, phone, hospital_id, item_id, commission, `type`, create_time, update_time
+        select id, belong_id, hospital_id, item_id, commission, create_time, update_time
         from t_config_user_commission
     </select>
 
@@ -33,8 +30,8 @@
         select count(1)
         from t_config_user_commission
         where `status` = 1
-        <if test="name != null and name != ''">
-            and `name` like concat('%', #{name}, '%')
+        <if test="belongId != null and belongId > 0">
+            and belong_id = #{belongId}
         </if>
     </select>
 
@@ -42,8 +39,8 @@
         select *
         from t_config_user_commission
         where `status` = 1
-        <if test="name != null and name != ''">
-            and `name` like concat('%', #{name}, '%')
+        <if test="belongId != null and belongId > 0">
+            and belong_id = #{belongId}
         </if>
         order by update_time desc
         limit #{index}, #{pageSize}
@@ -52,11 +49,8 @@
     <update id="updateConfig" parameterType="com.yidian.registration.entity.TConfigUserCommission">
         update t_config_user_commission
         <set>
-            <if test="phone != null">
-                phone = #{phone},
-            </if>
-            <if test="name != null">
-                `name` = #{name},
+            <if test="belongId != null and belongId > 0">
+                belong_id = #{belongId},
             </if>
             <if test="hospitalId != null">
                 hospital_id = #{hospitalId},
@@ -66,9 +60,6 @@
             </if>
             <if test="commission != null">
                 commission = #{commission},
-            </if>
-            <if test="type != null">
-                `type` = #{type},
             </if>
             <if test="status != null">
                 `status` = #{status},
@@ -91,9 +82,6 @@
         <if test="itemId != null and itemId > 0">
             and item_id = #{itemId}
         </if>
-        <if test="type != null and type > 0">
-            and `type` = #{type}
-        </if>
     </select>
 
     <select id="selectUserCommissionConfigList" resultMap="BaseResultMap">
@@ -101,10 +89,7 @@
         from t_config_user_commission
         where `status` = 1
         <if test="belongId != null and belongId > 0">
-            and id = #{belongId}
-        </if>
-        <if test="type != null and type > 0">
-            and `type` = #{type}
+            and belong_id = #{belongId}
         </if>
     </select>
 </mapper>

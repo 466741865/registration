@@ -1,13 +1,7 @@
 package com.yidian.registration.service.impl;
 
-import com.yidian.registration.dao.TAccountRecordDao;
-import com.yidian.registration.dao.TConfigHospitalDao;
-import com.yidian.registration.dao.TConfigItemDao;
-import com.yidian.registration.dao.TConfigUserCommissionDao;
-import com.yidian.registration.entity.TAccountRecord;
-import com.yidian.registration.entity.TConfigHospital;
-import com.yidian.registration.entity.TConfigItem;
-import com.yidian.registration.entity.TConfigUserCommission;
+import com.yidian.registration.dao.*;
+import com.yidian.registration.entity.*;
 import com.yidian.registration.enums.UserStatusEnum;
 import com.yidian.registration.service.IAccountRecordService;
 import com.yidian.registration.utils.DateBuilder;
@@ -47,7 +41,7 @@ public class AccountRecordServiceImpl implements IAccountRecordService {
     private TConfigItemDao configItemDao;
 
     @Resource
-    private TConfigUserCommissionDao configUserCommissionDao;
+    private TConfigUserDao configUserDao;
 
 
     @Override
@@ -132,9 +126,9 @@ public class AccountRecordServiceImpl implements IAccountRecordService {
             vo.setItemName(item.getItemName());
         }
         //归属人信息
-        TConfigUserCommission commission = configUserCommissionDao.selectInfoById(record.getBelongId());
-        if(Objects.nonNull(commission)){
-            vo.setBelongName(commission.getName());
+        TConfigUser user = configUserDao.selectInfoById(record.getBelongId());
+        if(Objects.nonNull(user)){
+            vo.setBelongName(user.getName());
         }
         return vo;
     }

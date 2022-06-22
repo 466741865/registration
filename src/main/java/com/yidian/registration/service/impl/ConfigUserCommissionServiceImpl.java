@@ -3,8 +3,10 @@ package com.yidian.registration.service.impl;
 import com.yidian.registration.dao.TConfigHospitalDao;
 import com.yidian.registration.dao.TConfigItemDao;
 import com.yidian.registration.dao.TConfigUserCommissionDao;
+import com.yidian.registration.dao.TConfigUserDao;
 import com.yidian.registration.entity.TConfigHospital;
 import com.yidian.registration.entity.TConfigItem;
+import com.yidian.registration.entity.TConfigUser;
 import com.yidian.registration.entity.TConfigUserCommission;
 import com.yidian.registration.enums.UserCommissionTypeEnum;
 import com.yidian.registration.enums.UserStatusEnum;
@@ -41,6 +43,9 @@ public class ConfigUserCommissionServiceImpl implements IConfigUserCommissionSer
     private TConfigUserCommissionDao configUserCommissionDao;
 
     @Resource
+    private TConfigUserDao configUserDao;
+
+    @Resource
     private TConfigItemDao configItemDao;
 
     @Resource
@@ -48,22 +53,22 @@ public class ConfigUserCommissionServiceImpl implements IConfigUserCommissionSer
 
 
     @Override
-    public PageVo<List<ConfigUserCommissionDeatilVo>> getUserCommissionConfigList(String name, Integer pageNo, Integer pageSize) {
-        logger.info("getUserCommissionConfigList start, name:{}, pageNo:{}, pageSize:{}", name, pageNo, pageSize);
+    public PageVo<List<ConfigUserCommissionDeatilVo>> getUserCommissionConfigList(Long belongId, Integer pageNo, Integer pageSize) {
+        logger.info("getUserCommissionConfigList start, belongId:{}, pageNo:{}, pageSize:{}", belongId, pageNo, pageSize);
         PageVo<List<ConfigUserCommissionDeatilVo>> pageVo = new PageVo<>();
         pageVo.setCount(0);
         pageVo.setData(Collections.emptyList());
         pageVo.setPageNum(pageNo);
         pageVo.setPageSize(pageSize);
         //查询总量
-        int configListTotal = configUserCommissionDao.selectConfigListTotal(name);
+        int configListTotal = configUserCommissionDao.selectConfigListTotal(belongId);
         if (configListTotal <= 0) {
             return pageVo;
         }
         pageVo.setCount(configListTotal);
 
         int index = (pageNo - 1) * pageSize;
-        List<TConfigUserCommission> configList = configUserCommissionDao.selectConfigList(name, index, pageSize);
+        List<TConfigUserCommission> configList = configUserCommissionDao.selectConfigList(belongId, index, pageSize);
         if (CollectionUtils.isEmpty(configList)) {
             return pageVo;
         }
@@ -73,12 +78,18 @@ public class ConfigUserCommissionServiceImpl implements IConfigUserCommissionSer
             list.add(vo);
         }
         pageVo.setData(list);
-        logger.info("getUserCommissionConfigList start, name:{}, pageNo:{}, pageSize:{}, pageVo:{}", name, pageNo, pageSize, pageVo);
+        logger.info("getUserCommissionConfigList start, belongId:{}, pageNo:{}, pageSize:{}, pageVo:{}", belongId, pageNo, pageSize, pageVo);
         return pageVo;
     }
 
     private ConfigUserCommissionDeatilVo setUserCommissionVo(TConfigUserCommission commission) {
         ConfigUserCommissionDeatilVo vo = entityToVo(commission);
+        //查询user信息
+        TConfigUser user = configUserDao.selectInfoById(commission.getBelongId());
+        if(Objects.nonNull(user)){
+            vo.setBelongName(user.getName());
+        }
+
         //查询项目信息
         TConfigItem item = configItemDao.selectInfoById(commission.getItemId());
         if (Objects.nonNull(item)) {
@@ -101,11 +112,9 @@ public class ConfigUserCommissionServiceImpl implements IConfigUserCommissionSer
     private ConfigUserCommissionDeatilVo entityToVo(TConfigUserCommission userCommission) {
         ConfigUserCommissionDeatilVo vo = new ConfigUserCommissionDeatilVo();
         vo.setId(userCommission.getId());
+        vo.setBelongId(userCommission.getBelongId());
         vo.setHospitalId(userCommission.getHospitalId());
         vo.setItemId(userCommission.getItemId());
-        vo.setName(userCommission.getName());
-        vo.setPhone(userCommission.getPhone());
-        vo.setType(userCommission.getType());
         vo.setCommission(userCommission.getCommission().toString());
         vo.setStatus(userCommission.getStatus());
         vo.setCreateTime(DateBuilder.formatDate(userCommission.getCreateTime(), DateBuilder.FORMAT_FULL));
@@ -130,12 +139,10 @@ public class ConfigUserCommissionServiceImpl implements IConfigUserCommissionSer
     public boolean addUserCommissionConfig(ConfigUserCommissionAddVo addVo) {
         logger.info("addUserCommissionConfig start addVo:{}", addVo);
         TConfigUserCommission userCommission = new TConfigUserCommission();
-        userCommission.setName(addVo.getName());
-        userCommission.setPhone(addVo.getPhone());
+        userCommission.setBelongId(addVo.getBelongId());
         userCommission.setHospitalId(addVo.getHospitalId());
         userCommission.setItemId(addVo.getItemId());
         userCommission.setCommission(new BigDecimal(addVo.getCommission()));
-        userCommission.setType((byte) UserCommissionTypeEnum.DEPUTY.getType());
         userCommission.setStatus((byte) UserStatusEnum.ENABLED.getCode());
         int insert = configUserCommissionDao.insert(userCommission);
         logger.info("addUserCommissionConfig end addVo:{}, insertres:{}", addVo, insert);
@@ -148,14 +155,11 @@ public class ConfigUserCommissionServiceImpl implements IConfigUserCommissionSer
         if (Objects.isNull(userCommission)) {
             return false;
         }
-        userCommission.setName(updateVo.getName());
-        userCommission.setPhone(updateVo.getPhone());
-        userCommission.setCommission(new BigDecimal(updateVo.getCommission()));
+        userCommission.setBelongId(updateVo.getBelongId());
         userCommission.setHospitalId(updateVo.getHospitalId());
         userCommission.setItemId(updateVo.getItemId());
-        userCommission.setType(updateVo.getType());
-        userCommission.setStatus(updateVo.getStatus());
         userCommission.setCommission(new BigDecimal(updateVo.getCommission()));
+        userCommission.setStatus(updateVo.getStatus());
         int result = configUserCommissionDao.updateConfig(userCommission);
         return result > 0;
     }
@@ -174,20 +178,27 @@ public class ConfigUserCommissionServiceImpl implements IConfigUserCommissionSer
         logger.info("getUserCommissionConfigListByIid start itemId:{}", itemId);
         List<ConfigUserCommissionDeatilVo> list = new ArrayList<>();
         //查询主提成人员
-        List<TConfigUserCommission> commissions1 = configUserCommissionDao.selectConfigListByIid(null, UserCommissionTypeEnum.MAIN.getType());
-        if (!CollectionUtils.isEmpty(commissions1)) {
-            for (TConfigUserCommission commission : commissions1) {
-                ConfigUserCommissionDeatilVo detailVo = entityToVo(commission);
+        List<TConfigUser> users = configUserDao.selectListByType(UserCommissionTypeEnum.MAIN.getType());
+        if (!CollectionUtils.isEmpty(users)) {
+            for (TConfigUser user : users) {
+                ConfigUserCommissionDeatilVo detailVo = new ConfigUserCommissionDeatilVo();
+                detailVo.setBelongId(user.getId());
+                detailVo.setBelongName(user.getName());
                 list.add(detailVo);
             }
         }
         //查询副提成人员
-        List<TConfigUserCommission> commissions2 = configUserCommissionDao.selectConfigListByIid(itemId, UserCommissionTypeEnum.DEPUTY.getType());
+        List<TConfigUserCommission> commissions2 = configUserCommissionDao.selectConfigListByIid(itemId);
         if (CollectionUtils.isEmpty(commissions2)) {
             return list;
         }
         for (TConfigUserCommission commission : commissions2) {
             ConfigUserCommissionDeatilVo detailVo = entityToVo(commission);
+            //查询user信息
+            TConfigUser user = configUserDao.selectInfoById(commission.getBelongId());
+            if(Objects.nonNull(user)){
+                detailVo.setBelongName(user.getName());
+            }
             list.add(detailVo);
         }
         logger.info("getUserCommissionConfigListByIid end itemId:{}", itemId);
