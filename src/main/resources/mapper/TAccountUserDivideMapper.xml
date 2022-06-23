@@ -8,6 +8,7 @@
         <result column="belong_name" jdbcType="VARCHAR" property="belongName"/>
         <result column="invoice_total_money" jdbcType="DECIMAL" property="invoiceTotalMoney"/>
         <result column="income" jdbcType="DECIMAL" property="income"/>
+        <result column="commission_total_money" jdbcType="DECIMAL" property="commissionTotalMoney"/>
         <result column="commission_money" jdbcType="DECIMAL" property="commissionMoney"/>
         <result column="status" jdbcType="TINYINT" property="status"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
@@ -16,16 +17,17 @@
     <insert id="insert" parameterType="com.yidian.registration.entity.TAccountUserDivide"
             useGeneratedKeys="true" keyProperty="id">
     insert into t_account_user_divide (`month`, belong_id, belong_name,
-      invoice_total_money, income, commission_money,
+      invoice_total_money, income, commission_total_money, commission_money,
       `status`, create_time, update_time
       )
     values (#{month,jdbcType=VARCHAR}, #{belongId,jdbcType=BIGINT}, #{belongName,jdbcType=VARCHAR}, 
-      #{invoiceTotalMoney,jdbcType=DECIMAL}, #{income,jdbcType=DECIMAL}, #{commissionMoney,jdbcType=DECIMAL},
+      #{invoiceTotalMoney,jdbcType=DECIMAL}, #{income,jdbcType=DECIMAL},
+      #{commissionTotalMoney,jdbcType=DECIMAL}, #{commissionMoney,jdbcType=DECIMAL},
       #{status,jdbcType=TINYINT}, now(), now()
       )
   </insert>
     <select id="selectAll" resultMap="BaseResultMap">
-    select id, `month`, belong_id, belong_name, invoice_total_money, income, commission_money,
+    select id, `month`, belong_id, belong_name, invoice_total_money, income, commission_total_money, commission_money,
     `status`, create_time, update_time
     from t_account_user_divide
   </select>
@@ -39,13 +41,16 @@
             <if test="income != null">
                 income = #{income},
             </if>
+            <if test="commissionTotalMoney != null">
+                commission_total_money = #{commissionTotalMoney},
+            </if>
             <if test="commissionMoney != null">
                 commission_money = #{commissionMoney},
             </if>
-
             <if test="status != null">
                 `status` = #{status},
             </if>
+            update_time = now()
         </set>
         where id = #{id}
     </update>
@@ -86,6 +91,9 @@
     <select id="selectInfoByMonth" resultMap="BaseResultMap">
     select *
     from t_account_user_divide
-    where belong_id = #{belongId} and `month` = #{month}
+    where  `status` = 1 and `month` = #{month}
+    <if test="belongId != null and belongId > 0">
+        and belong_id = #{belongId}
+    </if>
   </select>
 </mapper>

@@ -49,6 +49,28 @@
     </if>
   </select>
 
+  <update id="updateStatusByDid">
+    update t_account_user_divide_detail
+    <set>
+      <if test="status != null">
+        `status` = #{status},
+      </if>
+      update_time = now()
+    </set>
+    where divide_id = #{did}
+  </update>
+
+  <update id="updateDidByDid">
+    update t_account_user_divide_detail
+    <set>
+      <if test="newDid != null and newDid > 0">
+        divide_id = #{newDid},
+      </if>
+      update_time = now()
+    </set>
+    where divide_id = #{oldDid}
+  </update>
+
   <insert id="batchInsert">
     insert into t_account_user_divide_detail (divide_id, belong_id, belong_name,
       hospital_id, hospital_name, item_id,

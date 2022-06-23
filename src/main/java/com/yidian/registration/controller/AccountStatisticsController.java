@@ -63,7 +63,7 @@ public class AccountStatisticsController {
         logger.info("[getInfo]查询详情信息，sid={}", sid);
         if (Tools.isNull(sid) || sid <= 0) {
             logger.info("[getInfo]查询详情信息，参数存在空值");
-            return new ResultVo<>(-1, "请选择单位");
+            return new ResultVo<>(-1, "请选择账单");
         }
         AccountStatisticsVo statisticsDeail = accountStatisticsService.getAccountStatisticsDeail(sid);
         logger.info("[getInfo]查询详情信息,end,sid={},res={}", sid, JSON.toJSON(statisticsDeail));
@@ -81,7 +81,7 @@ public class AccountStatisticsController {
         logger.info("[getItemDetail]查询账单项目明细信息，sid={}", sid);
         if (Tools.isNull(sid) || sid <= 0) {
             logger.info("[getItemDetail]查询账单项目明细信息，参数存在空值");
-            return new PageVo<>(-1, "请选择账单id", null);
+            return new PageVo<>(-1, "请选择账单", null);
         }
         PageVo<List<AccountStatisticsDetailVo>> pageVo = accountStatisticsService.getItemDetail(sid);
         logger.info("[getItemDetail]查询账单项目明细信息,end,sid={},pageVo={}", sid, JSON.toJSON(pageVo));
@@ -99,7 +99,7 @@ public class AccountStatisticsController {
         logger.info("[generateStatistics]生成账单，buildVo:{}", buildVo);
         if (Objects.isNull(buildVo) || StringUtils.isBlank(buildVo.getSettleDate())) {
             logger.info("[generateStatistics]生成账单，参数存在空值");
-            return new ResultVo<>(-1, "请选择单位");
+            return new ResultVo<>(-1, "请选择月份");
         }
         Boolean result = null;
         try {
@@ -125,7 +125,7 @@ public class AccountStatisticsController {
         logger.info("[rebuild]重新生成账单，sid={}", sid);
         if (Tools.isNull(sid) || sid <= 0) {
             logger.info("[rebuild]重新生成账单，参数存在空值");
-            return new ResultVo<>(-1, "请选择单位");
+            return new ResultVo<>(-1, "请选择账单");
         }
         Boolean result = null;
         try {

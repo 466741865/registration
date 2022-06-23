@@ -1,16 +1,18 @@
 package com.yidian.registration.dao;
 
-import com.yidian.registration.entity.TAccountStatisticsDetail;
 import com.yidian.registration.entity.TAccountUserDivideDetail;
 import org.apache.ibatis.annotations.Param;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 public interface TAccountUserDivideDetailDao {
     int insert(TAccountUserDivideDetail record);
 
     List<TAccountUserDivideDetail> selectAll();
+
+    int updateStatusByDid(@Param("did") Long did, @Param("status") Integer status);
+
+    int updateDidByDid(@Param("oldDid") Long oldDid, @Param("newDid") Long newDid);
 
     List<TAccountUserDivideDetail> selectDetailListByDid(@Param("did") Long did, @Param("type") Integer type);
 

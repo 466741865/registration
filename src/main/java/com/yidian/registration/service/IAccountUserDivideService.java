@@ -42,7 +42,7 @@ public interface IAccountUserDivideService {
      * @param settleDate
      * @return
      */
-    boolean generateDivide(String settleDate, Long BelongId);
+    boolean generateDivide(String settleDate, Long belongId);
 
     /**
      * 重新生成账单

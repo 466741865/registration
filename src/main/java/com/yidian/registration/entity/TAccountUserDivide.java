@@ -18,6 +18,8 @@ public class TAccountUserDivide implements Serializable {
 
     private BigDecimal income;
 
+    private BigDecimal commissionTotalMoney;
+
     private BigDecimal commissionMoney;
 
     private Byte status;
@@ -78,6 +80,14 @@ public class TAccountUserDivide implements Serializable {
         this.income = income;
     }
 
+    public BigDecimal getCommissionTotalMoney() {
+        return commissionTotalMoney;
+    }
+
+    public void setCommissionTotalMoney(BigDecimal commissionTotalMoney) {
+        this.commissionTotalMoney = commissionTotalMoney;
+    }
+
     public BigDecimal getCommissionMoney() {
         return commissionMoney;
     }
@@ -130,6 +140,7 @@ public class TAccountUserDivide implements Serializable {
         sb.append(", belongName=").append(belongName);
         sb.append(", invoiceTotalMoney=").append(invoiceTotalMoney);
         sb.append(", income=").append(income);
+        sb.append(", commissionTotalMoney=").append(commissionTotalMoney);
         sb.append(", commissionMoney=").append(commissionMoney);
         sb.append(", status=").append(status);
         sb.append(", createTime=").append(createTime);

@@ -80,7 +80,7 @@ public class ConfigItemController {
         logger.info("[getInfo]查询详情信息，cid={}", cid);
         if (Tools.isNull(cid) || cid <= 0) {
             logger.info("[getInfo]查询详情信息，参数存在空值");
-            return new ResultVo<>(-1, "请选择单位");
+            return new ResultVo<>(-1, "请选择项目");
         }
         ConfigItemDetailVo configDeail = configItemService.getItemConfigDeail(cid);
         logger.info("[getInfo]查询详情信息,end,hid={},res={}", cid, JSON.toJSON(configDeail));
@@ -98,7 +98,7 @@ public class ConfigItemController {
         logger.info("[updateInfo]修改信息，updateVo={}", updateVo);
         if (Tools.isNull(updateVo) || updateVo.getId() <= 0) {
             logger.info("[updateInfo]修改信息，参数存在空值");
-            return new ResultVo<>(-1, "请选择单位");
+            return new ResultVo<>(-1, "请选择项目");
         }
         boolean result = configItemService.updateItemConfig(updateVo);
         logger.info("[updateInfo]修改信息,end,updateVo={},res={}", updateVo, result);

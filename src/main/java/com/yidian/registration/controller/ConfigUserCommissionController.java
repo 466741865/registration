@@ -90,7 +90,7 @@ public class ConfigUserCommissionController {
         logger.info("[getInfo]查询详情信息，uid={}", uid);
         if (Tools.isNull(uid) || uid <= 0) {
             logger.info("[getInfo]查询详情信息，参数存在空值");
-            return new ResultVo<>(-1, "请选择单位");
+            return new ResultVo<>(-1, "请选择人员提成");
         }
         ConfigUserCommissionDeatilVo configDeail = configUserCommissionService.getUserCommissionConfigDeail(uid);
         logger.info("[getInfo]查询详情信息,end,uid={},res={}", uid, JSON.toJSON(configDeail));
@@ -139,7 +139,7 @@ public class ConfigUserCommissionController {
         logger.info("[delete]删除信息，uid={}", uid);
         if (Tools.isNull(uid) || uid <= 0) {
             logger.info("[delete]删除信息，参数存在空值");
-            return new ResultVo<>(-1, "请选择单位");
+            return new ResultVo<>(-1, "请选择人员");
         }
         Boolean result = configUserCommissionService.deleteConfig(uid);
         logger.info("[delete]删除信息,end,uid={},res={}", uid, result);
