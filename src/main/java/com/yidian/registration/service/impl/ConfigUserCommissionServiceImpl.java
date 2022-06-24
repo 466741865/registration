@@ -219,4 +219,19 @@ public class ConfigUserCommissionServiceImpl implements IConfigUserCommissionSer
         }
         return list;
     }
+
+    @Override
+    public boolean checkUserCommission(Long hospitalId, Long itemId, String commission) {
+        logger.info("checkUserCommission start , hospitalId:{}, itemId:{}, commission:{}", hospitalId, itemId, commission);
+        //查询医院、项目提成
+        TConfigItem item = configItemDao.selectInfoById(itemId);
+        BigDecimal userCommission = new BigDecimal(commission);
+        //用户提成 不能超过医院项目提成
+        int compareTo = userCommission.compareTo(item.getCommission());
+        logger.info("checkUserCommission end , hospitalId:{}, itemId:{}, commission:{}, compareTo:{}", hospitalId, itemId, commission, compareTo);
+        if(compareTo <= 0){
+            return true;
+        }
+        return false;
+    }
 }

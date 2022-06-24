@@ -11,6 +11,8 @@ public class AccountDivideVo {
 
     private Long belongId;
 
+    private Integer userType;
+
     private String belongName;
 
     private BigDecimal invoiceTotalMoney;
@@ -53,6 +55,14 @@ public class AccountDivideVo {
 
     public void setBelongId(Long belongId) {
         this.belongId = belongId;
+    }
+
+    public Integer getUserType() {
+        return userType;
+    }
+
+    public void setUserType(Integer userType) {
+        this.userType = userType;
     }
 
     public String getBelongName() {
@@ -144,6 +154,7 @@ public class AccountDivideVo {
         sb.append(", month=").append(month);
         sb.append(", belongId=").append(belongId);
         sb.append(", belongName=").append(belongName);
+        sb.append(", userType=").append(userType);
         sb.append(", invoiceTotalMoney=").append(invoiceTotalMoney);
         sb.append(", income=").append(income);
         sb.append(", commissionTotalMoney=").append(commissionTotalMoney);

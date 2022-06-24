@@ -45,22 +45,22 @@ public class AccountRecordServiceImpl implements IAccountRecordService {
 
 
     @Override
-    public PageVo<List<AccountRecordDetailVo>> getAccountRecordList(String name, String settleDate, Long hospitalId, Integer pageNo, Integer pageSize) {
-        logger.info("getAccountRecordList start, name:{}, settleDate:{}, hospitalId:{}, pageNo:{}, pageSize:{}", name, settleDate, hospitalId, pageNo, pageSize);
+    public PageVo<List<AccountRecordDetailVo>> getAccountRecordList(String name, String settleDate, Long hospitalId, Long belongId, Integer pageNo, Integer pageSize) {
+        logger.info("getAccountRecordList start, name:{}, settleDate:{}, hospitalId:{}, belongId:{}, pageNo:{}, pageSize:{}", name, settleDate, hospitalId, belongId, pageNo, pageSize);
         PageVo<List<AccountRecordDetailVo>> pageVo = new PageVo<>();
         pageVo.setCount(0);
         pageVo.setData(Collections.emptyList());
         pageVo.setPageNum(pageNo);
         pageVo.setPageSize(pageSize);
         //查询总量
-        int configListTotal = AccountRecordDao.selectRecordListTotal(name, settleDate, hospitalId);
+        int configListTotal = AccountRecordDao.selectRecordListTotal(name, settleDate, hospitalId, belongId);
         if (configListTotal <= 0) {
             return pageVo;
         }
         pageVo.setCount(configListTotal);
 
         int index = (pageNo - 1) * pageSize;
-        List<TAccountRecord> recordList = AccountRecordDao.selectRecordList(name, settleDate, hospitalId, index, pageSize);
+        List<TAccountRecord> recordList = AccountRecordDao.selectRecordList(name, settleDate, hospitalId, belongId, index, pageSize);
         if (CollectionUtils.isEmpty(recordList)) {
             return pageVo;
         }

@@ -79,6 +79,11 @@ public class AccountUserDivideServiceImpl implements IAccountUserDivideService {
         List<AccountDivideVo> list = new ArrayList<>();
         for (TAccountUserDivide divide : divideList) {
             AccountDivideVo vo = entityToVo(divide);
+            //查询用户类型
+            TConfigUser user = configUserDao.selectInfoById(vo.getBelongId());
+            if (Objects.nonNull(user)) {
+                vo.setUserType((int) user.getType());
+            }
             list.add(vo);
         }
         pageVo.setData(list);
@@ -202,7 +207,7 @@ public class AccountUserDivideServiceImpl implements IAccountUserDivideService {
 
         //计算主分成人员的 开票收入
         Long mainDivideId = generateMainUserDivide(userMain, settleDate);
-        if(mainDivideId <= 0){
+        if (mainDivideId <= 0) {
             logger.info("[generateDivide] calculateUserDivide fail, settleDate:{}, belongId:{}", settleDate, belongId);
             throw new BizException(StatusEnum.NODATA_CODE.getCode(), "计算分成失败");
         }
@@ -404,14 +409,14 @@ public class AccountUserDivideServiceImpl implements IAccountUserDivideService {
             itemDivideMain.setHospitalName(configHospital.getHospitalName());
             itemDivideMain.setItemId(userCommission.getId());
             itemDivideMain.setItemName(configItem.getItemName());
-            itemDivideDeputy.setStatus((byte) UserStatusEnum.ENABLED.getCode());
             itemDivideMain.setDivideId(mainDivideId);
-            itemDivideDeputy.setInvoiceTotalMoney(itemInvoiceMoney);
+            itemDivideMain.setInvoiceTotalMoney(itemInvoiceMoney);
             BigDecimal mainCommission = configItem.getCommission().subtract(userCommission.getCommission());
             itemDivideMain.setCommission(mainCommission);
             itemDivideMain.setIncome(new BigDecimal(0));
             BigDecimal mainIncome = itemInvoiceMoney.multiply(itemDivideMain.getCommission()).divide(new BigDecimal(100), 2, BigDecimal.ROUND_HALF_UP);
             itemDivideMain.setIncome(mainIncome);
+            itemDivideMain.setStatus((byte) UserStatusEnum.ENABLED.getCode());
             mainItemDivides.add(itemDivideMain);
         }
         //保存 普通用户的分成

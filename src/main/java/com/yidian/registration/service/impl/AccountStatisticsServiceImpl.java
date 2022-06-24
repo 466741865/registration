@@ -71,6 +71,11 @@ public class AccountStatisticsServiceImpl implements IAccountStatisticsService {
         List<AccountStatisticsVo> list = new ArrayList<>();
         for (TAccountStatistics record : recordList) {
             AccountStatisticsVo vo = entityToVo(record);
+            //总收入 = 底薪 + 提成
+            BigDecimal totalMoney = new BigDecimal(0);
+            totalMoney = totalMoney.add(record.getBasicSalary()).add(record.getIncome());
+            vo.setIncome(totalMoney);
+
             list.add(vo);
         }
         pageVo.setData(list);

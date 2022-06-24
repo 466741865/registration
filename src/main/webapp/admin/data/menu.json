@@ -50,6 +50,14 @@
 				"type": 1,
 				"openType": "_iframe",
 				"href": "views/business/account/statistics/accountStatisticsManager.html"
+			},
+			{
+				"id": 203,
+				"title": "分成管理",
+				"icon": "layui-icon layui-icon-user",
+				"type": 1,
+				"openType": "_iframe",
+				"href": "views/business/account/divide/accountDivideManager.html"
 			}
 		]
 	},

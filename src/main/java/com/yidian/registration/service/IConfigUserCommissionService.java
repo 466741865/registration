@@ -65,4 +65,13 @@ public interface IConfigUserCommissionService {
      */
     List<ConfigUserCommissionDeatilVo> getUserCommissionConfig(Long belongId, Long hospitalId, Long itemId);
 
+    /**
+     * 提成范围校验
+     * @param hospitalId
+     * @param itemId
+     * @param commission
+     * @return
+     */
+    boolean checkUserCommission(Long hospitalId, Long itemId, String commission);
+
 }

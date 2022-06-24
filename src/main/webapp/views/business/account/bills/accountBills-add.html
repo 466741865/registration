@@ -186,7 +186,7 @@
                             parent.layui.table.reload("list-table");
                         });
                     } else {
-                        popup.success('添加失败' + result.message);
+                        notice.error('添加失败：' + result.message);
                     }
                 }
             })

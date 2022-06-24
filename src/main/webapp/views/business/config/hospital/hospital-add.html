@@ -47,10 +47,12 @@
 <script src="../../../../component/utils/utils.js"></script>
 
 <script>
-    layui.use(['form', 'jquery', 'popup'], function () {
+    layui.use(['form', 'jquery', 'popup','notice'], function () {
         let form = layui.form;
         let $ = layui.jquery;
         var popup = layui.popup;
+        var notice = layui.notice;
+
 
         form.on('submit(save)', function (data) {
             $.ajax({
@@ -65,10 +67,7 @@
                             parent.layui.table.reload("list-table");
                         });
                     } else {
-                        popup.success('添加失败' + result.message, function () {
-                            parent.layer.close(parent.layer.getFrameIndex(window.name));//关闭当前页
-                            parent.layui.table.reload("list-table");
-                        });
+                        notice.error('添加失败：' + result.message);
                     }
                 }
             })

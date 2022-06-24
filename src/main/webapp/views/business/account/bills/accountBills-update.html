@@ -181,10 +181,10 @@
                 } else {
                     var opt = "<option value=''></option>";
                     for (var i = 0; i < result.length; i++) {
-                        if (uId == result[i].id) {
-                            opt += "<option selected value=\"" + result[i].id + "\">" + result[i].name + "</option>";
+                        if (uId == result[i].belongId) {
+                            opt += "<option selected value=\"" + result[i].belongId + "\">" + result[i].belongName + "</option>";
                         } else {
-                            opt += "<option value=\"" + result[i].id + "\">" + result[i].name + "</option>";
+                            opt += "<option value=\"" + result[i].belongId + "\">" + result[i].belongName + "</option>";
                         }
                     }
                     $("#belong").html(opt);
@@ -263,10 +263,7 @@
                             parent.layui.table.reload("list-table");
                         });
                     } else {
-                        popup.success('修改失败' + result.message, function () {
-                            parent.layer.close(parent.layer.getFrameIndex(window.name));//关闭当前页
-                            parent.layui.table.reload("list-table");
-                        });
+                        notice.error('修改失败：' + result.message);
                     }
                 }
             })

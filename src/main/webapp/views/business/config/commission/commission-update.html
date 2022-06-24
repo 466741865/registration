@@ -214,10 +214,7 @@
                             parent.layui.table.reload("list-table");
                         });
                     } else {
-                        popup.success('修改失败' + result.message, function () {
-                            parent.layer.close(parent.layer.getFrameIndex(window.name));//关闭当前页
-                            parent.layui.table.reload("list-table");
-                        });
+                        notice.error('修改失败：' + result.message);
                     }
                 }
             })

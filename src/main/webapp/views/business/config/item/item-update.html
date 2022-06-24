@@ -56,10 +56,11 @@
 <script src="../../../../component/pear/pear.js"></script>
 <script src="../../../../component/utils/utils.js"></script>
 <script>
-    layui.use(['form', 'jquery', 'popup'], function (obj) {
+    layui.use(['form', 'jquery', 'popup','notice'], function (obj) {
         let form = layui.form;
         let $ = layui.jquery;
         var popup = layui.popup;
+        var notice = layui.notice;
 
         //获取参数
         var currentUrl = location.href;
@@ -116,10 +117,7 @@
                             parent.layui.table.reload("list-table");
                         });
                     } else {
-                        popup.success('修改失败' + result.message, function () {
-                            parent.layer.close(parent.layer.getFrameIndex(window.name));//关闭当前页
-                            parent.layui.table.reload("list-table");
-                        });
+                        notice.error('修改失败：' + result.message);
                     }
                 }
             })

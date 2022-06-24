@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../../../../component/pear/css/pear.css"/>
+    <link rel="stylesheet" href="../../../../component/layui/css/layui.css"/>
+
+</head>
+<body class="pear-container">
+<form class="layui-form" action="">
+    <div class="main-container">
+        <div class="layui-form-item">
+            <input type="hidden" id="divide_id" name="divide_id">
+        </div>
+        <div class="layui-row">
+            <div class="layui-col-xs4">
+                <label class="layui-form-label">所属月份:</label>
+                <div class="layui-input-inline">
+                    <input class="layui-form-label" id="their_month" name="their_month"
+                           readonly="true"
+                           style="border: none; margin-top: 5px;margin-bottom: 10px; text-align: left;"/>
+                </div>
+            </div>
+            <div class="layui-col-xs4">
+                <label class="layui-form-label">归属人:</label>
+                <div class="layui-input-block">
+                    <input class="layui-form-label" id="belongName" name="belongName"
+                           readonly="true" style="border: none; margin-top: 5px;margin-bottom: 5px; text-align: left;"/>
+                </div>
+            </div>
+        </div>
+        <div class="layui-row">
+            <div class="layui-col-xs4">
+                <label class="layui-form-label">分成开票总金额:</label>
+                <div class="layui-input-block">
+                    <input class="layui-form-label" id="invoiceTotalMoney" name="invoiceTotalMoney"
+                           readonly="true" style="border: none; margin-top: 5px;margin-bottom: 5px; text-align: left;"/>
+                </div>
+            </div>
+            <div class="layui-col-xs4">
+                <label class="layui-form-label">分成总收入:</label>
+                <div class="layui-input-block">
+                    <input class="layui-form-label" id="income" name="income"
+                           readonly="true" style="border: none; margin-top: 5px;margin-bottom: 5px; text-align: left;"/>
+                </div>
+            </div>
+        </div>
+        </div>
+        <div class="layui-row">
+            <label class="layui-form-label">生成日期:</label>
+            <div class="layui-input-inline" style="float: left; width: 50%; ">
+                <input class="layui-form-label" id="createTime" name="createTime"
+                       readonly="true"
+                       style="border: none; margin-top: 5px;margin-bottom: 5px; width: 150px; text-align: left;"/>
+            </div>
+        </div>
+    </div>
+</form>
+<div class="layui-card">
+    <div style="height: 30px; width: 100%">
+        <label style="margin-top: 15px">分成明细:</label>
+    </div>
+</div>
+<div class="layui-card">
+    <div class="layui-card-body">
+        <table class="layui-hide" id="account-divide-detail" lay-filter="account-statistics-detail"></table>
+    </div>
+</div>
+<script src="../../../../component/layui/layui.js"></script>
+<script src="../../../../component/pear/pear.js"></script>
+
+<script>
+    layui.use(['form', 'jquery', 'popup', 'notice', 'laydate'], function () {
+        let table = layui.table;
+        let form = layui.form;
+        let $ = layui.jquery;
+
+        //获取参数
+        var currentUrl = location.href;
+        var lastIndexOf = currentUrl.lastIndexOf("?");
+        var substr = currentUrl.substr(lastIndexOf + 1, currentUrl.length);
+
+        var split = substr.split("&");
+
+        var didStr = split[0];
+        var didL = didStr.split("=");
+        var did = didL[1];
+
+        let cols = [
+            [
+                {
+                    title: '医院',
+                    field: 'hospitalName',
+                    align: 'center'
+                }, {
+                title: '项目',
+                field: 'itemName',
+                align: 'center'
+            },
+                {
+                    title: '总金额（元）',
+                    field: 'invoiceTotalMoney',
+                    align: 'center'
+                },
+                {
+                    title: '分成比例（%）',
+                    field: 'commission',
+                    align: 'center'
+                },
+                {
+                    title: '分成收入（元）',
+                    field: 'income',
+                    align: 'center'
+                }
+            ]
+        ]
+
+        table.render({
+            elem: '#account-divide-detail',
+            url: '/account/user/devide/getItemDetail?did=' + did + '&type=1',
+            cols: cols,
+            skin: 'line',
+            defaultToolbar: [{
+                title: '刷新',
+                layEvent: 'refresh',
+                icon: 'layui-icon-refresh',
+            }, 'filter', 'print', 'exports']
+        });
+
+    })
+</script>
+<script>
+</script>
+</body>
+</html>

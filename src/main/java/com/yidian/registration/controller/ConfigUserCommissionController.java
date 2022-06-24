@@ -69,6 +69,11 @@ public class ConfigUserCommissionController {
             return new ResultVo<>(-1, "请填写完整的信息");
         }
         //校验
+        boolean checkUserCommission = configUserCommissionService.checkUserCommission(addVo.getHospitalId(), addVo.getItemId(), addVo.getCommission());
+        if(!checkUserCommission){
+            logger.info("[addUserCommission]添加用户项目提成,个人提成比例不能超过医院提成比例 ,end，userAddVo={}", addVo.toString());
+            return new ResultVo<>(StatusEnum.NODATA_CODE.getCode(), "个人提成比例不能超过医院提成比例");
+        }
         List<ConfigUserCommissionDeatilVo> configs = configUserCommissionService.getUserCommissionConfig(addVo.getBelongId(), addVo.getHospitalId(), addVo.getItemId());
         if (!CollectionUtils.isEmpty(configs)) {
             logger.info("[addUserCommission]添加用户项目提成, 已存在相同配置,end，userAddVo={}", addVo.toString());
@@ -115,11 +120,16 @@ public class ConfigUserCommissionController {
             return new ResultVo<>(-1, "请选择列表信息");
         }
         //校验
+        boolean checkUserCommission = configUserCommissionService.checkUserCommission(updateVo.getHospitalId(), updateVo.getItemId(), updateVo.getCommission());
+        if(!checkUserCommission){
+            logger.info("[updateInfo]修改用户项目提成,个人提成比例不能超过医院提成比例 ,end，userAddVo={}", updateVo.toString());
+            return new ResultVo<>(StatusEnum.NODATA_CODE.getCode(), "个人提成比例不能超过医院提成比例");
+        }
         List<ConfigUserCommissionDeatilVo> configs = configUserCommissionService.getUserCommissionConfig(updateVo.getBelongId(), updateVo.getHospitalId(), updateVo.getItemId());
         if (!CollectionUtils.isEmpty(configs)) {
             configs = configs.stream().filter(config -> !config.getId().equals(updateVo.getId())).collect(Collectors.toList());
             if (!CollectionUtils.isEmpty(configs)) {
-                logger.info("[addUserCommission]修改用户项目提成, 已存在相同配置,end，userAddVo={}", updateVo.toString());
+                logger.info("[updateInfo]修改用户项目提成, 已存在相同配置,end，userAddVo={}", updateVo.toString());
                 return new ResultVo<>(StatusEnum.NODATA_CODE.getCode(), "已存在相同的配置，请修改后再提交");
             }
         }

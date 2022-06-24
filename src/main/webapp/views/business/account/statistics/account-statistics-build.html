@@ -102,7 +102,7 @@
                             parent.layui.table.reload("list-table");
                         });
                     } else {
-                        popup.success('账单生成失败: '+ result.message);
+                        notice.error('账单生成失败: '+ result.message);
                     }
                 }
             })
