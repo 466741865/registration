@@ -18,5 +18,10 @@ public class Constants {
      */
     public static final Integer DEFAULT_PAGE_SIZE = 10;
 
+    /**
+     * salt
+     */
+    public static final String SALT = "naxiaoyang";
+
 
 }

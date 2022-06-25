@@ -98,12 +98,6 @@
 
 				let cols = [
 					[
-						{
-							title: 'ID',
-							field: 'id',
-							align: 'center',
-							width: 30
-						},
                         {
 							title: '所属月份',
 							field: 'settleDate',
@@ -160,8 +154,8 @@
 				]
 				//年月选择器
 				laydate.render({
-					elem: '#settleDate'
-					,type: 'month'
+					elem: '#settleDate',
+					type: 'month'
 				});
 
 				var hQuery = {

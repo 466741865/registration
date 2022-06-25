@@ -44,13 +44,13 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">开票日期</label>
                     <div class="layui-input-inline">
-                        <input type="text" class="layui-input" id="invoiceDate" name="invoiceDate" placeholder="请选择开票日期">
+                        <input type="text" class="layui-input" autocomplete="off" id="invoiceDate" name="invoiceDate" placeholder="请选择开票日期">
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label">所属月份</label>
                     <div class="layui-input-inline">
-                        <input type="text" class="layui-input" id="settleDate" name="settleDate" placeholder="请选择所属月份">
+                        <input type="text" class="layui-input" autocomplete="off" id="settleDate" name="settleDate" placeholder="请选择所属月份">
                     </div>
                 </div>
                 <div class="layui-form-item">
@@ -92,13 +92,15 @@
 
         //年月日
         laydate.render({
-            elem: '#invoiceDate'
+            elem: '#invoiceDate',
+            value: new Date()
         });
 
         //年月选择器
         laydate.render({
-            elem: '#settleDate'
-            ,type: 'month'
+            elem: '#settleDate',
+            type: 'month',
+            value: new Date()
         });
 
         var itemQuery = {

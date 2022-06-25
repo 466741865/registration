@@ -1,7 +1,9 @@
 package com.yidian.registration.controller;
 
+import com.yidian.registration.constant.Constants;
 import com.yidian.registration.entity.SysUserEntity;
 import com.yidian.registration.service.IUserService;
+import com.yidian.registration.utils.PasswordUtils;
 import com.yidian.registration.vo.ObjectToJsonStringUtils;
 import com.yidian.registration.vo.ResultVo;
 import com.yidian.registration.vo.usermanager.UserInfoVo;
@@ -26,18 +28,18 @@ public class LoginController {
     @Autowired
     private IUserService userService;
 
-    @RequestMapping(value = "/getInfo", produces="application/json;charset=UTF-8")
-    public String getUserInfoById(Long uid){
+    @RequestMapping(value = "/getInfo", produces = "application/json;charset=UTF-8")
+    public String getUserInfoById(Long uid) {
         ResultVo<UserInfoVo> resultVo = new ResultVo<>();
-        if(uid == null || uid <= 0){
+        if (uid == null || uid <= 0) {
             resultVo.setCode(-1);
             resultVo.setMessage("参数异常");
             return ObjectToJsonStringUtils.toStringByGson(resultVo);
         }
 
         SysUserEntity entity = userService.getUserInfoById(uid);
-        logger.info("[getUserInfoById]查询到用户信息：res：{}",entity);
-        if(entity != null){
+        logger.info("[getUserInfoById]查询到用户信息：res：{}", entity);
+        if (entity != null) {
             UserInfoVo vo = new UserInfoVo();
             vo.setUid(entity.getId());
             vo.setPhone(entity.getMobile());
@@ -53,20 +55,22 @@ public class LoginController {
 
     /**
      * 登录
+     *
      * @param userName
      * @param password
      * @return
      */
-    @RequestMapping(value = "/login", produces="application/json;charset=UTF-8")
-    public ResultVo<UserInfoVo> login(String userName,String password){
-        if(userName == null || userName.trim() == "" || password == null || password.trim() == ""){
-            return new ResultVo<>(-1,"参数异常");
+    @RequestMapping(value = "/login", produces = "application/json;charset=UTF-8")
+    public ResultVo<UserInfoVo> login(String userName, String password) {
+        if (userName == null || userName.trim() == "" || password == null || password.trim() == "") {
+            return new ResultVo<>(-1, "参数异常");
         }
-        SysUserEntity entity = userService.getUserInfoByAccount(userName,password);
-        if(entity == null){
-            return new ResultVo<>(-10,"用户名或密码错误");
+        String encrypt = PasswordUtils.encrypt(Constants.SALT, password);
+        SysUserEntity entity = userService.getUserInfoByAccount(userName, encrypt);
+        if (entity == null) {
+            return new ResultVo<>(-10, "用户名或密码错误");
         }
-        logger.info("[login]查询到用户信息：res：{}",entity);
+        logger.info("[login]查询到用户信息：res：{}", entity);
         UserInfoVo vo = new UserInfoVo();
         vo.setUid(entity.getId());
         vo.setRealName(entity.getRealName());
@@ -75,7 +79,6 @@ public class LoginController {
         vo.setEmail(entity.getEmail());
         return new ResultVo<>(vo);
     }
-
 
 
 }

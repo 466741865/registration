@@ -35,16 +35,16 @@
     <update id="update" parameterType="com.yidian.registration.entity.TAccountUserDivide">
         update t_account_user_divide
         <set>
-            <if test="invoiceTotalMoney != null">
+            <if test="invoiceTotalMoney != null and invoiceTotalMoney > 0">
                 invoice_total_money = #{invoiceTotalMoney},
             </if>
-            <if test="income != null">
+            <if test="income != null and income > 0">
                 income = #{income},
             </if>
-            <if test="commissionTotalMoney != null">
+            <if test="commissionTotalMoney != null and commissionTotalMoney > 0">
                 commission_total_money = #{commissionTotalMoney},
             </if>
-            <if test="commissionMoney != null">
+            <if test="commissionMoney != null and commissionMoney > 0">
                 commission_money = #{commissionMoney},
             </if>
             <if test="status != null">

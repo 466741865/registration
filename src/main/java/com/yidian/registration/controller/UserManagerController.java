@@ -1,7 +1,9 @@
 package com.yidian.registration.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.yidian.registration.constant.Constants;
 import com.yidian.registration.service.IUserService;
+import com.yidian.registration.utils.PasswordUtils;
 import com.yidian.registration.utils.Tools;
 import com.yidian.registration.vo.PageVo;
 import com.yidian.registration.vo.ResultVo;
@@ -68,7 +70,7 @@ public class UserManagerController {
             logger.info("[addUser]添加用户，参数存在空值");
             return new ResultVo<>(-1,"请填写完整的信息");
         }
-
+        userAddVo.setPwd(PasswordUtils.encrypt(Constants.SALT, userAddVo.getPwd()));
         ResultVo<Boolean> res = userService.addUser(userAddVo);
         logger.info("[addUser]添加用户,end，userAddVo={},res={}", userAddVo.toString(), JSON.toJSON(res));
         return res;

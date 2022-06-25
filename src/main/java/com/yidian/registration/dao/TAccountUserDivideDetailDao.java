@@ -10,14 +10,14 @@ public interface TAccountUserDivideDetailDao {
 
     List<TAccountUserDivideDetail> selectAll();
 
-    int updateStatusByDid(@Param("did") Long did, @Param("status") Integer status);
+    int updateStatusByDid(@Param("did") Long did, @Param("status") Integer status, @Param("cType") Integer cType);
 
-    int updateDidByDid(@Param("oldDid") Long oldDid, @Param("newDid") Long newDid);
+    int updateDidByDid(@Param("oldDid") Long oldDid, @Param("newDid") Long newDid, @Param("cType") Integer cType);
 
     List<TAccountUserDivideDetail> selectDetailListByDid(@Param("did") Long did, @Param("type") Integer type);
 
     int batchInsert(@Param("records") List<TAccountUserDivideDetail> records);
 
-    TAccountUserDivideDetail calculateItemInvoiceAmount(@Param("settleDate") String settleDate, @Param("did") Long did, @Param("cType") Integer cType);
+    TAccountUserDivideDetail calculateItemInvoiceAmount(@Param("did") Long did, @Param("cType") Integer cType);
 
 }

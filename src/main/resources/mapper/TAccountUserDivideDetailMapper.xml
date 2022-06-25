@@ -43,8 +43,8 @@
     <select id="selectDetailListByDid" resultMap="BaseResultMap">
     select *
     from t_account_user_divide_detail
-    where divide_id = #{did}
-    <if test="type != null and type > 0">
+    where divide_id = #{did} and  `status` = 1
+      <if test="type != null and type > 0">
       and commission_type = #{type}
     </if>
   </select>
@@ -58,6 +58,9 @@
       update_time = now()
     </set>
     where divide_id = #{did}
+    <if test="cType != null and cType > 0">
+      and commission_type = #{cType}
+    </if>
   </update>
 
   <update id="updateDidByDid">
@@ -69,6 +72,9 @@
       update_time = now()
     </set>
     where divide_id = #{oldDid}
+    <if test="cType != null and cType > 0">
+      and commission_type = #{cType}
+    </if>
   </update>
 
   <insert id="batchInsert">
@@ -88,7 +94,7 @@
   </insert>
 
   <select id="calculateItemInvoiceAmount" resultMap="BaseResultMap">
-    select sum(invoice_total_money) as invoiceTotalMoney, sum(income) as income
+    select sum(invoice_total_money) as invoice_total_money, sum(income) as income
     from t_account_user_divide_detail
     where  `status` = 1
     and divide_id = #{did}

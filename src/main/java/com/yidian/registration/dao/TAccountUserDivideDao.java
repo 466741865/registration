@@ -11,6 +11,7 @@ public interface TAccountUserDivideDao {
     List<TAccountUserDivide> selectAll();
 
     int update(TAccountUserDivide record);
+
     /**
      * 查询list总量
      *

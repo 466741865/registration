@@ -1,33 +1,20 @@
-[{
-	"id": 1,
-	"title": "工作空间",
-	"type": 0,
-	"icon": "layui-icon layui-icon-console",
-	"href": "",
-	"children": [{
-		"id": 10,
-		"title": "控制后台",
-		"icon": "layui-icon layui-icon-console",
-		"type": 1,
-		"openType": "_iframe",
-		"href": "views/console/console1.html"
-	}, {
-		"id": "patient",
-		"title": "预约管理",
-		"icon": "layui-icon layui-icon-app",
+[
+	{
+		"id": 1,
+		"title": "工作空间",
 		"type": 0,
+		"icon": "layui-icon layui-icon-console",
 		"href": "",
 		"children": [{
-			"id": 101,
-			"title": "病源管理",
-			"icon": "layui-icon layui-icon-user",
+			"id": 10,
+			"title": "控制后台",
+			"icon": "layui-icon layui-icon-console",
 			"type": 1,
 			"openType": "_iframe",
-			"href": "views/business/patient/patientManager.html"
-		}]
-	}
-	]
-},
+			"href": "views/console/console1.html"
+		}
+		]
+	},
 	{
 		"id": "config",
 		"title": "账单管理",
@@ -99,23 +86,6 @@
 				"type": 1,
 				"openType": "_iframe",
 				"href": "views/business/config/commission/userCommissionManager.html"
-			}
-		]
-	},
-	{
-		"id": "system",
-		"title": "系统管理",
-		"icon": "layui-icon layui-icon-set-fill",
-		"type": 0,
-		"href": "",
-		"children": [
-			{
-				"id": 601,
-				"title": "用户管理",
-				"icon": "layui-icon layui-icon-face-smile",
-				"type": 1,
-				"openType": "_iframe",
-				"href": "views/system/user.html"
 			}
 		]
 	}
