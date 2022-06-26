@@ -21,6 +21,8 @@ public interface IUserService {
 
     SysUserEntity getUserInfoByAccount(String userName, String password);
 
+    SysUserEntity getUserInfoByName(String userName);
+
     /**
      *
      * @param mobile

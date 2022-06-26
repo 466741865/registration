@@ -48,6 +48,12 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    public SysUserEntity getUserInfoByName(String userName) {
+        SysUserEntity entity = userDao.selectByUserName(userName);
+        return entity;
+    }
+
+    @Override
     public PageVo<List<UserInfoVo>> getUserList(String mobile, String realName, Integer state, Integer pageNo, Integer pageSize) {
 
 

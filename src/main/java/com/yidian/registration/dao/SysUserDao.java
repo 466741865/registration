@@ -18,10 +18,13 @@ public interface SysUserDao {
 
     int updateByPrimaryKey(SysUserEntity record);
 
-    SysUserEntity selectByUserNameAndPwd(@Param("username") String userName,@Param("password") String password);
+    SysUserEntity selectByUserNameAndPwd(@Param("username") String userName, @Param("password") String password);
+
+    SysUserEntity selectByUserName(@Param("username") String userName);
 
     /**
      * 根据条件查询用户列表
+     *
      * @param mobile
      * @param realName
      * @param state
@@ -29,14 +32,15 @@ public interface SysUserDao {
      * @param pageSize
      * @return
      */
-    List<SysUserEntity> getUserList(@Param("mobile") String mobile,@Param("realName") String realName, @Param("state") Integer state,@Param("pageNum") Integer pageNum ,@Param("pageSize") Integer pageSize);
+    List<SysUserEntity> getUserList(@Param("mobile") String mobile, @Param("realName") String realName, @Param("state") Integer state, @Param("pageNum") Integer pageNum, @Param("pageSize") Integer pageSize);
 
     /**
      * 根据条件查询用户数
+     *
      * @param mobile
      * @param realName
      * @param state
      * @return
      */
-    int getUserListCount(@Param("mobile") String mobile,@Param("realName") String realName, @Param("state") Integer state);
+    int getUserListCount(@Param("mobile") String mobile, @Param("realName") String realName, @Param("state") Integer state);
 }

@@ -4,6 +4,7 @@ import com.yidian.registration.constant.Constants;
 import com.yidian.registration.entity.SysUserEntity;
 import com.yidian.registration.service.IUserService;
 import com.yidian.registration.utils.PasswordUtils;
+import com.yidian.registration.utils.Tools;
 import com.yidian.registration.vo.ObjectToJsonStringUtils;
 import com.yidian.registration.vo.ResultVo;
 import com.yidian.registration.vo.usermanager.UserInfoVo;
@@ -11,7 +12,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author : QingHang
@@ -61,7 +67,7 @@ public class LoginController {
      * @return
      */
     @RequestMapping(value = "/login", produces = "application/json;charset=UTF-8")
-    public ResultVo<UserInfoVo> login(String userName, String password) {
+    public ResultVo<UserInfoVo> login(HttpServletResponse response, String userName, String password) {
         if (userName == null || userName.trim() == "" || password == null || password.trim() == "") {
             return new ResultVo<>(-1, "参数异常");
         }
@@ -71,6 +77,11 @@ public class LoginController {
             return new ResultVo<>(-10, "用户名或密码错误");
         }
         logger.info("[login]查询到用户信息：res：{}", entity);
+
+        Cookie userNameCookie = new Cookie("loginName", userName);
+        userNameCookie.setMaxAge(1440 * 60);
+        userNameCookie.setPath("/");
+        response.addCookie(userNameCookie);
         UserInfoVo vo = new UserInfoVo();
         vo.setUid(entity.getId());
         vo.setRealName(entity.getRealName());
@@ -80,5 +91,22 @@ public class LoginController {
         return new ResultVo<>(vo);
     }
 
+    @RequestMapping("/quit")
+    public String quit(HttpServletRequest request, HttpServletResponse response) {
+        Cookie[] cookies = request.getCookies();
+        if (null == cookies) {
 
+        } else {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("loginName") || cookie.getName().equals("userLevel")) {
+                    cookie.setValue(null);
+                    cookie.setMaxAge(0);// 立即销毁cookie
+                    cookie.setPath("/");
+                    response.addCookie(cookie);
+                    break;
+                }
+            }
+        }
+        return "";
+    }
 }
