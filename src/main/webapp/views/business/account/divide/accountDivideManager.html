@@ -206,13 +206,22 @@
                             success: function (layero, index) {
                                 var body = layer.getChildFrame('body', index);
                                 body.find('#divide_id').val(obj.data.id);
-                                body.find('#their_month').val(obj.data.month);
-                                body.find('#belongName').val(obj.data.belongName);
-                                body.find('#invoiceTotalMoney').val(obj.data.invoiceTotalMoney);
-                                body.find('#income').val(obj.data.income);
-                                body.find('#commissionTotalMoney').val(obj.data.commissionTotalMoney);
-                                body.find('#commissionMoney').val(obj.data.commissionMoney);
-                                body.find('#createTime').val(obj.data.createTime);
+                                //查询详情
+								$.getJSON("/account/user/devide/getInfo", "did=" + obj.data.id, function (detail) {
+									if (detail.code !== 0) {
+										layer.alert("获取详情失败", "提示信息", function (index) {
+											layer.close(index);
+										})
+									} else {
+										body.find('#their_month').val(detail.data.month);
+										body.find('#belongName').val(detail.data.belongName);
+										body.find('#invoiceTotalMoney').val(detail.data.invoiceTotalMoney);
+										body.find('#income').val(detail.data.income);
+										body.find('#commissionTotalMoney').val(detail.data.commissionTotalMoney);
+										body.find('#commissionMoney').val(detail.data.commissionMoney);
+										body.find('#createTime').val(detail.data.createTime);
+									}
+								});
                             }
                         });
                     } else {
