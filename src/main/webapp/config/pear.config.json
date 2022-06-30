@@ -1,10 +1,10 @@
 {
 	"logo": {
-		"title": "一点科技",
-		"image": "admin/images/logo.png"
+		"title": "我的空间站",
+		"image": "/admin/images/logo.png"
 	},
 	"menu": {
-		"data": "admin/data/menu.json",
+		"data": "/admin/data/menu.json",
 		"accordion": true,
 		"method": "GET",
 		"control": false,
