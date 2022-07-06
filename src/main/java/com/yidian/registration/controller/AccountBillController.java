@@ -33,18 +33,18 @@ public class AccountBillController {
     private IAccountRecordService AccountRecordService;
 
     @RequestMapping(value = "/getList", produces = "application/json;charset=UTF-8")
-    public PageVo<List<AccountRecordDetailVo>> getBillList(String name, String settleDate, Long hospitalId, Long belongId, Integer page, Integer limit) {
-        logger.info("[getRecordList]获取记录列表,start，name={}, settleDate={}, hospitalId:{}, belongId:{}, pageNo={}, pageSize={}", name, settleDate, hospitalId, belongId, page, limit);
+    public PageVo<List<AccountRecordDetailVo>> getBillList(String name, String settleDate, Long hospitalId, Long itemId, Long belongId, Integer page, Integer limit) {
+        logger.info("[getRecordList]获取记录列表,start，name={}, settleDate={}, hospitalId:{}, itemId:{} belongId:{}, pageNo={}, pageSize={}", name, settleDate, hospitalId, itemId, belongId, page, limit);
         if (Tools.isNull(page) || page <= 0) {
             page = Constants.DEFAULT_PAGE_NO;
         }
         if (Tools.isNull(limit) || limit <= 0) {
             limit = Constants.DEFAULT_PAGE_SIZE;
         }
-        PageVo<List<AccountRecordDetailVo>> pageVo = AccountRecordService.getAccountRecordList(name, settleDate, hospitalId, belongId, page, limit);
+        PageVo<List<AccountRecordDetailVo>> pageVo = AccountRecordService.getAccountRecordList(name, settleDate, hospitalId, itemId, belongId, page, limit);
         pageVo.setPageNum(page);
         pageVo.setPageSize(limit);
-        logger.info("[getRecordList]获取记录列表,end，name={}, settleDate={}, hospitalId:{}, belongId:{}, pageNo={}, pageSize={}, res:{}", name, settleDate, hospitalId, belongId, page, limit, JSON.toJSON(pageVo));
+        logger.info("[getRecordList]获取记录列表,end，name={}, settleDate={}, hospitalId:{}, itemId:{}, belongId:{}, pageNo={}, pageSize={}, res:{}", name, settleDate, hospitalId, itemId, belongId, page, limit, JSON.toJSON(pageVo));
         return pageVo;
 
     }

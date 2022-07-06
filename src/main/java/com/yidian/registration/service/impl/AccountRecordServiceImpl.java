@@ -45,22 +45,22 @@ public class AccountRecordServiceImpl implements IAccountRecordService {
 
 
     @Override
-    public PageVo<List<AccountRecordDetailVo>> getAccountRecordList(String name, String settleDate, Long hospitalId, Long belongId, Integer pageNo, Integer pageSize) {
-        logger.info("getAccountRecordList start, name:{}, settleDate:{}, hospitalId:{}, belongId:{}, pageNo:{}, pageSize:{}", name, settleDate, hospitalId, belongId, pageNo, pageSize);
+    public PageVo<List<AccountRecordDetailVo>> getAccountRecordList(String name, String settleDate, Long hospitalId, Long itemId, Long belongId, Integer pageNo, Integer pageSize) {
+        logger.info("getAccountRecordList start, name:{}, settleDate:{}, hospitalId:{}, itemId:{}, belongId:{}, pageNo:{}, pageSize:{}", name, settleDate, hospitalId, itemId, belongId, pageNo, pageSize);
         PageVo<List<AccountRecordDetailVo>> pageVo = new PageVo<>();
         pageVo.setCount(0);
         pageVo.setData(Collections.emptyList());
         pageVo.setPageNum(pageNo);
         pageVo.setPageSize(pageSize);
         //查询总量
-        int configListTotal = AccountRecordDao.selectRecordListTotal(name, settleDate, hospitalId, belongId);
+        int configListTotal = AccountRecordDao.selectRecordListTotal(name, settleDate, hospitalId, itemId, belongId);
         if (configListTotal <= 0) {
             return pageVo;
         }
         pageVo.setCount(configListTotal);
 
         int index = (pageNo - 1) * pageSize;
-        List<TAccountRecord> recordList = AccountRecordDao.selectRecordList(name, settleDate, hospitalId, belongId, index, pageSize);
+        List<TAccountRecord> recordList = AccountRecordDao.selectRecordList(name, settleDate, hospitalId, itemId, belongId, index, pageSize);
         if (CollectionUtils.isEmpty(recordList)) {
             return pageVo;
         }
@@ -70,7 +70,7 @@ public class AccountRecordServiceImpl implements IAccountRecordService {
             list.add(vo);
         }
         pageVo.setData(list);
-        logger.info("getAccountRecordList start, name:{}, hospitalId:{}, pageNo:{}, pageSize:{}, pageVo:{}", name, pageNo, hospitalId, pageSize, pageVo);
+        logger.info("getAccountRecordList start, name:{}, hospitalId:{}, itemId:{}, belongId:{}, pageNo:{}, pageSize:{}, pageVo:{}", name, pageNo, hospitalId, itemId, belongId, pageSize, pageVo);
         return pageVo;
     }
 

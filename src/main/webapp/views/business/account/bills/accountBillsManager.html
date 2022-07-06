@@ -19,16 +19,23 @@
 							</div>
 						</div>
 						<div class="layi-form-item layui-inline">
-							<label class="layui-form-label">开票人</label>
-							<div class="layui-input-inline">
-								<input type="text" id="name" name="name" placeholder="" class="layui-input">
-							</div>
-						</div>
-						<div class="layi-form-item layui-inline">
 							<label class="layui-form-label">医院</label>
 							<div class="layui-input-block">
 								<select id="hospitalId" name="hospitalId" lay-filter="hospitalFilter" lay-verify="title">
 								</select>
+							</div>
+						</div>
+						<div class="layi-form-item layui-inline">
+							<label class="layui-form-label">项目</label>
+							<div class="layui-input-block">
+								<select id="itemId" name="itemId" lay-verify="title">
+								</select>
+							</div>
+						</div>
+						<div class="layi-form-item layui-inline">
+							<label class="layui-form-label">开票人</label>
+							<div class="layui-input-inline">
+								<input type="text" id="name" name="name" placeholder="" class="layui-input">
 							</div>
 						</div>
 						<div class="layi-form-item layui-inline">
@@ -98,6 +105,12 @@
 
 				let cols = [
 					[
+						{
+							title: 'ID',
+							field: 'id',
+							align: 'center',
+							width: 30
+					    },
                         {
 							title: '所属月份',
 							field: 'settleDate',
@@ -171,7 +184,7 @@
 					success: function (result) {
 						if (result.code === 0) {
 							var list = result.data;
-							var opt = "<option value=\"\"></option>";
+							var opt = "<option value=\"\">所有医院</option>";
 							for (var i = 0; i < list.length; i++) {
 								opt += "<option value=\"" + list[i].id + "\">" + list[i].hospitalName + "</option>";
 							}
@@ -182,6 +195,28 @@
 						}
 					}
 				});
+
+                // 医院-项目联动
+                form.on('select(hospitalFilter)', function (data) {
+                    var hospitalId = data.value;
+                    $("#itemId").empty();
+                    $.ajax({
+                        url: '/config/item/getListByHid?hid=' + hospitalId,
+                        dataType: 'JSON',
+                        method: "GET",
+                        success: function (result) {
+                            var opt = "<option value=\"\">所有项目</option>";
+                            if (result === null || result.length <= 0) {
+                            } else {
+                                for (var i = 0; i < result.length; i++) {
+                                    opt += "<option value=\"" + result[i].id + "\">" + result[i].itemName + "</option>";
+                                }
+                            }
+                            $("#itemId").html(opt);
+                            form.render('select');
+                        }
+                    });
+                });
 
 				$.ajax({
 					url: '/config/user/getList',
