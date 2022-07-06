@@ -84,11 +84,12 @@
 <script src="../../../../component/pear/pear.js"></script>
 <script src="../../../../component/utils/utils.js"></script>
 <script>
-    layui.use(['form', 'jquery', 'popup','laydate'], function (obj) {
+    layui.use(['form', 'jquery', 'popup','laydate', 'notice'], function (obj) {
         let form = layui.form;
         let $ = layui.jquery;
         var popup = layui.popup;
         var laydate = layui.laydate;
+        var notice = layui.notice;
 
 
         //年月日
@@ -231,7 +232,7 @@
                     } else {
                         var opt = "<option value=\"\"></option>";
                         for (var i = 0; i < result.length; i++) {
-                            opt += "<option value=\"" + result[i].id + "\">" + result[i].name + "</option>";
+                            opt += "<option value=\"" + result[i].belongId + "\">" + result[i].belongName + "</option>";
                         }
                         $("#belong").html(opt);
                         form.render('select');
