@@ -6,9 +6,7 @@ import com.yidian.registration.enums.UserStatusEnum;
 import com.yidian.registration.service.IAccountRecordService;
 import com.yidian.registration.utils.DateBuilder;
 import com.yidian.registration.vo.PageVo;
-import com.yidian.registration.vo.account.record.AccountRecordAddVo;
-import com.yidian.registration.vo.account.record.AccountRecordDetailVo;
-import com.yidian.registration.vo.account.record.AccountRecordUpdateVo;
+import com.yidian.registration.vo.account.record.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -146,6 +144,29 @@ public class AccountRecordServiceImpl implements IAccountRecordService {
         record.setSettleDate(addVo.getSettleDate());
         record.setStatus((byte) UserStatusEnum.ENABLED.getCode());
         int insert = AccountRecordDao.insert(record);
+        logger.info("addAccountRecord end addVo:{}, insertres:{}", addVo, insert);
+        return insert > 0;
+    }
+
+    @Override
+    public boolean batchAddRecord(AccountRecordBatchAddVo addVo) {
+        logger.info("addAccountRecord start addVo:{}", addVo);
+        List<AccountRecordInfoVo> recordInfoList = addVo.getRecordInfoList();
+        List<TAccountRecord> recordList = new ArrayList<>(recordInfoList.size());
+        for(AccountRecordInfoVo infoVo : recordInfoList){
+            TAccountRecord record = new TAccountRecord();
+            record.setHospitalId(addVo.getHospitalId());
+            record.setItemId(addVo.getItemId());
+            record.setBelongId(addVo.getBelongId());
+            record.setSettleDate(addVo.getSettleDate());
+            record.setStatus((byte) UserStatusEnum.ENABLED.getCode());
+
+            record.setPatientName(infoVo.getPatientName());
+            record.setInvoiceMoney(new BigDecimal(infoVo.getInvoiceMoney()));
+            record.setInvoiceDate(infoVo.getInvoiceDate());
+            recordList.add(record);
+        }
+        int insert = AccountRecordDao.batchInsert(recordList);
         logger.info("addAccountRecord end addVo:{}, insertres:{}", addVo, insert);
         return insert > 0;
     }

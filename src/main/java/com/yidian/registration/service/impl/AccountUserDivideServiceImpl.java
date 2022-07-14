@@ -85,7 +85,7 @@ public class AccountUserDivideServiceImpl implements IAccountUserDivideService {
             if (Objects.nonNull(user)) {
                 vo.setUserType((int) user.getType());
             }
-            if(UserCommissionTypeEnum.MAIN.getType().equals(vo.getUserType())){
+            if (UserCommissionTypeEnum.MAIN.getType().equals(vo.getUserType())) {
                 //总收入 = 开票分成 + 普通提成
                 BigDecimal totalIncomeMoney = new BigDecimal(0);
                 totalIncomeMoney = totalIncomeMoney.add(divide.getIncome()).add(divide.getCommissionMoney());
@@ -141,13 +141,13 @@ public class AccountUserDivideServiceImpl implements IAccountUserDivideService {
         //查询分成数据
         AccountDivideVo accountDivideVo = entityToVo(userDivide);
         //项目开票收入
-        List<AccountDivideDetailVo> detailList = getDivideItemDetail(did, DivideCommissionTypeEnum.MAIN.getType());
+        List<AccountDivideDetailVo> detailList = getDivideItemDetail(did, DivideCommissionTypeEnum.INVOICE.getType());
         accountDivideVo.setItemDivides(detailList);
         //是否是主类型
         TConfigUser user = configUserDao.selectInfoById(accountDivideVo.getBelongId());
         if (Objects.nonNull(user) && UserCommissionTypeEnum.MAIN.getType().equals((int) user.getType())) {
             //查询票据提成收入
-            List<AccountDivideDetailVo> commissionDetailList = getDivideItemDetail(did, DivideCommissionTypeEnum.DEPUTY.getType());
+            List<AccountDivideDetailVo> commissionDetailList = getDivideItemDetail(did, DivideCommissionTypeEnum.COMMISSION.getType());
             accountDivideVo.setItemDivides(commissionDetailList);
         }
         return accountDivideVo;
@@ -260,7 +260,7 @@ public class AccountUserDivideServiceImpl implements IAccountUserDivideService {
         if (mainItemDivide) {
             logger.info("generateMainUserDivide item success, userMain:{}， settleDate：{}", userMain, settleDate);
             //计算总收入
-            TAccountUserDivideDetail divideDetail = accountUserDivideDetailDao.calculateItemInvoiceAmount(divideId, DivideCommissionTypeEnum.MAIN.getType());
+            TAccountUserDivideDetail divideDetail = accountUserDivideDetailDao.calculateItemInvoiceAmount(divideId, DivideCommissionTypeEnum.INVOICE.getType());
             //更新总收入
             TAccountUserDivide updateDivide = new TAccountUserDivide();
             updateDivide.setId(divideId);
@@ -304,19 +304,20 @@ public class AccountUserDivideServiceImpl implements IAccountUserDivideService {
 
     /**
      * 计算主用户的抽成
+     *
      * @param mainDivideId
      * @return
      */
-    private boolean generateMainUsersCommission(Long mainDivideId){
+    private boolean generateMainUsersCommission(Long mainDivideId) {
         logger.info("[generateMainUsersCommission] main user commission, mainDivideId:{}", mainDivideId);
         //计算总抽成的开票金额、抽成数据
-        TAccountUserDivideDetail invoiceAmount = accountUserDivideDetailDao.calculateItemInvoiceAmount(mainDivideId, DivideCommissionTypeEnum.DEPUTY.getType());
-        if(Objects.isNull(invoiceAmount)){
+        TAccountUserDivideDetail invoiceAmount = accountUserDivideDetailDao.calculateItemInvoiceAmount(mainDivideId, DivideCommissionTypeEnum.COMMISSION.getType());
+        if (Objects.isNull(invoiceAmount)) {
             return true;
         }
         //查询主分成信息
         TAccountUserDivide mainDivide = accountUserDivideDao.selectInfoById(mainDivideId);
-        if(Objects.isNull(mainDivide)){
+        if (Objects.isNull(mainDivide)) {
             return true;
         }
         //更新总抽成
@@ -352,7 +353,7 @@ public class AccountUserDivideServiceImpl implements IAccountUserDivideService {
                 logger.info("generateDeputyUserDivide save fail, userDivide:{}", userDivide);
                 return false;
             }
-            //获取每个人员的项目提成配置
+            //获取个人员的项目提成配置
             List<TConfigUserCommission> userCommissionsDeputy = configUserCommissionDao.selectUserCommissionConfigList(userDeputy.getId());
             if (CollectionUtils.isEmpty(userCommissionsDeputy)) {
                 logger.info("[generateDeputyUserDivide] not query user commission, settleDate:{}, belongId:{}", settleDate, userDeputy.getId());
@@ -369,7 +370,7 @@ public class AccountUserDivideServiceImpl implements IAccountUserDivideService {
                 //查询
                 TAccountUserDivide divide = accountUserDivideDao.selectInfoById(divideId);
                 //计算总收入
-                TAccountUserDivideDetail divideDetail = accountUserDivideDetailDao.calculateItemInvoiceAmount(divideId, DivideCommissionTypeEnum.MAIN.getType());
+                TAccountUserDivideDetail divideDetail = accountUserDivideDetailDao.calculateItemInvoiceAmount(divideId, DivideCommissionTypeEnum.INVOICE.getType());
                 //更新总收入
                 TAccountUserDivide updateDivide = new TAccountUserDivide();
                 updateDivide.setId(divideId);
@@ -422,7 +423,7 @@ public class AccountUserDivideServiceImpl implements IAccountUserDivideService {
             itemDivideDeputy.setItemName(configItem.getItemName());
             itemDivideDeputy.setCommission(userCommission.getCommission());
             itemDivideDeputy.setStatus((byte) UserStatusEnum.ENABLED.getCode());
-            itemDivideDeputy.setCommissionType(DivideCommissionTypeEnum.MAIN.getType().byteValue());
+            itemDivideDeputy.setCommissionType(DivideCommissionTypeEnum.INVOICE.getType().byteValue());
             //根据医院、项目获取开票总收入
             BigDecimal itemInvoiceMoney = accountRecordDao.calculateInvoiceAmount(settleDate, userCommission.getHospitalId(), userCommission.getItemId(), userCommission.getBelongId());
             if (Objects.isNull(itemInvoiceMoney)) {
@@ -437,7 +438,7 @@ public class AccountUserDivideServiceImpl implements IAccountUserDivideService {
             TAccountUserDivideDetail itemDivideMain = new TAccountUserDivideDetail();
             BeanUtils.copyProperties(itemDivideDeputy, itemDivideMain);
             itemDivideMain.setDivideId(mainDivideId);
-            itemDivideMain.setCommissionType(DivideCommissionTypeEnum.DEPUTY.getType().byteValue());
+            itemDivideMain.setCommissionType(DivideCommissionTypeEnum.COMMISSION.getType().byteValue());
             BigDecimal mainCommission = configItem.getCommission().subtract(userCommission.getCommission());
             itemDivideMain.setCommission(mainCommission);
             itemDivideMain.setIncome(new BigDecimal(0));
@@ -513,7 +514,7 @@ public class AccountUserDivideServiceImpl implements IAccountUserDivideService {
             itemDivideDetail.setItemName(item.getItemName());
             itemDivideDetail.setCommission(item.getCommission());
             itemDivideDetail.setStatus((byte) UserStatusEnum.ENABLED.getCode());
-            itemDivideDetail.setCommissionType(DivideCommissionTypeEnum.MAIN.getType().byteValue());
+            itemDivideDetail.setCommissionType(DivideCommissionTypeEnum.INVOICE.getType().byteValue());
             //根据医院、项目查找票据
             BigDecimal invoiceMoney = accountRecordDao.calculateInvoiceAmount(settleDate, hospital.getId(), item.getId(), userMain.getId());
             if (Objects.isNull(invoiceMoney)) {
@@ -537,14 +538,15 @@ public class AccountUserDivideServiceImpl implements IAccountUserDivideService {
             logger.info("rebuild not query divide info did:{}", did);
             return true;
         }
-        //清除原有记录
-        boolean deleteResult = deleteUserDivideInfo(did);
+        //查询用户明细
+        TConfigUser user = configUserDao.selectInfoById(userDivide.getBelongId());
+        //清除旧分成记录
+        boolean deleteResult = deleteUserDivideInfo(did, user);
         if (!deleteResult) {
             logger.info("rebuild delete old divide info fail, did:{}", did);
             return false;
         }
-        //查询用户明细
-        TConfigUser user = configUserDao.selectInfoById(userDivide.getBelongId());
+        //重新生成分成记录
         boolean calculateUserDivide = calculateUserDivide(userDivide.getMonth(), user, did);
         logger.info("rebuild deputy userDivide end, did:{}, result：{}", did, calculateUserDivide);
         return calculateUserDivide;
@@ -567,8 +569,8 @@ public class AccountUserDivideServiceImpl implements IAccountUserDivideService {
             Long mainDivideId = generateMainUserDivide(user, month);
             if (mainDivideId > 0 && Objects.nonNull(oldDid)) {
                 logger.info("calculateUserDivide main userDivide oldDid:{}，mainDivideId：{}", oldDid, mainDivideId);
-                //更新抽成明细主键
-                accountUserDivideDetailDao.updateDidByDid(oldDid, mainDivideId, UserCommissionTypeEnum.DEPUTY.getType());
+                //将有效的抽成记录归为新的主分成
+                accountUserDivideDetailDao.updateDidByDid(oldDid, mainDivideId, DivideCommissionTypeEnum.COMMISSION.getType());
                 generateMainUsersCommission(mainDivideId);
                 return true;
             }
@@ -601,17 +603,22 @@ public class AccountUserDivideServiceImpl implements IAccountUserDivideService {
      * @param did
      * @return
      */
-    private boolean deleteUserDivideInfo(Long did) {
+    private boolean deleteUserDivideInfo(Long did, TConfigUser user) {
         try {
             TAccountUserDivide userDivide = new TAccountUserDivide();
             userDivide.setId(did);
             userDivide.setStatus((byte) UserStatusEnum.DISABLE.getCode());
             int update = accountUserDivideDao.update(userDivide);
             if (update > 0) {
-                //清除详细明细
-                accountUserDivideDetailDao.updateStatusByDid(did, UserStatusEnum.DISABLE.getCode(), UserCommissionTypeEnum.MAIN.getType());
-                return true;
+                //清除开票提成
+                accountUserDivideDetailDao.updateStatusByDid(did, user.getId(), UserStatusEnum.DISABLE.getCode(), DivideCommissionTypeEnum.INVOICE.getType());
             }
+            //普通用户
+            if (UserCommissionTypeEnum.DEPUTY.getType().equals(user.getType().intValue())) {
+                //清除抽成提成
+                accountUserDivideDetailDao.updateStatusByDid(null, user.getId(), UserStatusEnum.DISABLE.getCode(), DivideCommissionTypeEnum.COMMISSION.getType());
+            }
+            return true;
         } catch (Exception e) {
             logger.error("deleteUserDivideInfo exception, did:{}", did, e);
         }

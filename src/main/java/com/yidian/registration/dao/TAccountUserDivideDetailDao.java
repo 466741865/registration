@@ -10,7 +10,7 @@ public interface TAccountUserDivideDetailDao {
 
     List<TAccountUserDivideDetail> selectAll();
 
-    int updateStatusByDid(@Param("did") Long did, @Param("status") Integer status, @Param("cType") Integer cType);
+    int updateStatusByDid(@Param("did") Long did, @Param("belongId") Long belongId, @Param("status") Integer status, @Param("cType") Integer cType);
 
     int updateDidByDid(@Param("oldDid") Long oldDid, @Param("newDid") Long newDid, @Param("cType") Integer cType);
 

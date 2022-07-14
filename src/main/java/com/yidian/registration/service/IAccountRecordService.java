@@ -2,6 +2,7 @@ package com.yidian.registration.service;
 
 import com.yidian.registration.vo.PageVo;
 import com.yidian.registration.vo.account.record.AccountRecordAddVo;
+import com.yidian.registration.vo.account.record.AccountRecordBatchAddVo;
 import com.yidian.registration.vo.account.record.AccountRecordDetailVo;
 import com.yidian.registration.vo.account.record.AccountRecordUpdateVo;
 
@@ -34,6 +35,13 @@ public interface IAccountRecordService {
      * @return
      */
     boolean addAccountRecord(AccountRecordAddVo addVo);
+
+    /**
+     * 批量添加配置
+     * @param addVo
+     * @return
+     */
+    boolean batchAddRecord(AccountRecordBatchAddVo addVo);
 
     /**
      * 更新

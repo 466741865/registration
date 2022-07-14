@@ -7,10 +7,12 @@ import com.yidian.registration.utils.Tools;
 import com.yidian.registration.vo.PageVo;
 import com.yidian.registration.vo.ResultVo;
 import com.yidian.registration.vo.account.record.AccountRecordAddVo;
+import com.yidian.registration.vo.account.record.AccountRecordBatchAddVo;
 import com.yidian.registration.vo.account.record.AccountRecordDetailVo;
 import com.yidian.registration.vo.account.record.AccountRecordUpdateVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -63,11 +65,34 @@ public class AccountBillController {
                 || Tools.isNull(addVo.getBelongId())
                 || Tools.isNull(addVo.getItemId())
                 || Tools.isNull(addVo.getHospitalId())) {
-            logger.info("[addItem]添加记录，参数存在空值");
+            logger.info("[addRecord]添加记录，参数存在空值");
             return new ResultVo<>(-1, "请填写完整的信息");
         }
         Boolean res = AccountRecordService.addAccountRecord(addVo);
         logger.info("[addRecord]添加记录,end，userAddVo={},res={}", addVo.toString(), JSON.toJSON(res));
+        return new ResultVo<>(res);
+    }
+
+    /**
+     * 批量添加记录
+     *
+     * @param addVo 批量添加记录
+     * @return
+     */
+    @RequestMapping(value = "/batchAdd", produces = "application/json;charset=UTF-8")
+    public ResultVo<Boolean> batchAddRecord(AccountRecordBatchAddVo addVo) {
+        logger.info("[batchAddRecord]批量添加记录，userAddVo={}", JSON.toJSON(addVo));
+        if (Tools.isNull(addVo)
+                || CollectionUtils.isEmpty(addVo.getRecordInfoList())
+                || Tools.isNull(addVo.getSettleDate())
+                || Tools.isNull(addVo.getBelongId())
+                || Tools.isNull(addVo.getItemId())
+                || Tools.isNull(addVo.getHospitalId())) {
+            logger.info("[batchAddRecord]批量添加记录，参数存在空值");
+            return new ResultVo<>(-1, "请填写完整的信息");
+        }
+        Boolean res = AccountRecordService.batchAddRecord(addVo);
+        logger.info("[batchAddRecord]批量添加记录,end，userAddVo={},res={}", addVo.toString(), JSON.toJSON(res));
         return new ResultVo<>(res);
     }
 

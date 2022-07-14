@@ -9,6 +9,8 @@ import java.util.List;
 public interface TAccountRecordDao {
     int insert(TAccountRecord record);
 
+    int batchInsert(@Param("recordList") List<TAccountRecord> recordList);
+
     List<TAccountRecord> selectAll();
 
     /**

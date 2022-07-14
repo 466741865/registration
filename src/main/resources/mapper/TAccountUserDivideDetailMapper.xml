@@ -57,10 +57,17 @@
       </if>
       update_time = now()
     </set>
-    where divide_id = #{did}
-    <if test="cType != null and cType > 0">
-      and commission_type = #{cType}
-    </if>
+    <where>
+        <if test="did != null and did > 0">
+          and divide_id = #{did}
+        </if>
+        <if test="belongId != null and belongId > 0">
+          and belong_id = #{belongId}
+        </if>
+        <if test="cType != null and cType > 0">
+          and commission_type = #{cType}
+        </if>
+    </where>
   </update>
 
   <update id="updateDidByDid">
@@ -71,7 +78,7 @@
       </if>
       update_time = now()
     </set>
-    where divide_id = #{oldDid}
+    where divide_id = #{oldDid} and `status` = 1
     <if test="cType != null and cType > 0">
       and commission_type = #{cType}
     </if>
@@ -96,7 +103,7 @@
   <select id="calculateItemInvoiceAmount" resultMap="BaseResultMap">
     select sum(invoice_total_money) as invoice_total_money, sum(income) as income
     from t_account_user_divide_detail
-    where  `status` = 1
+    where `status` = 1
     and divide_id = #{did}
     <if test="cType != null and cType > 0">
       and commission_type = #{cType}

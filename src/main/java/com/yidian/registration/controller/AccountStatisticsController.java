@@ -49,7 +49,6 @@ public class AccountStatisticsController {
         pageVo.setPageSize(limit);
         logger.info("[getStatisticsList]获取记录列表,end，settleDate={}, hospitalId:{}, pageNo={}, pageSize={}, res:{}", settleDate, hospitalId, page, limit, JSON.toJSON(pageVo));
         return pageVo;
-
     }
 
     /**

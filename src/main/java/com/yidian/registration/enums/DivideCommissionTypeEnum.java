@@ -8,8 +8,8 @@ package com.yidian.registration.enums;
  **/
 public enum DivideCommissionTypeEnum {
 
-    MAIN(1, "开票提成"),
-    DEPUTY(2, "抽成提成");
+    INVOICE(1, "开票提成"),
+    COMMISSION(2, "抽成提成");
 
     private Integer type;
     private String desc;
