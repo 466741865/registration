@@ -10,6 +10,7 @@ import com.yidian.registration.utils.DateBuilder;
 import com.yidian.registration.vo.PageVo;
 import com.yidian.registration.vo.account.statistics.AccountStatisticsDetailVo;
 import com.yidian.registration.vo.account.statistics.AccountStatisticsVo;
+import com.yidian.registration.vo.account.statistics.TAccountStatisticsDayVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @Author: QingHang
@@ -46,6 +48,12 @@ public class AccountStatisticsServiceImpl implements IAccountStatisticsService {
 
     @Resource
     private TAccountStatisticsDetailDao accountStatisticsDetailDao;
+
+    @Resource
+    private TAccountStatisticsDayDao accountStatisticsDayDao;
+
+    @Resource
+    private TAccountStatisticsDayDetailDao accountStatisticsDayDetailDao;
 
 
     @Override
@@ -164,11 +172,13 @@ public class AccountStatisticsServiceImpl implements IAccountStatisticsService {
             return true;
         }
         for (TConfigHospital hospital : configHospitals) {
-
             //计算医院收入
-            boolean generateStatistics = generateStatistics(settleDate, hospital);
-            logger.info("calculateHospital, result:{}", generateStatistics);
-
+            Long statisticsId = generateStatistics(settleDate, hospital);
+            logger.info("calculateHospital, statisticsId:{}", statisticsId);
+            if (statisticsId > 0) {
+                //计算医院每天的收入明细
+                generateHospitalStatisticsDay(statisticsId, settleDate, hospital);
+            }
         }
         logger.info("[generateStatistics] end settleDate:{}", settleDate);
         return true;
@@ -181,7 +191,7 @@ public class AccountStatisticsServiceImpl implements IAccountStatisticsService {
      * @param hospital
      * @return
      */
-    private boolean generateStatistics(String settleDate, TConfigHospital hospital) {
+    private Long generateStatistics(String settleDate, TConfigHospital hospital) {
         try {
             //计算医院收入
             TAccountStatistics accountStatistics = calculateHospital(hospital, settleDate);
@@ -190,7 +200,7 @@ public class AccountStatisticsServiceImpl implements IAccountStatisticsService {
             int insert = accountStatisticsDao.insert(accountStatistics);
             if (insert <= 0) {
                 logger.info("generateStatistics save fail, hospital:{}", accountStatistics);
-                return false;
+                return 0L;
             }
             Long statisticsId = accountStatistics.getId();
             logger.info("generateStatistics statisticsId:{}", statisticsId);
@@ -198,11 +208,12 @@ public class AccountStatisticsServiceImpl implements IAccountStatisticsService {
             //保存详细数据
             itemStatistics.forEach(detail -> detail.setStatisticsId(statisticsId));
             accountStatisticsDetailDao.batchInsert(itemStatistics);
-            return true;
+
+            return statisticsId;
         } catch (Exception e) {
             logger.error("calculateHospital exception, hospital:{}", hospital, e);
         }
-        return false;
+        return 0L;
     }
 
     /**
@@ -224,7 +235,7 @@ public class AccountStatisticsServiceImpl implements IAccountStatisticsService {
         hospitalStatistics.setBasicSalary(hospital.getBasicSalary());
         hospitalStatistics.setStatus((byte) UserStatusEnum.ENABLED.getCode());
         //计算项目收入
-        List<TAccountStatisticsDetail> itemStatistics = calculateHospitalitem(hospital.getId(), settleDate);
+        List<TAccountStatisticsDetail> itemStatistics = calculateHospitalItem(hospital.getId(), settleDate);
         hospitalStatistics.setItemStatistics(itemStatistics);
 
         //计算总收入=开票金额总和
@@ -246,7 +257,7 @@ public class AccountStatisticsServiceImpl implements IAccountStatisticsService {
      * @param settleDate
      * @return
      */
-    private List<TAccountStatisticsDetail> calculateHospitalitem(Long hospitalId, String settleDate) {
+    private List<TAccountStatisticsDetail> calculateHospitalItem(Long hospitalId, String settleDate) {
         List<TConfigItem> tConfigItems = configItemDao.selectItemConfigListByHid(hospitalId);
         if (CollectionUtils.isEmpty(tConfigItems)) {
             return Collections.emptyList();
@@ -259,7 +270,7 @@ public class AccountStatisticsServiceImpl implements IAccountStatisticsService {
             statisticsDetail.setCommission(item.getCommission());
             statisticsDetail.setStatus((byte) UserStatusEnum.ENABLED.getCode());
             //根据医院、项目查找票据
-            BigDecimal invoiceMoney = accountRecordDao.calculateInvoiceAmount(settleDate, hospitalId, item.getId(), null);
+            BigDecimal invoiceMoney = accountRecordDao.calculateInvoiceAmount(settleDate, hospitalId, item.getId(), null, null);
             if (Objects.isNull(invoiceMoney)) {
                 invoiceMoney = new BigDecimal(0);
             }
@@ -272,6 +283,104 @@ public class AccountStatisticsServiceImpl implements IAccountStatisticsService {
         return itemStatistics;
     }
 
+    /**
+     * 计算医院每天的收入
+     *
+     * @param settleDate
+     * @param hospital
+     * @return
+     */
+    private boolean generateHospitalStatisticsDay(Long statisticsId, String settleDate, TConfigHospital hospital) {
+        logger.info("generateHospitalStatisticsDay, start statisticsId:{}, settleDate:{}, hospitalName:{}", statisticsId, settleDate, hospital.getHospitalName());
+        try {
+            //获取开票日期天数
+            List<String> invoiceDateList = accountRecordDao.selectInvoiceDate(settleDate, hospital.getId());
+            if (CollectionUtils.isEmpty(invoiceDateList)) {
+                logger.info("generateHospitalStatisticsDay");
+                return true;
+            }
+            //去重
+            invoiceDateList = invoiceDateList.stream().distinct().collect(Collectors.toList());
+            for (String day : invoiceDateList) {
+                //保存day主信息
+                TAccountStatisticsDay statisticsDay = new TAccountStatisticsDay();
+                statisticsDay.setDay(day);
+                statisticsDay.setHospitalId(hospital.getId());
+                statisticsDay.setHospitalName(hospital.getHospitalName());
+                statisticsDay.setMonth(settleDate);
+                statisticsDay.setStatisticsId(statisticsId);
+                statisticsDay.setStatus((byte) UserStatusEnum.ENABLED.getCode());
+                statisticsDay.setTotalIncome(new BigDecimal(0));
+                statisticsDay.setTotalInvoiceMoney(new BigDecimal(0));
+                int result = accountStatisticsDayDao.insert(statisticsDay);
+                if (result <= 0) {
+                    continue;
+                }
+                long dayId = statisticsDay.getId();
+
+                //生成详情明细
+                List<TAccountStatisticsDayDetail> dayDetails = calculateHospitalDayItem(hospital.getId(), settleDate, day);
+                //计算总收入=开票金额总和
+                BigDecimal invoiceTotalMoney = new BigDecimal(0);
+                BigDecimal totalIncome = new BigDecimal(0);
+                for (TAccountStatisticsDayDetail detail : dayDetails) {
+                    detail.setStatisticsDayId(dayId);
+                    detail.setStatisticsId(statisticsId);
+                    invoiceTotalMoney = invoiceTotalMoney.add(detail.getItemTotalMoney());
+                    totalIncome = totalIncome.add(detail.getItemIncome());
+                }
+                //更新主收入
+                TAccountStatisticsDay updateDay = new TAccountStatisticsDay();
+                updateDay.setId(dayId);
+                updateDay.setTotalIncome(totalIncome);
+                updateDay.setTotalInvoiceMoney(invoiceTotalMoney);
+                accountStatisticsDayDao.update(updateDay);
+
+                //批量插入详情
+                accountStatisticsDayDetailDao.batchInsert(dayDetails);
+            }
+            return true;
+        } catch (Exception e) {
+            logger.error("calculateHospital exception, hospital:{}", hospital, e);
+        }
+        return false;
+    }
+
+    /**
+     * 计算医院 每日 项目 收入
+     *
+     * @param hospitalId
+     * @param settleDate
+     * @return
+     */
+    private List<TAccountStatisticsDayDetail> calculateHospitalDayItem(Long hospitalId, String settleDate, String day) {
+        List<TConfigItem> tConfigItems = configItemDao.selectItemConfigListByHid(hospitalId);
+        if (CollectionUtils.isEmpty(tConfigItems)) {
+            return Collections.emptyList();
+        }
+        List<TAccountStatisticsDayDetail> dayItemStatistics = new ArrayList<>();
+        for (TConfigItem item : tConfigItems) {
+            TAccountStatisticsDayDetail dayDetail = new TAccountStatisticsDayDetail();
+            dayDetail.setHospitalId(hospitalId);
+            dayDetail.setDay(day);
+            dayDetail.setMonth(settleDate);
+            dayDetail.setItemId(item.getId());
+            dayDetail.setItemName(item.getItemName());
+            dayDetail.setCommission(item.getCommission());
+            dayDetail.setStatus((byte) UserStatusEnum.ENABLED.getCode());
+            //根据医院、项目计算开票金额
+            BigDecimal invoiceMoney = accountRecordDao.calculateInvoiceAmount(settleDate, hospitalId, item.getId(), null, day);
+            if (Objects.isNull(invoiceMoney)) {
+                invoiceMoney = new BigDecimal(0);
+            }
+            dayDetail.setItemTotalMoney(invoiceMoney);
+            BigDecimal income = invoiceMoney.multiply(item.getCommission()).divide(new BigDecimal(100), 2, BigDecimal.ROUND_HALF_UP);
+            dayDetail.setItemIncome(income);
+
+            dayItemStatistics.add(dayDetail);
+        }
+        return dayItemStatistics;
+    }
 
     @Override
     public boolean rebuild(Long id) {
@@ -286,10 +395,41 @@ public class AccountStatisticsServiceImpl implements IAccountStatisticsService {
             //查询医院详情
             TConfigHospital hospital = configHospitalDao.selectInfoById(tAccountStatistics.getHospitalId());
             //重新生成
-            boolean generateStatistics = generateStatistics(tAccountStatistics.getMonth(), hospital);
-            logger.info("rebuild result:{}", generateStatistics);
-            return generateStatistics;
+            long statisticsId = generateStatistics(tAccountStatistics.getMonth(), hospital);
+            logger.info("rebuild statisticsId:{}", statisticsId);
+            if (statisticsId > 0) {
+                //清除旧数据
+                accountStatisticsDayDao.updateStatusBySid(id, UserStatusEnum.DISABLE.getCode());
+                accountStatisticsDayDetailDao.updateStatusBySid(id, UserStatusEnum.DISABLE.getCode());
+
+                //计算医院每天的收入明细
+                generateHospitalStatisticsDay(statisticsId, tAccountStatistics.getMonth(), hospital);
+            }
+
+            return statisticsId > 0;
         }
         return false;
+    }
+
+    @Override
+    public List<TAccountStatisticsDayVO> getDayDetail(Long sid) {
+
+        //查询统计主表
+        TAccountStatistics statistics = accountStatisticsDao.selectInfoById(sid);
+        if(Objects.isNull(statistics)){
+            return Collections.emptyList();
+        }
+
+        //先查询day主表，
+        List<TAccountStatisticsDay> statisticsDays = accountStatisticsDayDao.selectDayBySid(sid, UserStatusEnum.ENABLED.getCode());
+        if(CollectionUtils.isEmpty(statisticsDays)){
+            return Collections.emptyList();
+        }
+        //再查询当月所有的项目
+        accountStatisticsDayDetailDao.selectDayAllItemBySid(sid, statistics.getMonth());
+
+        //遍历每一天，封装所有项目数据
+
+        return null;
     }
 }

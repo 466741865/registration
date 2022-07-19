@@ -33,5 +33,7 @@ public interface TAccountRecordDao {
 
     TAccountRecord selectInfoById(@Param("id") Long id);
 
-    BigDecimal calculateInvoiceAmount(@Param("settleDate") String settleDate, @Param("hospitalId") Long hospitalId, @Param("itemId") Long itemId, @Param("belongId") Long belongId);
+    BigDecimal calculateInvoiceAmount(@Param("settleDate") String settleDate, @Param("hospitalId") Long hospitalId, @Param("itemId") Long itemId, @Param("belongId") Long belongId, @Param("invoiceDate") String invoiceDate);
+
+    List<String> selectInvoiceDate(@Param("settleDate") String settleDate, @Param("hospitalId") Long hospitalId);
 }

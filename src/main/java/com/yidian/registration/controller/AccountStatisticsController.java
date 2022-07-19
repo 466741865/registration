@@ -11,6 +11,7 @@ import com.yidian.registration.vo.ResultVo;
 import com.yidian.registration.vo.account.statistics.AccountStatisticsBuildVo;
 import com.yidian.registration.vo.account.statistics.AccountStatisticsDetailVo;
 import com.yidian.registration.vo.account.statistics.AccountStatisticsVo;
+import com.yidian.registration.vo.account.statistics.TAccountStatisticsDayVO;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -105,7 +106,7 @@ public class AccountStatisticsController {
             result = accountStatisticsService.generateStatistics(buildVo.getSettleDate(), buildVo.getHospitalId());
         } catch (BizException e) {
             return new ResultVo<>(StatusEnum.NODATA_CODE.getCode(), e.getMessage());
-        } catch (Exception e){
+        } catch (Exception e) {
             logger.error("[generateStatistics]生成账单失败，buildVo:{}", buildVo, e);
             return new ResultVo<>(StatusEnum.NODATA_CODE.getCode(), "账单生成失败");
         }
@@ -131,11 +132,37 @@ public class AccountStatisticsController {
             result = accountStatisticsService.rebuild(sid);
         } catch (BizException e) {
             return new ResultVo<>(StatusEnum.NODATA_CODE.getCode(), e.getMessage());
-        } catch (Exception e){
+        } catch (Exception e) {
             logger.error("[rebuild]重新生成账单失败，sid:{}", sid, e);
             return new ResultVo<>(StatusEnum.NODATA_CODE.getCode(), "账单生成失败");
         }
         logger.info("[rebuild]重新生成账单,end,sid={},res={}", sid, result);
+        return new ResultVo<>(result);
+    }
+
+    /**
+     * 获取月每日统计
+     *
+     * @param sid 账单id
+     * @return
+     */
+    @RequestMapping(value = "/getDayDetail", produces = "application/json;charset=UTF-8")
+    public ResultVo<List<TAccountStatisticsDayVO>> getDayDetail(Long sid) {
+        logger.info("[getDayDetail]获取月每日统计，sid={}", sid);
+        if (Tools.isNull(sid) || sid <= 0) {
+            logger.info("[getDayDetail]获取月每日统计，参数存在空值");
+            return new ResultVo<>(-1, "请选择账单");
+        }
+        List<TAccountStatisticsDayVO> result = null;
+        try {
+            result = accountStatisticsService.getDayDetail(sid);
+        } catch (BizException e) {
+            return new ResultVo<>(StatusEnum.NODATA_CODE.getCode(), e.getMessage());
+        } catch (Exception e) {
+            logger.error("[getDayDetail]获取月每日统计，sid:{}", sid, e);
+            return new ResultVo<>(StatusEnum.NODATA_CODE.getCode(), "获取月每日账单失败");
+        }
+        logger.info("[getDayDetail]获取月每日统计,end,sid={},res={}", sid, result);
         return new ResultVo<>(result);
     }
 

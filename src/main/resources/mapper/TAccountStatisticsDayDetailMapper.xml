@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yidian.registration.dao.TAccountStatisticsDayDetailDao">
+  <resultMap id="BaseResultMap" type="com.yidian.registration.entity.TAccountStatisticsDayDetail">
+    <result column="id" jdbcType="BIGINT" property="id" />
+    <result column="statistics_day_id" jdbcType="BIGINT" property="statisticsDayId" />
+    <result column="statistics_id" jdbcType="BIGINT" property="statisticsId" />
+    <result column="month" jdbcType="VARCHAR" property="month" />
+    <result column="day" jdbcType="VARCHAR" property="day" />
+    <result column="hospital_id" jdbcType="BIGINT" property="hospitalId" />
+    <result column="item_id" jdbcType="BIGINT" property="itemId" />
+    <result column="item_name" jdbcType="VARCHAR" property="itemName" />
+    <result column="item_total_money" jdbcType="DECIMAL" property="itemTotalMoney" />
+    <result column="commission" jdbcType="DECIMAL" property="commission" />
+    <result column="item_income" jdbcType="DECIMAL" property="itemIncome" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <insert id="insert" parameterType="com.yidian.registration.entity.TAccountStatisticsDayDetail">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into t_account_statistics_day_detail (statistics_day_id, statistics_id, `month`, 
+      `day`, hospital_id,
+      item_id, item_name, item_total_money, 
+      commission, item_income, `status`, 
+      create_time, update_time)
+    values (#{statisticsDayId,jdbcType=BIGINT}, #{statisticsId,jdbcType=BIGINT}, #{month,jdbcType=VARCHAR}, 
+      #{day,jdbcType=VARCHAR}, #{hospitalId,jdbcType=BIGINT},
+      #{itemId,jdbcType=BIGINT}, #{itemName,jdbcType=VARCHAR}, #{itemTotalMoney,jdbcType=DECIMAL}, 
+      #{commission,jdbcType=DECIMAL}, #{itemIncome,jdbcType=DECIMAL}, #{status,jdbcType=TINYINT}, 
+       now(), now())
+  </insert>
+  <insert id="batchInsert" >
+    insert into t_account_statistics_day_detail (statistics_day_id, statistics_id, `month`,
+      `day`, hospital_id,
+      item_id, item_name, item_total_money,
+      commission, item_income, `status`,
+      create_time, update_time)
+    values
+    <foreach collection="records" item="record" index="index" separator=",">
+      (
+        #{record.statisticsDayId,jdbcType=BIGINT}, #{record.statisticsId,jdbcType=BIGINT}, #{record.month,jdbcType=VARCHAR},
+        #{record.day,jdbcType=VARCHAR}, #{record.hospitalId,jdbcType=BIGINT},
+        #{record.itemId,jdbcType=BIGINT}, #{record.itemName,jdbcType=VARCHAR}, #{record.itemTotalMoney,jdbcType=DECIMAL},
+        #{record.commission,jdbcType=DECIMAL}, #{record.itemIncome,jdbcType=DECIMAL}, #{record.status,jdbcType=TINYINT},
+        now(), now()
+      )
+    </foreach>
+  </insert>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, statistics_day_id, statistics_id, `month`, `day`, hospital_id,
+    item_id, item_name, item_total_money, commission, item_income, `status`, create_time, 
+    update_time
+    from t_account_statistics_day_detail
+  </select>
+
+  <update id="updateStatusBySid" >
+    update t_account_statistics_day_detail
+    set `status` = #{status}, update_time = now()
+    where statistics_id = #{sid}
+  </update>
+
+  <select id="selectDayDetailBySid" resultMap="BaseResultMap">
+    select *
+    from t_account_statistics_day_detail
+    where statistics_id = #{sid} and `month` = #{month}
+    order by `day`
+  </select>
+
+  <select id="selectDayAllItemBySid" resultMap="BaseResultMap">
+    select *
+    from t_account_statistics_day_detail
+    where statistics_id = #{sid} and `month` = #{month}
+    and `status` = 1
+    GROUP BY item_id
+    ORDER BY item_id
+  </select>
+</mapper>

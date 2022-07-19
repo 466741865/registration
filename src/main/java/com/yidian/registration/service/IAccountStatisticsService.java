@@ -3,6 +3,7 @@ package com.yidian.registration.service;
 import com.yidian.registration.vo.PageVo;
 import com.yidian.registration.vo.account.statistics.AccountStatisticsDetailVo;
 import com.yidian.registration.vo.account.statistics.AccountStatisticsVo;
+import com.yidian.registration.vo.account.statistics.TAccountStatisticsDayVO;
 
 import java.util.List;
 
@@ -50,5 +51,12 @@ public interface IAccountStatisticsService {
      * @return
      */
     boolean rebuild(Long id);
+
+    /**
+     * 获取月每日统计
+     * @param sid
+     * @return
+     */
+    List<TAccountStatisticsDayVO> getDayDetail(Long sid);
 
 }

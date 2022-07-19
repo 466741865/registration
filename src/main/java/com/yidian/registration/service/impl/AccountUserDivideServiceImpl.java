@@ -425,7 +425,7 @@ public class AccountUserDivideServiceImpl implements IAccountUserDivideService {
             itemDivideDeputy.setStatus((byte) UserStatusEnum.ENABLED.getCode());
             itemDivideDeputy.setCommissionType(DivideCommissionTypeEnum.INVOICE.getType().byteValue());
             //根据医院、项目获取开票总收入
-            BigDecimal itemInvoiceMoney = accountRecordDao.calculateInvoiceAmount(settleDate, userCommission.getHospitalId(), userCommission.getItemId(), userCommission.getBelongId());
+            BigDecimal itemInvoiceMoney = accountRecordDao.calculateInvoiceAmount(settleDate, userCommission.getHospitalId(), userCommission.getItemId(), userCommission.getBelongId(), null);
             if (Objects.isNull(itemInvoiceMoney)) {
                 itemInvoiceMoney = new BigDecimal(0);
             }
@@ -516,7 +516,7 @@ public class AccountUserDivideServiceImpl implements IAccountUserDivideService {
             itemDivideDetail.setStatus((byte) UserStatusEnum.ENABLED.getCode());
             itemDivideDetail.setCommissionType(DivideCommissionTypeEnum.INVOICE.getType().byteValue());
             //根据医院、项目查找票据
-            BigDecimal invoiceMoney = accountRecordDao.calculateInvoiceAmount(settleDate, hospital.getId(), item.getId(), userMain.getId());
+            BigDecimal invoiceMoney = accountRecordDao.calculateInvoiceAmount(settleDate, hospital.getId(), item.getId(), userMain.getId(), null);
             if (Objects.isNull(invoiceMoney)) {
                 invoiceMoney = new BigDecimal(0);
             }

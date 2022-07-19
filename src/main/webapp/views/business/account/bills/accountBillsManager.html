@@ -68,8 +68,12 @@
 		<script type="text/html" id="list-toolbar">
 			<button class="pear-btn pear-btn-primary pear-btn-md" lay-event="add">
 		        <i class="layui-icon layui-icon-add-1"></i>
-		        新增
+		        添加记录
 		    </button>
+			<button class="pear-btn pear-btn-primary pear-btn-md" lay-event="batchAdd">
+				<i class="layui-icon layui-icon-add-1"></i>
+				批量添加
+			</button>
 		</script>
 
 		<script type="text/html" id="list-item-bar">
@@ -267,6 +271,8 @@
 						window.refresh();
 					} else if (obj.event === 'batchRemove') {
 						window.batchRemove(obj);
+					} else if (obj.event === 'batchAdd') {
+						window.batchAdd(obj);
 					}
 				});
 
@@ -284,16 +290,27 @@
 				window.add = function() {
 					layer.open({
 						type: 2,
-						title: '添加用户',
+						title: '添加票据',
 						shade: 0.1,
 						area: [common.isModile()?'100%':'550px', common.isModile()?'100%':'550px'],
 						content: 'accountBills-add.html'
 					});
 				}
+
+				window.batchAdd = function(){
+					layer.open({
+						type: 2,
+						title: '批量添加票据',
+						shade: 0.1,
+						area: [common.isModile()?'100%':'60%', common.isModile()?'100%':'70%'],
+						content: 'accountBills-batchAdd.html'
+					});
+				}
+
 				window.update = function (obj) {
 					layer.open({
 						type: 2,
-						title: '编辑人员提成信息',
+						title: '编辑票据信息',
 						shade: 0.1,
 						area: [common.isModile() ? '100%' : '550px', common.isModile() ? '100%' : '550px'],
 						content: "accountBills-update.html?hospitalId="+obj.data.hospitalId+"&itemId="+obj.data.itemId+"&belongId="+obj.data.belongId,

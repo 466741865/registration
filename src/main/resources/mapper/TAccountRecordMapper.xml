@@ -141,5 +141,17 @@
              <if test="belongId != null and belongId > 0">
                  and belong_id = #{belongId}
              </if>
+             <if test="invoiceDate != null and invoiceDate != ''">
+                 and invoice_date = #{invoiceDate}
+             </if>
+    </select>
+
+    <select id="selectInvoiceDate" resultType="java.lang.String">
+        select invoice_date
+        from t_account_record
+         where  `status` = 1
+             and settle_date = #{settleDate}
+             and hospital_id = #{hospitalId}
+        order by invoice_date
     </select>
 </mapper>
