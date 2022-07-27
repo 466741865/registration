@@ -19,6 +19,12 @@
 							</div>
 						</div>
 						<div class="layi-form-item layui-inline">
+							<label class="layui-form-label">开票日期</label>
+							<div class="layui-input-inline">
+								<input type="text" class="layui-input" id="invoiceDate" name="invoiceDate" placeholder="开票日期">
+							</div>
+						</div>
+						<div class="layi-form-item layui-inline">
 							<label class="layui-form-label">医院</label>
 							<div class="layui-input-block">
 								<select id="hospitalId" name="hospitalId" lay-filter="hospitalFilter" lay-verify="title">
@@ -174,6 +180,11 @@
 					elem: '#settleDate',
 					type: 'month'
 				});
+				//年月日
+				laydate.render({
+					elem: '#invoiceDate',
+					value: new Date()
+				});
 
 				var hQuery = {
 					page: "1",
@@ -302,7 +313,7 @@
 						type: 2,
 						title: '批量添加票据',
 						shade: 0.1,
-						area: [common.isModile()?'100%':'60%', common.isModile()?'100%':'70%'],
+						area: [common.isModile()?'100%':'80%', common.isModile()?'100%':'90%'],
 						content: 'accountBills-batchAdd.html'
 					});
 				}

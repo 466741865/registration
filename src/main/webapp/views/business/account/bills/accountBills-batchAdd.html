@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../../../../component/pear/css/pear.css"/>
+    <link rel="stylesheet" href="../../../../component/layui/css/layui.css"/>
+
+</head>
+<body>
+<form class="layui-form" action="">
+    <div class="mainBox">
+        <div class="main-container">
+            <div class="main-container">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">所属月份</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input" autocomplete="off" id="settleDate" name="settleDate"
+                               placeholder="请选择所属月份">
+                    </div>
+                </div>
+                <div class="layui-row">
+                    <div class="layui-col-xs3">
+                        <label class="layui-form-label">开票医院</label>
+                        <div class="layui-input-block">
+                            <select id="hospitalId" name="hospitalId" lay-filter="hospitalFilter" lay-verify="title">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-col-xs3">
+                        <label class="layui-form-label">开票项目</label>
+                        <div class="layui-input-block">
+                            <select id="itemId" name="itemId" lay-filter="itemFilter" lay-verify="title">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-col-xs4">
+                        <label class="layui-form-label">归属人</label>
+                        <div class="layui-input-block">
+                            <select id="belongId" name="belongId" lay-verify="title">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-card" id="recordInfo">
+                    <div style="height: 30px; width: 100%">
+                        <label style="margin-top: 15px">添加记录:</label>
+                        <label style="margin-top: 15px; font-size: small;"> &nbsp;&nbsp;&nbsp;&nbsp;提示：若要删除记录请从下往上删出，否则会出问题。</label>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-col-xs3">
+                            <label class="layui-form-label">开票日期:</label>
+                            <div class="layui-input-block" style="">
+                                <input type="text" class="layui-input" autocomplete="off" id="invoiceDate0"
+                                       name="invoiceDate0" placeholder="请选择开票日期">
+                            </div>
+                        </div>
+                        <div class="layui-col-xs3">
+                            <label class="layui-form-label">开票人:</label>
+                            <div class="layui-input-block">
+                                <input type="text" id="patientName0" name="patientName0" lay-verify="title" autocomplete="off"
+                                       placeholder="请输入"
+                                       class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-col-xs3">
+                            <label class="layui-form-label">开票金额:</label>
+                            <div class="layui-input-block">
+                                <input type="text" lay-verify="number" id="invoiceMoney0" name="invoiceMoney0" lay-verify="title"
+                                       autocomplete="off"
+                                       placeholder="单位：元" onblur="value=zhzs(this.value)" class="layui-input">
+                            </div>
+                        </div>
+                        <button id="add" type="button" class="layui-btn layui-btn-warm layui-btn-sm"
+                                style="margin-left: 15px; margin-top: 5px;">
+                            <i class="layui-icon">增加</i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="bottom">
+        <div class="button-container">
+            <button type="submit" class="pear-btn pear-btn-primary pear-btn-sm" lay-submit=""
+                    lay-filter="batchSave">
+                <i class="layui-icon layui-icon-ok"></i>
+                提交
+            </button>
+        </div>
+    </div>
+</form>
+<script src="../../../../component/layui/layui.js"></script>
+<script src="../../../../component/pear/pear.js"></script>
+<script src="../../../../component/utils/utils.js"></script>
+
+<script>
+    layui.use(['form', 'jquery', 'popup', 'notice', 'laydate'], function () {
+        let form = layui.form;
+        let $ = layui.jquery;
+        var popup = layui.popup;
+        var notice = layui.notice;
+        var laydate = layui.laydate;
+
+
+        //年月日
+        laydate.render({
+            elem: '#invoiceDate0',
+            value: new Date()
+        });
+
+        //年月选择器
+        laydate.render({
+            elem: '#settleDate',
+            type: 'month',
+            value: new Date()
+        });
+
+        var itemQuery = {
+            page: "1",
+            limit: "100"
+        }
+
+        $.ajax({
+            url: '/config/hospital/getList',
+            data: itemQuery,
+            dataType: 'JSON',
+            method: "GET",
+            success: function (result) {
+                if (result.code === 0) {
+                    var list = result.data;
+                    var opt = "<option value=\"\"></option>";
+                    for (var i = 0; i < list.length; i++) {
+                        opt += "<option value=\"" + list[i].id + "\">" + list[i].hospitalName + "</option>";
+                    }
+                    $("#hospitalId").html(opt);
+                    form.render('select');
+                } else {
+                    notice.warning("获取医院列表失败:" + result.message);
+                }
+            }
+        });
+
+        // 医院-项目联动
+        form.on('select(hospitalFilter)', function (data) {
+            var hospitalId = data.value;
+            $("#itemId").empty();
+            $("#belongId").empty();
+            $.ajax({
+                url: '/config/item/getListByHid?hid=' + hospitalId,
+                dataType: 'JSON',
+                method: "GET",
+                success: function (result) {
+                    if (result === null || result.length <= 0) {
+                        notice.warning("该医院未配置项目");
+                    } else {
+                        var opt = "<option value=\"\"></option>";
+                        for (var i = 0; i < result.length; i++) {
+                            opt += "<option value=\"" + result[i].id + "\">" + result[i].itemName + "</option>";
+                        }
+                        $("#itemId").html(opt);
+                        form.render('select');
+                    }
+                }
+            });
+        });
+
+        // 项目-人员联动
+        form.on('select(itemFilter)', function (data) {
+            var itemId = data.value;
+            $("#belongId").empty();
+            $.ajax({
+                url: '/config/user/commission/getListByIid?itemId=' + itemId,
+                dataType: 'JSON',
+                method: "GET",
+                success: function (result) {
+                    if (result === null || result.length <= 0) {
+                        notice.warning("该医院项目未配置提成人员");
+                    } else {
+                        var opt = "<option value=\"\"></option>";
+                        for (var i = 0; i < result.length; i++) {
+                            opt += "<option value=\"" + result[i].belongId + "\">" + result[i].belongName + "</option>";
+                        }
+                        $("#belongId").html(opt);
+                        form.render('select');
+                    }
+                }
+            });
+        });
+        var recordNum = 1;
+        var max = 20;
+
+        $("#add").click(function () {
+            if (recordNum < max) {
+
+                var str = '  <div class="layui-form-item">\n' +
+                    '                    <div class="layui-col-xs3">\n' +
+                    '                        <label class="layui-form-label">开票日期:</label>\n' +
+                    '                        <div class="layui-input-block" style="">\n' +
+                    '                            <input type="text" class="layui-input" autocomplete="off" id="invoiceDate'+recordNum+'" name="invoiceDate'+recordNum+'" placeholder="请选择开票日期" >\n' +
+                    '                        </div>\n' +
+                    '                    </div>\n' +
+                    '                    <div class="layui-col-xs3">\n' +
+                    '                        <label class="layui-form-label">开票人:</label>\n' +
+                    '                        <div class="layui-input-block">\n' +
+                    '                            <input type="text" id="patientName'+recordNum+'" name="patientName'+recordNum+'" lay-verify="title" autocomplete="off" placeholder="请输入"\n' +
+                    '                                   class="layui-input" >\n' +
+                    '                        </div>\n' +
+                    '                    </div>\n' +
+                    '                    <div class="layui-col-xs3">\n' +
+                    '                        <label class="layui-form-label" >开票金额:</label>\n' +
+                    '                        <div class="layui-input-block">\n' +
+                    '                            <input type="text" lay-verify="number" id="invoiceMoney'+recordNum+'"  name="invoiceMoney'+recordNum+'"  lay-verify="title" autocomplete="off"\n' +
+                    '                                   placeholder="单位：元" onblur="value=zhzs(this.value)" class="layui-input" >\n' +
+                    '                        </div>\n' +
+                    '                    </div>\n' +
+                    '                        <button type="button" class="layui-btn layui-btn-warm layui-btn-sm removeclass" style="margin-left: 15px; margin-top: 5px;">\n' +
+                    '                            <i class="layui-icon">删除</i>\n' +
+                    '                        </button>\n' +
+                    '                </div>';
+                $("#recordInfo").append(str);
+                form.render();
+                //年月选择器
+                laydate.render({
+                    elem: '#invoiceDate'+recordNum,
+                    value: new Date()
+                });
+                recordNum++;
+            } else {
+                layer.msg("最多添加20条信息", {icon: 2});
+            }
+        });
+
+        //删除动态添加的input输入框
+        $("body").on('click', ".removeclass", function () {
+            var parentEle = $(this).parent();
+            parentEle.remove();
+            recordNum--;
+        });
+
+        form.on('submit(batchSave)', function (data) {
+            //获取数据
+            var recordInfos = [];
+            for (var i = 0; i < recordNum; i++) {
+                var record = {
+                    invoiceMoney: $("#invoiceMoney"+i).val(),
+                    patientName: $("#patientName"+i).val(),
+                    invoiceDate: $("#invoiceDate"+i).val()
+                }
+                recordInfos.push(record);
+            }
+            var formData = {
+                settleDate: $("#settleDate").val(),
+                hospitalId: $("#hospitalId").val(),
+                itemId: $("#itemId").val(),
+                belongId: $("#belongId").val(),
+                recordInfoList: recordInfos
+            }
+            $.ajax({
+                url: '/account/bill/batchAdd',
+                data: JSON.stringify(formData),
+                dataType: 'JSON',
+                contentType:'application/json',
+                method: "POST",
+                success: function (result) {
+                    if (result.code === 0) {
+                        popup.success('批量添加成功', function () {
+                            parent.layer.close(parent.layer.getFrameIndex(window.name));//关闭当前页
+                            parent.layui.table.reload("list-table");
+                        });
+                    } else {
+                        notice.error('批量添加失败：' + result.message);
+                    }
+                }
+            })
+            return false;
+        });
+
+    })
+</script>
+<script>
+</script>
+</body>
+</html>

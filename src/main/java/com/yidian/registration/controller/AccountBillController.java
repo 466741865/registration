@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,18 +36,18 @@ public class AccountBillController {
     private IAccountRecordService AccountRecordService;
 
     @RequestMapping(value = "/getList", produces = "application/json;charset=UTF-8")
-    public PageVo<List<AccountRecordDetailVo>> getBillList(String name, String settleDate, Long hospitalId, Long itemId, Long belongId, Integer page, Integer limit) {
-        logger.info("[getRecordList]获取记录列表,start，name={}, settleDate={}, hospitalId:{}, itemId:{} belongId:{}, pageNo={}, pageSize={}", name, settleDate, hospitalId, itemId, belongId, page, limit);
+    public PageVo<List<AccountRecordDetailVo>> getBillList(String name, String settleDate, String invoiceDate, Long hospitalId, Long itemId, Long belongId, Integer page, Integer limit) {
+        logger.info("[getRecordList]获取记录列表,start，name={}, settleDate={}, invoiceDate:{}, hospitalId:{}, itemId:{} belongId:{}, pageNo={}, pageSize={}", name, settleDate, invoiceDate, hospitalId, itemId, belongId, page, limit);
         if (Tools.isNull(page) || page <= 0) {
             page = Constants.DEFAULT_PAGE_NO;
         }
         if (Tools.isNull(limit) || limit <= 0) {
             limit = Constants.DEFAULT_PAGE_SIZE;
         }
-        PageVo<List<AccountRecordDetailVo>> pageVo = AccountRecordService.getAccountRecordList(name, settleDate, hospitalId, itemId, belongId, page, limit);
+        PageVo<List<AccountRecordDetailVo>> pageVo = AccountRecordService.getAccountRecordList(name, settleDate, invoiceDate, hospitalId, itemId, belongId, page, limit);
         pageVo.setPageNum(page);
         pageVo.setPageSize(limit);
-        logger.info("[getRecordList]获取记录列表,end，name={}, settleDate={}, hospitalId:{}, itemId:{}, belongId:{}, pageNo={}, pageSize={}, res:{}", name, settleDate, hospitalId, itemId, belongId, page, limit, JSON.toJSON(pageVo));
+        logger.info("[getRecordList]获取记录列表,end，name={}, settleDate={}, invoiceDate:{}, hospitalId:{}, itemId:{}, belongId:{}, pageNo={}, pageSize={}, res:{}", name, settleDate, invoiceDate, hospitalId, itemId, belongId, page, limit, JSON.toJSON(pageVo));
         return pageVo;
 
     }
@@ -79,8 +80,8 @@ public class AccountBillController {
      * @param addVo 批量添加记录
      * @return
      */
-    @RequestMapping(value = "/batchAdd", produces = "application/json;charset=UTF-8")
-    public ResultVo<Boolean> batchAddRecord(AccountRecordBatchAddVo addVo) {
+    @PostMapping(value = "/batchAdd", produces = "application/json;charset=UTF-8")
+    public ResultVo<Boolean> batchAddRecord(@RequestBody AccountRecordBatchAddVo addVo) {
         logger.info("[batchAddRecord]批量添加记录，userAddVo={}", JSON.toJSON(addVo));
         if (Tools.isNull(addVo)
                 || CollectionUtils.isEmpty(addVo.getRecordInfoList())

@@ -18,6 +18,8 @@ public interface TAccountStatisticsDayDetailDao {
 
     List<TAccountStatisticsDayDetail> selectDayAllItemBySid(@Param("sid") Long sid, @Param("month") String month);
 
+    List<TAccountStatisticsDayDetail> selectDayDetailByParams(@Param("sid") Long sid, @Param("hospitalId") Long hospitalId, @Param("day") String day, @Param("itemIds") List<Long> itemIds);
+
 
 
 }

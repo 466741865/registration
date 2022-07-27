@@ -20,7 +20,7 @@ public interface IAccountRecordService {
      * @param name
      * @return
      */
-    PageVo<List<AccountRecordDetailVo>> getAccountRecordList(String name, String settleDate, Long hospitalId, Long itemId, Long belongId, Integer pageNo, Integer pageSize);
+    PageVo<List<AccountRecordDetailVo>> getAccountRecordList(String name, String settleDate, String invoiceDate, Long hospitalId, Long itemId, Long belongId, Integer pageNo, Integer pageSize);
 
     /**
      * 查询配置详情

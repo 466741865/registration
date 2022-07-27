@@ -43,7 +43,7 @@ public class AccountRecordServiceImpl implements IAccountRecordService {
 
 
     @Override
-    public PageVo<List<AccountRecordDetailVo>> getAccountRecordList(String name, String settleDate, Long hospitalId, Long itemId, Long belongId, Integer pageNo, Integer pageSize) {
+    public PageVo<List<AccountRecordDetailVo>> getAccountRecordList(String name, String settleDate, String invoiceDate, Long hospitalId, Long itemId, Long belongId, Integer pageNo, Integer pageSize) {
         logger.info("getAccountRecordList start, name:{}, settleDate:{}, hospitalId:{}, itemId:{}, belongId:{}, pageNo:{}, pageSize:{}", name, settleDate, hospitalId, itemId, belongId, pageNo, pageSize);
         PageVo<List<AccountRecordDetailVo>> pageVo = new PageVo<>();
         pageVo.setCount(0);
@@ -51,14 +51,14 @@ public class AccountRecordServiceImpl implements IAccountRecordService {
         pageVo.setPageNum(pageNo);
         pageVo.setPageSize(pageSize);
         //查询总量
-        int configListTotal = AccountRecordDao.selectRecordListTotal(name, settleDate, hospitalId, itemId, belongId);
+        int configListTotal = AccountRecordDao.selectRecordListTotal(name, settleDate, invoiceDate, hospitalId, itemId, belongId);
         if (configListTotal <= 0) {
             return pageVo;
         }
         pageVo.setCount(configListTotal);
 
         int index = (pageNo - 1) * pageSize;
-        List<TAccountRecord> recordList = AccountRecordDao.selectRecordList(name, settleDate, hospitalId, itemId, belongId, index, pageSize);
+        List<TAccountRecord> recordList = AccountRecordDao.selectRecordList(name, settleDate, invoiceDate, hospitalId, itemId, belongId, index, pageSize);
         if (CollectionUtils.isEmpty(recordList)) {
             return pageVo;
         }
@@ -109,23 +109,24 @@ public class AccountRecordServiceImpl implements IAccountRecordService {
 
     /**
      * 封装详情
+     *
      * @return
      */
-    private AccountRecordDetailVo setAccountRecordDetailVo(TAccountRecord record){
+    private AccountRecordDetailVo setAccountRecordDetailVo(TAccountRecord record) {
         AccountRecordDetailVo vo = entityToVo(record);
         //查询单位信息
         TConfigHospital hospital = configHospitalDao.selectInfoById(record.getHospitalId());
-        if(Objects.nonNull(hospital)){
+        if (Objects.nonNull(hospital)) {
             vo.setHospitalName(hospital.getHospitalName());
         }
         //查询项目信息
         TConfigItem item = configItemDao.selectInfoById(record.getItemId());
-        if(Objects.nonNull(item)){
+        if (Objects.nonNull(item)) {
             vo.setItemName(item.getItemName());
         }
         //归属人信息
         TConfigUser user = configUserDao.selectInfoById(record.getBelongId());
-        if(Objects.nonNull(user)){
+        if (Objects.nonNull(user)) {
             vo.setBelongName(user.getName());
         }
         return vo;
@@ -153,7 +154,7 @@ public class AccountRecordServiceImpl implements IAccountRecordService {
         logger.info("addAccountRecord start addVo:{}", addVo);
         List<AccountRecordInfoVo> recordInfoList = addVo.getRecordInfoList();
         List<TAccountRecord> recordList = new ArrayList<>(recordInfoList.size());
-        for(AccountRecordInfoVo infoVo : recordInfoList){
+        for (AccountRecordInfoVo infoVo : recordInfoList) {
             TAccountRecord record = new TAccountRecord();
             record.setHospitalId(addVo.getHospitalId());
             record.setItemId(addVo.getItemId());
@@ -174,7 +175,7 @@ public class AccountRecordServiceImpl implements IAccountRecordService {
     @Override
     public boolean updateAccountRecord(AccountRecordUpdateVo updateVo) {
         TAccountRecord record = AccountRecordDao.selectInfoById(updateVo.getId());
-        if(Objects.isNull(record)){
+        if (Objects.isNull(record)) {
             return false;
         }
         record.setPatientName(updateVo.getPatientName());

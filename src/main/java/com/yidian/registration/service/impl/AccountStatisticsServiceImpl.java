@@ -10,9 +10,11 @@ import com.yidian.registration.utils.DateBuilder;
 import com.yidian.registration.vo.PageVo;
 import com.yidian.registration.vo.account.statistics.AccountStatisticsDetailVo;
 import com.yidian.registration.vo.account.statistics.AccountStatisticsVo;
+import com.yidian.registration.vo.account.statistics.TAccountStatisticsDayDetailVO;
 import com.yidian.registration.vo.account.statistics.TAccountStatisticsDayVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -413,23 +415,50 @@ public class AccountStatisticsServiceImpl implements IAccountStatisticsService {
 
     @Override
     public List<TAccountStatisticsDayVO> getDayDetail(Long sid) {
-
-        //查询统计主表
-        TAccountStatistics statistics = accountStatisticsDao.selectInfoById(sid);
-        if(Objects.isNull(statistics)){
-            return Collections.emptyList();
+        try {
+            //查询统计主表
+            TAccountStatistics statistics = accountStatisticsDao.selectInfoById(sid);
+            if (Objects.isNull(statistics)) {
+                return Collections.emptyList();
+            }
+            //先查询day主表，
+            List<TAccountStatisticsDay> statisticsDays = accountStatisticsDayDao.selectDayBySid(sid, UserStatusEnum.ENABLED.getCode());
+            if (CollectionUtils.isEmpty(statisticsDays)) {
+                return Collections.emptyList();
+            }
+            //查询医院项目配置
+            List<TConfigItem> tConfigItems = configItemDao.selectItemConfigListByHid(statistics.getHospitalId());
+            List<Long> itemIds = tConfigItems.stream().map(TConfigItem::getId).collect(Collectors.toList());
+            //再查询当月所有的项目
+            //遍历每一天，封装所有项目数据
+            List<TAccountStatisticsDayVO> statisticsDayVOS = new ArrayList<>();
+            for (TAccountStatisticsDay statisticsDay : statisticsDays) {
+                TAccountStatisticsDayVO dayVO = new TAccountStatisticsDayVO();
+                dayVO.setMonth(statisticsDay.getMonth());
+                dayVO.setDay(statisticsDay.getDay());
+                dayVO.setHospitalId(statisticsDay.getHospitalId());
+                dayVO.setHospitalName(statisticsDay.getHospitalName());
+                dayVO.setStatisticsId(statisticsDay.getStatisticsId());
+                dayVO.setTotalIncome(statisticsDay.getTotalIncome());
+                dayVO.setTotalInvoiceMoney(statisticsDay.getTotalInvoiceMoney());
+                //查询天内的项目
+                List<TAccountStatisticsDayDetail> dayItemList = accountStatisticsDayDetailDao.selectDayDetailByParams(sid, statistics.getHospitalId(), statisticsDay.getDay(), itemIds);
+                if (CollectionUtils.isEmpty(dayItemList)) {
+                    dayVO.setDayDetailList(Collections.emptyList());
+                    continue;
+                }
+                List<TAccountStatisticsDayDetailVO> dayDetailVOS = new ArrayList<>();
+                for (TAccountStatisticsDayDetail dayDetail : dayItemList) {
+                    TAccountStatisticsDayDetailVO dayDetailVO = new TAccountStatisticsDayDetailVO();
+                    BeanUtils.copyProperties(dayDetail, dayDetailVO);
+                    dayDetailVOS.add(dayDetailVO);
+                }
+                dayVO.setDayDetailList(dayDetailVOS);
+            }
+            return statisticsDayVOS;
+        } catch (Exception e) {
+            logger.error("getDayDetail exception, sid:{}", sid, e);
+            throw new BizException(StatusEnum.INVALID_PARAM_CODE.getCode(), "获取每日详情失败");
         }
-
-        //先查询day主表，
-        List<TAccountStatisticsDay> statisticsDays = accountStatisticsDayDao.selectDayBySid(sid, UserStatusEnum.ENABLED.getCode());
-        if(CollectionUtils.isEmpty(statisticsDays)){
-            return Collections.emptyList();
-        }
-        //再查询当月所有的项目
-        accountStatisticsDayDetailDao.selectDayAllItemBySid(sid, statistics.getMonth());
-
-        //遍历每一天，封装所有项目数据
-
-        return null;
     }
 }

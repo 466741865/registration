@@ -61,7 +61,6 @@ public class AccountRecordBatchAddVo {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
         sb.append(" [");
         sb.append(", hospitalId=").append(hospitalId);
         sb.append(", itemId=").append(itemId);

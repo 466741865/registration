@@ -59,5 +59,6 @@
     select *
     from t_account_statistics_day
     where statistics_id = #{sid} and `status` = #{status}
+    order by `day`
   </select>
 </mapper>

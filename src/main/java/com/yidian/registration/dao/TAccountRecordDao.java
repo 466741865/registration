@@ -19,7 +19,7 @@ public interface TAccountRecordDao {
      * @param patientName
      * @return
      */
-    int selectRecordListTotal(@Param("patientName") String patientName, @Param("settleDate") String settleDate, @Param("hospitalId") Long hospitalId, @Param("itemId") Long itemId, @Param("belongId") Long belongId);
+    int selectRecordListTotal(@Param("patientName") String patientName, @Param("settleDate") String settleDate, @Param("invoiceDate") String invoiceDate, @Param("hospitalId") Long hospitalId, @Param("itemId") Long itemId, @Param("belongId") Long belongId);
 
     /**
      * 查询list
@@ -27,7 +27,7 @@ public interface TAccountRecordDao {
      * @param patientName
      * @return
      */
-    List<TAccountRecord> selectRecordList(@Param("patientName") String patientName, @Param("settleDate") String settleDate, @Param("hospitalId") Long hospitalId, @Param("itemId") Long itemId, @Param("belongId") Long belongId, @Param("index") int index, @Param("pageSize") int pageSize);
+    List<TAccountRecord> selectRecordList(@Param("patientName") String patientName, @Param("settleDate") String settleDate, @Param("invoiceDate") String invoiceDate, @Param("hospitalId") Long hospitalId, @Param("itemId") Long itemId, @Param("belongId") Long belongId, @Param("index") int index, @Param("pageSize") int pageSize);
 
     int updateRecord(TAccountRecord hospital);
 

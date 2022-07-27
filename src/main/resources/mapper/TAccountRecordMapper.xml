@@ -28,13 +28,13 @@
         )
     </insert>
 
-    <insert id="batchInsert" parameterType="java.util.List">
+    <insert id="batchInsert">
         insert into t_account_record (patient_name, hospital_id, item_id,
         invoice_money, invoice_date, settle_date, `status`, belong_id,
         create_time, update_time
         )
         values
-        <foreach collection="recordList" index="record" separator=",">
+        <foreach collection="recordList" item="record" index="index" separator=",">
             (#{record.patientName,jdbcType=VARCHAR}, #{record.hospitalId,jdbcType=BIGINT},
              #{record.itemId,jdbcType=BIGINT}, #{record.invoiceMoney,jdbcType=DECIMAL},
              #{record.invoiceDate,jdbcType=VARCHAR}, #{record.settleDate,jdbcType=VARCHAR},
@@ -59,6 +59,9 @@
         <if test="settleDate != null and settleDate != ''">
             and settle_date = #{settleDate}
         </if>
+        <if test="invoiceDate != null and invoiceDate != ''">
+            and invoice_date = #{invoiceDate}
+        </if>
         <if test="hospitalId != null and hospitalId > 0">
             and hospital_id = #{hospitalId}
         </if>
@@ -80,6 +83,9 @@
         <if test="settleDate != null and settleDate != ''">
             and settle_date = #{settleDate}
         </if>
+        <if test="invoiceDate != null and invoiceDate != ''">
+            and invoice_date = #{invoiceDate}
+        </if>
         <if test="hospitalId != null and hospitalId > 0">
             and hospital_id = #{hospitalId}
         </if>
@@ -89,7 +95,7 @@
         <if test="belongId != null and belongId > 0">
             and belong_id = #{belongId}
         </if>
-        order by settle_date desc, invoice_date desc
+        order by create_time desc, invoice_date desc
         limit #{index}, #{pageSize}
     </select>
 
