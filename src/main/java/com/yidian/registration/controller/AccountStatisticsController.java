@@ -8,10 +8,7 @@ import com.yidian.registration.service.IAccountStatisticsService;
 import com.yidian.registration.utils.Tools;
 import com.yidian.registration.vo.PageVo;
 import com.yidian.registration.vo.ResultVo;
-import com.yidian.registration.vo.account.statistics.AccountStatisticsBuildVo;
-import com.yidian.registration.vo.account.statistics.AccountStatisticsDetailVo;
-import com.yidian.registration.vo.account.statistics.AccountStatisticsVo;
-import com.yidian.registration.vo.account.statistics.TAccountStatisticsDayVO;
+import com.yidian.registration.vo.account.statistics.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -141,28 +139,52 @@ public class AccountStatisticsController {
     }
 
     /**
-     * 获取月每日统计
-     *
-     * @param sid 账单id
+     * 获取月每日收益
+     * @param sid
      * @return
      */
-    @RequestMapping(value = "/getDayDetail", produces = "application/json;charset=UTF-8")
-    public ResultVo<List<TAccountStatisticsDayVO>> getDayDetail(Long sid) {
-        logger.info("[getDayDetail]获取月每日统计，sid={}", sid);
-        if (Tools.isNull(sid) || sid <= 0) {
-            logger.info("[getDayDetail]获取月每日统计，参数存在空值");
-            return new ResultVo<>(-1, "请选择账单");
+    @RequestMapping(value = "/getDayList", produces = "application/json;charset=UTF-8")
+    public ResultVo<List<TAccountStatisticsDayVO>> getDayList(Long sid) {
+        logger.info("[getDayList]获取记录列表,start， sid={}", sid);
+        if (Objects.isNull(sid) || sid <= 0) {
+            return new ResultVo<>();
         }
-        List<TAccountStatisticsDayVO> result = null;
+        List<TAccountStatisticsDayVO> result = new ArrayList<>();
         try {
-            result = accountStatisticsService.getDayDetail(sid);
+            result = accountStatisticsService.getDayList(sid);
         } catch (BizException e) {
             return new ResultVo<>(StatusEnum.NODATA_CODE.getCode(), e.getMessage());
         } catch (Exception e) {
-            logger.error("[getDayDetail]获取月每日统计，sid:{}", sid, e);
+            logger.error("[getDayList]获取月每日统计，sid:{}", sid, e);
             return new ResultVo<>(StatusEnum.NODATA_CODE.getCode(), "获取月每日账单失败");
         }
-        logger.info("[getDayDetail]获取月每日统计,end,sid={},res={}", sid, result);
+        logger.info("[getDayList]获取月每日统计,end，sid={}, res:{}", sid, JSON.toJSON(result));
+        return new ResultVo<>(result);
+    }
+
+    /**
+     * 获取月每日详情
+     *
+     * @param dayId 账单id
+     * @return
+     */
+    @RequestMapping(value = "/getDayDetail", produces = "application/json;charset=UTF-8")
+    public ResultVo<List<TAccountStatisticsDayDetailVO>> getDayDetail(Long dayId) {
+        logger.info("[getDayDetail]获取月每日统计详情，dayId={}", dayId);
+        if (Tools.isNull(dayId) || dayId <= 0) {
+            logger.info("[getDayDetail]获取月每日统计详情，参数存在空值");
+            return new ResultVo<>(-1, "请选择账单");
+        }
+        List<TAccountStatisticsDayDetailVO> result = new ArrayList<>();
+        try {
+            result = accountStatisticsService.getDayDetail(dayId);
+        } catch (BizException e) {
+            return new ResultVo<>(StatusEnum.NODATA_CODE.getCode(), e.getMessage());
+        } catch (Exception e) {
+            logger.error("[getDayDetail]获取月每日统计详情，dayId:{}", dayId, e);
+            return new ResultVo<>(StatusEnum.NODATA_CODE.getCode(), "获取月每日账单详情失败");
+        }
+        logger.info("[getDayDetail]获取月每日统计详情,end,dayId={},res={}", dayId, result);
         return new ResultVo<>(result);
     }
 

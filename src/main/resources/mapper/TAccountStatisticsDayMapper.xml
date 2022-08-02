@@ -55,6 +55,12 @@
     where statistics_id = #{sid}
   </update>
 
+  <select id="selectDayById" resultMap="BaseResultMap">
+    select *
+    from t_account_statistics_day
+    where id = #{id}
+  </select>
+
   <select id="selectDayBySid" resultMap="BaseResultMap">
     select *
     from t_account_statistics_day

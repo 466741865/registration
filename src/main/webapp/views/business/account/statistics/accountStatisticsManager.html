@@ -54,6 +54,7 @@
 
 		<script type="text/html" id="list-item-bar">
 				<button class="pear-btn pear-btn-primary pear-btn-sm" lay-event="queryDetail">详情</button>
+				<button class="pear-btn pear-btn-primary pear-btn-sm" lay-event="queryDay">每日详情</button>
 				<button class="pear-btn pear-btn-primary pear-btn-sm"  lay-event="reBuild">重新生成</button>
 		</script>
 
@@ -80,8 +81,7 @@
                         {
 							title: '月份',
 							field: 'month',
-							align: 'center',
-							width: 100
+							align: 'center'
 						},
 						{
 							title: '医院',
@@ -91,14 +91,12 @@
                         {
                             title: '总开票金额',
                             field: 'invoiceTotalMoney',
-                            align: 'center',
-							width: 100
+                            align: 'center'
                         },
                         {
                             title: '收入',
                             field: 'income',
-                            align: 'center',
-							width: 100
+                            align: 'center'
                         },
 						{
 							title: '生成时间',
@@ -109,7 +107,7 @@
 							title: '操作',
 							align: 'center',
 							toolbar: '#list-item-bar',
-							width: 200
+							width: 300
 						}
 					]
 				]
@@ -161,6 +159,8 @@
 				table.on('tool(list-table)', function(obj) {
 					if (obj.event === 'queryDetail') {
 						window.queryDetail(obj);
+					} else if (obj.event === 'queryDay') {
+						window.queryDay(obj);
 					} else if (obj.event === 'reBuild') {
 						window.reBuild(obj);
 					}
@@ -196,6 +196,17 @@
 						content: 'account-statistics-build.html'
 					});
 				}
+
+				window.queryDay = function(obj) {
+					layer.open({
+						type: 2,
+						title: '账单每日信息',
+						shade: 0.1,
+						area: ['100%', '100%'],
+						content: "accountStatisticsDay.html?sid="+obj.data.id
+					});
+				}
+
 				window.queryDetail = function (obj) {
 					layer.open({
 						type: 2,

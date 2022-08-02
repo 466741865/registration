@@ -414,7 +414,8 @@ public class AccountStatisticsServiceImpl implements IAccountStatisticsService {
     }
 
     @Override
-    public List<TAccountStatisticsDayVO> getDayDetail(Long sid) {
+    public List<TAccountStatisticsDayVO> getDayList(Long sid) {
+        logger.info("getDayList sid:{}", sid);
         try {
             //查询统计主表
             TAccountStatistics statistics = accountStatisticsDao.selectInfoById(sid);
@@ -426,14 +427,11 @@ public class AccountStatisticsServiceImpl implements IAccountStatisticsService {
             if (CollectionUtils.isEmpty(statisticsDays)) {
                 return Collections.emptyList();
             }
-            //查询医院项目配置
-            List<TConfigItem> tConfigItems = configItemDao.selectItemConfigListByHid(statistics.getHospitalId());
-            List<Long> itemIds = tConfigItems.stream().map(TConfigItem::getId).collect(Collectors.toList());
-            //再查询当月所有的项目
             //遍历每一天，封装所有项目数据
             List<TAccountStatisticsDayVO> statisticsDayVOS = new ArrayList<>();
             for (TAccountStatisticsDay statisticsDay : statisticsDays) {
                 TAccountStatisticsDayVO dayVO = new TAccountStatisticsDayVO();
+                dayVO.setId(statisticsDay.getId());
                 dayVO.setMonth(statisticsDay.getMonth());
                 dayVO.setDay(statisticsDay.getDay());
                 dayVO.setHospitalId(statisticsDay.getHospitalId());
@@ -441,23 +439,41 @@ public class AccountStatisticsServiceImpl implements IAccountStatisticsService {
                 dayVO.setStatisticsId(statisticsDay.getStatisticsId());
                 dayVO.setTotalIncome(statisticsDay.getTotalIncome());
                 dayVO.setTotalInvoiceMoney(statisticsDay.getTotalInvoiceMoney());
-                //查询天内的项目
-                List<TAccountStatisticsDayDetail> dayItemList = accountStatisticsDayDetailDao.selectDayDetailByParams(sid, statistics.getHospitalId(), statisticsDay.getDay(), itemIds);
-                if (CollectionUtils.isEmpty(dayItemList)) {
-                    dayVO.setDayDetailList(Collections.emptyList());
-                    continue;
-                }
-                List<TAccountStatisticsDayDetailVO> dayDetailVOS = new ArrayList<>();
-                for (TAccountStatisticsDayDetail dayDetail : dayItemList) {
-                    TAccountStatisticsDayDetailVO dayDetailVO = new TAccountStatisticsDayDetailVO();
-                    BeanUtils.copyProperties(dayDetail, dayDetailVO);
-                    dayDetailVOS.add(dayDetailVO);
-                }
-                dayVO.setDayDetailList(dayDetailVOS);
+                statisticsDayVOS.add(dayVO);
             }
             return statisticsDayVOS;
         } catch (Exception e) {
             logger.error("getDayDetail exception, sid:{}", sid, e);
+            throw new BizException(StatusEnum.INVALID_PARAM_CODE.getCode(), "获取每日详情失败");
+        }
+    }
+
+    @Override
+    public List<TAccountStatisticsDayDetailVO> getDayDetail(Long dayId) {
+        try {
+            //先查询day主表，
+            TAccountStatisticsDay statisticsDay = accountStatisticsDayDao.selectDayById(dayId);
+            if (Objects.isNull(statisticsDay)) {
+                return Collections.emptyList();
+            }
+            //查询医院项目配置
+            List<TConfigItem> tConfigItems = configItemDao.selectItemConfigListByHid(statisticsDay.getHospitalId());
+            List<Long> itemIds = tConfigItems.stream().map(TConfigItem::getId).collect(Collectors.toList());
+            //再查询当月所有的项目
+            List<TAccountStatisticsDayDetailVO> dayDetailVOS = new ArrayList<>();
+            //查询天内的项目
+            List<TAccountStatisticsDayDetail> dayItemList = accountStatisticsDayDetailDao.selectDayDetailByParams(statisticsDay.getStatisticsId(), statisticsDay.getHospitalId(), statisticsDay.getDay(), itemIds);
+            if (CollectionUtils.isEmpty(dayItemList)) {
+                return dayDetailVOS;
+            }
+            for (TAccountStatisticsDayDetail dayDetail : dayItemList) {
+                TAccountStatisticsDayDetailVO dayDetailVO = new TAccountStatisticsDayDetailVO();
+                BeanUtils.copyProperties(dayDetail, dayDetailVO);
+                dayDetailVOS.add(dayDetailVO);
+            }
+            return dayDetailVOS;
+        } catch (Exception e) {
+            logger.error("getDayDetail exception, dayId:{}", dayId, e);
             throw new BizException(StatusEnum.INVALID_PARAM_CODE.getCode(), "获取每日详情失败");
         }
     }

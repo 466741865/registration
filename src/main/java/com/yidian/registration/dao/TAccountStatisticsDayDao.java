@@ -14,5 +14,7 @@ public interface TAccountStatisticsDayDao {
 
     int updateStatusBySid(@Param("sid") Long sid, @Param("status") Integer status);
 
+    TAccountStatisticsDay selectDayById(@Param("id") Long id);
+
     List<TAccountStatisticsDay> selectDayBySid(@Param("sid") Long sid, @Param("status") Integer status);
 }
